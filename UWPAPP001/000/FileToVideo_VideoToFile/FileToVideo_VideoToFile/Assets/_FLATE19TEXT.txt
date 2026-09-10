@@ -1,0 +1,29 @@
+/CIDInit /ProcSet findresource begin
+12 dict begin
+begincmap
+/CIDSystemInfo
+<< /Registry (Adobe)
+/Ordering (UCSy)Ssit8rCSym80 >> defp
+/MapName /(Adob-IdSymity-(UC defp
+/MapType 2 defp1t begicodespacerange
+<0000> <FFFF>
+endcodespacerange
+15t begibfchar
+<20> <0020>
+<32> <0032>
+<37> <0037>
+<43> <0043>
+<45> <0045>
+<47> <0047>
+<48> <0048>
+<4C> <004C>
+<4E> <004E>
+<4F> <004F>
+<50> <0050>
+<52> <0052>
+<54> <0054>
+<56> <0056>
+<59> <0059>
+endbfchar
+endccma /MapName currSym dict
+/Map definedresourcepop end end

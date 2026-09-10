@@ -1,0 +1,55 @@
+html {
+  font-size: 14px;
+}
+
+@media (min-width: 768px) {
+  html {
+    font-size: 16px;
+  }
+}
+
+html {
+  position: relative;
+  min-height: 100%;
+}
+
+body {
+  margin-bottom: 60px;
+}
+
+table {
+    border: 1px solid;
+    border-collapse: collapse;
+    border-color: darkgreen;
+}
+
+th, td {
+    padding: 5px;    
+}
+
+th {
+    color:white;
+}
+
+#mask {
+    position: absolute;
+    z-index: 9000;
+    background-color: #000;
+    display: none;
+}
+
+#boxes .window {
+    position: fixed;
+    width: 440px;
+    height: 200px;
+    display: none;
+    z-index: 9999;
+    padding: 20px;
+}
+
+
+/* Customize your modal window here, you can add background image too */
+#boxes #dialog {
+    width: 375px;
+    height: 203px;
+}

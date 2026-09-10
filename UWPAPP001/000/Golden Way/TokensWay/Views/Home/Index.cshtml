@@ -1,0 +1,359 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+@Html.AntiForgeryToken()
+
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sscjs@latest/dist/ssc.min.js"></script>
+<script>
+    const baseInput = document.createElement('input');
+    var nPs = 3;
+    var cInicial = 500;
+    var Gguid = '';
+    var stateGuid = '';
+    var Gaccount = '';
+    var antiforgery = '';
+
+    function sleep(ms) {
+        var start = new Date().getTime(), expire = start + ms;
+        while (new Date().getTime() < expire) { }
+        return;
+    }
+
+    window.onload = function ()
+    {
+        var money = new Intl.NumberFormat('en-EN');
+        money.style = 'currency';
+
+        const ssc = new SSC('https://api.hive-engine.com/rpc');
+
+        ssc.findOne(
+            'tokens',
+            'balances',
+            {
+                account: 'tw-vault',
+                symbol: "BUDSX"
+            }, (err, result) => {
+
+                var balances = document.getElementById("balanceActual");
+                balances.innerHTML = "Balance de BUDSX: " + money.format(Math.round(parseFloat(result.balance))) + "<br/><br/>CONSIGA BUDSX > <a target='_blank' href='https://www.hashkings.app'>https://www.hashkings.app</a>";
+            });
+
+        antiforgery = document.getElementsByName('__RequestVerificationToken')[0].value;
+        
+        setTimeout(checkKeyChain, 1000);
+    }
+    
+    function checkKeyChain()
+    {
+        if (typeof hive_keychain == "undefined") {
+            var container = document.getElementById("container");
+            container.innerHTML = "INSTALE KEYCHAIN PARA JUGAR <a target='_blank' href='https://hive-keychain.com'>https://hive-keychain.com</a>";     
+            var cVault = document.getElementById("containerVault");
+            cVault.style.visibility = "hidden";
+        }
+        else{
+            hive_keychain.requestHandshake(function () {
+                console.log('Handshake received!');
+            });
+        }
+    }
+
+    function startGame()
+    {
+        var money = new Intl.NumberFormat('en-EN');
+        money.style = 'currency';
+
+        const ssc = new SSC('https://api.hive-engine.com/rpc');
+
+        ssc.findOne(
+            'tokens',
+            'balances',
+            {
+                account: 'tw-vault',
+                symbol: "BUDSX"
+            }, (err, result) => {
+
+                var balances = document.getElementById("balanceActual");
+                balances.innerHTML = "Balance de BUDX: " + money.format(Math.round(parseFloat(result.balance)));
+            });
+
+        nPs = 3
+        cInicial = 500
+        var cVault = document.getElementById("containerVault");
+        cVault.style.visibility = "hidden";
+
+        Gaccount = document.getElementById("accountId").value;
+        if (Gaccount != '') {
+        
+            process();
+        }
+    }
+
+    function process() {
+
+        $.ajax({
+            type: "POST",
+            url: "/Home/Process",
+            data: { account: Gaccount, "__RequestVerificationToken": antiforgery },
+            success: function (response) {
+                if (response != null)
+                {
+                    if (response.error != null && !response.error && response.data != null)
+                    {
+                        Gguid = response.data;
+                        hive_keychain.requestSendToken(
+                            Gaccount,
+                            'tw-vault',
+                            '500.000',
+                            'NG:' + Gguid,
+                            'BUDSX',
+                            function (rep) {
+                                console.log('main js response - tokens');
+                                if (rep.success)
+                                {
+                                    $('#validatingTransactionModal').modal({
+                                        backdrop: 'static', keyboard: false
+                                    });
+                                    $('#validatingTransactionModal').modal('show');
+                                    processValidate();
+                                }
+                                else
+                                {
+                                    alert(rep.message);
+                                    var cVault = document.getElementById("containerVault");
+                                    cVault.style.visibility = "visible";
+                                }
+                                console.log(rep);
+                            },
+                        );
+                        
+                    }
+                    else
+                    {
+                        alert('OCURRIó UN ERROR 0x002');
+                    }
+                }
+                else
+                {
+                    alert("OCURRIó UN ERROR 0x003");
+                }
+            },
+            failure: function (response) {
+                alert(response.responseText);
+            },
+            error: function (response) {
+                alert(response.responseText);
+            }
+        });
+    }
+
+    function processValidate() {
+        $.ajax({
+            type: "POST",
+            url: "/Home/Process",
+            data: { account: Gaccount, guid: Gguid, "__RequestVerificationToken": antiforgery },
+            success: function (response) {
+                if (response != null) {
+                    if (response.error != null && !response.error) {
+                        //alert(Gguid);
+                        $('#validatingTransactionModal').modal('hide');
+                        stateGuid = Gguid;
+                        var container = document.getElementById("container");
+                        container.innerHTML = "<div style='font-size:30px;' id='hBoveda'><input style='background-color:gold;' type = 'button' value = 'Bovéda " + cInicial + " BUDSX' onclick = 'tkVault()' /> x" + (nPs - 1) + " => <b>" + (cInicial * (nPs - 1)) + " BUDSX</b> (Si la puerta fuera correcta) </div>";
+                        for (var i = 1; i <= nPs; i++)
+                        {
+
+                            container.innerHTML += "<input title='" + i + "' id='door" + i + "' type='image' src='/imgs/puerta01.png' width='200' style='margin:10px;' onclick='doorProcess(" + i + ")' />";
+                        }
+                        container.innerHTML += "<br/><b>^Elija la puerta que crea le llevará por buen camino^</b>";
+
+                    }
+                    else
+                    {
+                        if(response.data != null)
+                        {
+                            alert(response.data);
+                        }
+                        else{
+                            alert('OCURRIó UN ERROR 0x004');
+                        }
+                    }
+                }
+                else
+                {
+                    alert("OCURRIó UN ERROR 0x005");
+                }
+            },
+            failure: function (response) {
+                alert(response.responseText);
+            },
+            error: function (response) {
+                alert(response.responseText);
+            }
+        });
+    }
+
+    function doorProcess(nPinput)
+    {
+        for (var i = 1; i <= nPs; i++)
+        {
+            var btDoor = document.getElementById("door" + i);
+            btDoor.disabled = true;
+        }
+
+        $.ajax({
+            type: "POST",
+            url: "/Home/DoorProcess",
+            data: { nP: nPinput, process: Gguid, state: stateGuid, account: Gaccount, "__RequestVerificationToken": antiforgery },
+            //contentType: "application/json; charset=utf-8",
+            //dataType: "json",
+            success: function (response) {
+                if (response != null) {
+                    if (response.error != null && !response.error)
+                    {
+                        if (response.data != null && response.data != '00000000-0000-0000-0000-000000000000')
+                        {
+                            stateGuid = response.data;
+                            var btDoor = document.getElementById("door" + nPinput);
+                            btDoor.src = '/imgs/dinero.jpg';
+                            setTimeout(nextLevel, 2000);
+                        }
+                        else
+                        {
+                            var btDoor = document.getElementById("door" + nPinput);
+                            btDoor.src = '/imgs/santaMuerte.jpg';
+                            var hBov = document.getElementById("hBoveda");
+                            hBov.innerHTML = "PERDISTE";
+                            var cVault = document.getElementById("containerVault");
+                            cVault.style.visibility = "visible";
+                            cInicial = 500;
+
+                        }
+                    }
+                    else if (response.error != null) {
+                        alert(response.data);
+                    }
+                    else{
+                        alert("OCURRIó UN ERROR 0x007");
+                    }
+                }
+                else
+                {
+                    alert("OCURRIó UN ERROR 0x006");
+                }
+            },
+            failure: function (response) {
+                alert(response.responseText);
+            },
+            error: function (response) {
+                alert(response.responseText);
+            }
+        });
+    }
+
+    function nextLevel()
+    {
+        cInicial = cInicial * (nPs - 1);
+        nPs++;
+        var container = document.getElementById("container");
+        container.innerHTML = "<div style='font-size:30px;' id='hBoveda'><input style='background-color:gold;' type='button' value='Bovéda " + cInicial + " BUDSX' onclick='tkVault()' /> x" + (nPs - 1) + " => <b>" + (cInicial * (nPs - 1)) + " BUDSX</b> (Si la puerta fuera correcta)</div>";
+        for (var i = 1; i <= nPs; i++)
+        {
+
+            container.innerHTML += "<input title='" + i + "' id='door" + i + "' type='image' src='/imgs/puerta01.png' width='200' style='margin:10px;' onclick='doorProcess(" + i + ")' />";
+        }
+        container.innerHTML += "<br/><b>^Elija la puerta que crea le llevará por buen camino^</b>";
+    }
+
+    function tkVault(){
+
+        for (var i = 1; i <= nPs; i++) {
+            var btDoor = document.getElementById("door" + i);
+            btDoor.disabled = true;
+        }
+
+        $.ajax({
+            type: "POST",
+            url: "/Home/tkvault",
+            data: { process: Gguid, state: stateGuid, account: Gaccount, "__RequestVerificationToken": antiforgery },
+            //contentType: "application/json; charset=utf-8",
+            //dataType: "json",
+            success: function (response) {
+                if (response != null) {
+                    if (response.error != null && !response.error) {
+                        if (response.data != null) {
+                            
+                            for (var j = 1; j <= nPs; j++)
+                            {
+                                var btDoor = document.getElementById("door" + j);
+                                btDoor.src = '/imgs/dinero.jpg';
+                            }
+                            var hBov = document.getElementById("hBoveda");
+                            hBov.innerHTML = response.data;
+                            var cVault = document.getElementById("containerVault");
+                            cVault.style.visibility = "visible";
+                            cInicial = 500;
+                        }
+                    }
+                    else if (response.error != null) {
+                        alert(response.data);
+                    }
+                    else {
+                        alert("OCURRIó UN ERROR 0x008");
+                    }
+                }
+                else {
+                    alert("OCURRIó UN ERROR 0x009");
+                }
+            },
+            failure: function (response) {
+                alert(response.responseText);
+            },
+            error: function (response) {
+                alert(response.responseText);
+            }
+        });
+
+    }
+
+</script>
+<div class="text-center">
+    <h1 class="display-1">www.TokensWAY.com</h1>
+    <h2 id="balanceActual"></h2>
+        
+</div>
+<div class="text-center" id="container" style="background-color:silver;background-repeat:no-repeat;background-position:center;background-size:cover;">
+            <br/>
+</div>
+<div class="text-center" id="containerVault" style="background-color:silver;background-repeat:no-repeat;background-position:center;background-size:cover;">
+    <h4>USUARIO HIVE</h4>
+    <input id="accountId" type="text" />
+    <br/><br/><input id="btnSTART" type="button" class="btn-secondary" value="COMENZAR JUEGO" onclick="startGame()" />
+    <br/><br/><h3>El juego es sencillo, una partida empieza con 500 BUDSX de su parte y le saldrán 3 puertas a elegir, si la puerta elegida resulta ser la ganadora <img width="40" src="/imgs/dinero.jpg" /> ganas la cantidad inicial (500) por el multiplicador x2, este multiplicador va subiendo en una unidad conforme la puerta elegida sea correcta y se añadirá otra puerta a las posibilidades, sólo existe una puerta correcta, cuando quieras retirarte sólo tienes que clicar sobre el botón Bóveda y recibirás la cantidad que poseas actualmente, si la puerta resulta no ser la elegida <img width="40" src="/imgs/santaMuerte.jpg" /> pierdes los 500 BUDSX iniciales y las ganancias acumuladas...</h3>
+    <h3>Este es un juego en desarrollo, siempre puede haber algún error, aunque nos aseguramos de que no existan y os aseguramos que estos no son intencionados, no se admiten devoluciones en caso de error, por favor tenga esto en cuenta.</h3>
+    <h3>Tenemos unos recursos de BUDXS limitados, en caso de que su bóveda o ganancias sean mayores que el balance actual de BUDSX en cuenta, no siga jugando recoja ganancias, no realizamos el pago o reembolso de cantidades mayores al balance</h3>
+    <h3>Y si pierde... no se preocupe, le mandaremos tokens TWAY en cantidad como tantos niveles haya intentado, y mensualmente haremos un drop de la mitad de los beneficios de la web repartidos entre los poseedores de este token, simpre y cuando haya beneficios... =)</h3>
+    
+</div>
+
+<div class="modal fade" id="validatingTransactionModal" tabindex="-1" role="dialog" aria-labelledby="validatingTransactionModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header text-center">
+                <h5 class="modal-title text-center" id="validatingTransactionModalLabel">VALIDANDO LA TRANSACCION</h5>
+                @*<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>*@
+            </div>
+            <div class="modal-body text-center">
+                <p>Espere unos segundos mientras validamos la transacción</p>
+                <img src="/imgs/R.gif" width="200" />
+            </div>
+            <div class="modal-footer">
+                @*<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Save changes</button>*@
+            </div>
+        </div>
+    </div>
+</div>

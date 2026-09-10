@@ -1,0 +1,525 @@
+﻿@using seackers.Models.InApp
+@model TiendaOnlineViewModel
+
+
+<div class="row">
+    <div style="text-align:left;height:max-content;" class="col-md-3">
+        
+        <ul id="mainList">
+            @*<tr><td><button onclick="addTemaS(null, null, null)">+</button></td></tr>*@
+            <li><button style="font-size:xx-small;" onclick="AddCategoriaS(null, null, null)">+</button></li>
+            @{
+                Stack<seackers.Models.InApp.Categoria> pila = new Stack<seackers.Models.InApp.Categoria>();
+                Model.Categorias.Reverse();
+                foreach (seackers.Models.InApp.Categoria t in Model.Categorias)
+                {
+                    t.Nivel = 0;
+                    pila.Push(t);
+
+                }
+
+                while (pila.Count > 0)
+                {
+                    // Obtener el siguiente elemento de la pila
+                    var elemento = pila.Pop();
+
+
+                    if (elemento.Nivel == 2)
+                    {
+                        @Html.Raw("<ul>")
+                    }
+
+                    if (elemento.Nivel == 0)
+                    {
+                        <li style="font-size:small;" onclick="">
+                            <button style="border:none;font-size:xx-small;" onclick="AddCategoriaS('@elemento.IdTema', '@elemento.Id', '@(elemento.SuperC != null ? elemento.SuperC.Id.ToString() : "null")')">+</button>
+                            <input type="checkbox" @(elemento.Checked ? "checked" : "") onchange="cateProd('@(elemento.Id);', this)" id="@(elemento.Id)CA" /> <button style="border:none;font-size:x-small;">@elemento.Nombre</button> <!-- onclick="checkedCategory('ARRelemento.Id', 'ARRelemento.Nombre')" -->
+                            <button style="border:none;font-size:xx-small;" onclick="AddCategoriaS('@elemento.Id', null, '@elemento.IdTematica')">></button>
+                        </li>
+                    }
+
+                    if (elemento.Nivel == 1)
+                    {
+                        @Html.Raw("</ul>")
+                    }
+
+                    // Añadir las secciones a la pila
+                    @if (elemento.CategoriasHIJAS != null && elemento.CategoriasHIJAS.Count > 0)
+                    {
+                        pila.Push(new seackers.Models.InApp.Categoria() { Nivel = 1 });
+                        elemento.CategoriasHIJAS.Reverse();
+                        foreach (var seccion in elemento.CategoriasHIJAS)
+                        {
+                            seccion.Nivel = 0;
+                            pila.Push(seccion);
+                        }
+                        pila.Push(new seackers.Models.InApp.Categoria() { Nivel = 2 });
+                    }
+                }
+            }
+        </ul>
+    </div>
+    <div class="col-md-3" style="height:max-content;">
+        <img id="imgProd" src="URL" alt="NO IMAGE" width="200" height="200" style="width: 200px; height: 200px;">
+        <label style="color:white;" for="dFile">Imagen:</label>
+        <input type="file" id="dFile" name="dFile" accept="image/*">
+        Idioma:
+        <select id="languajeP" name="laguajeP">
+            <option selected value="0d564a7f-fc7e-48ae-8663-844afd201b6f">es</option>
+            <option value="b193bf0e-4b9f-4a11-b7d8-be30f7c719d2">en</option>
+        </select><br />
+        Nombre: <div id="contentTitle" style="font-size:xx-large;border:solid;" contenteditable="true"></div><br />
+        Precio: <div id="precio" style="font-size:xx-large;border:solid;" contenteditable="true"></div>
+        Stock:<div id="stock" style="font-size:xx-large;border:solid;" contenteditable="true"></div>
+        <table>
+            <tr><td align="left"><button onclick="agregarEtiquetas('<b>','</b>')"><b style="font-size:x-large;">N</b></button><button onclick="agregarEtiquetas('<i>', '</i>')"><i style="font-size:x-large;">I</i></button><button style="font-size:x-large;" onclick="$('#ModalFileUP').modal('show');">📎</button></td></tr>
+            <tr><td align="left"><button onclick="agregarEtiquetas('<h1>','</h1>')"><h1>Titulo</h1></button></td><td><button onclick="agregarEtiquetas('<h2>','</h2>')"><h2>Titulo</h2></button></td><td><button onclick="agregarEtiquetas('<h3>','</h3>')"><h3>Titulo</h3></button></td></tr>
+        </table>
+        <textarea id="taData" style="width:100%;min-height:300px;" onchange="moveToResult()" onkeyup="moveToResult()" onkeypress="moveToResult()"></textarea>
+    </div>
+    <div class="col-md-3" style="height:max-content;">
+        <input type="hidden" id="saveContentID" />
+        <button class="btn btn-lg btn-primary" id="saveContentBTN" onclick="saveProduct()">GUARDAR CAMBIOS</button><br />
+        <div class="text-wrap" id="taResult"></div>
+    </div>
+    <div class="col-md-3">
+        <div>Productos<br />
+            <ul id="questions">
+                @foreach (Producto p in Model.MINEProductos)
+                {
+                    <li onclick="getProduct('@p.Id')">@p.Nombre - (@p.Precio €)</li>
+                }
+            </ul>
+        </div>
+    </div>
+</div>
+
+<script>
+    function cateProd(IdResponse, input) {
+
+        if (input.checked) {
+            document.getElementById('Qcategorias').value += IdResponse;
+        }
+        else {
+            var sValue = new String(document.getElementById('Qcategorias').value);
+            sValue = sValue.replace(IdResponse, '');
+            document.getElementById('Qcategorias').value = sValue;
+        }
+    }
+
+    function moveToResult() {
+        var taD = document.getElementById('taData').value;
+        document.getElementById('taResult').innerHTML = taD.replaceAll("\n", "<br/>"); //taD.replace(/\n/g, '<br/>');
+    }
+
+    function agregarEtiquetas(eStar, eEnd) {
+        // Obtenemos el elemento textarea
+        var textarea = document.getElementById("taData");
+
+        // Obtenemos la posición del inicio y fin de la selección
+        var start = textarea.selectionStart;
+        var end = textarea.selectionEnd;
+
+        // Obtenemos el texto seleccionado
+        var selectedText = textarea.value.substring(start, end);
+
+        // Agregamos las etiquetas <b> y </b> al texto seleccionado
+        var newText = eStar + selectedText + eEnd;
+
+        // Insertamos el texto con las etiquetas en el textarea
+        textarea.value = textarea.value.substring(0, start) + newText + textarea.value.substring(end);
+
+        // Posicionamos el cursor al final del texto
+        var newEnd = end + eStar.length + eEnd.length; // 7 es la longitud de las etiquetas <b> y </b>
+        textarea.setSelectionRange(newEnd, newEnd);
+        moveToResult();
+    }
+
+</script>
+
+<!-- Modal -->
+<div class="modal fade" id="ModalFileUP">
+    <div class="modal-dialog" style=''>
+        <div class="modal-content" style="background-color:transparent;border:none;">
+            <div class="modal-header">
+                <button onclick="$('#ModalFileUP').modal('hide');" type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Añadir archivo</h4>
+            </div>
+            <div id="modalBody" style='background-color:darkblue;' class="modal-body">
+                <form id="myForm" method="post">
+                    <div>
+                        <label style="color:white;" for="nFile">Nombre del archivo:</label>
+                        <input type="text" id="nFile" name="nFile">
+                    </div>
+                     <div>
+                             <label style="color:white;" for="dFile">Archivo:</label>
+                             <input type="file" id="dinFile" name="dinFile" accept="image/*">                        
+                    </div>
+                    <div>
+                        <button type="button" id="submitBtn">Enviar</button>
+                    </div>
+                    @Html.AntiForgeryToken()
+                </form>
+
+            </div>
+            <div class="modal-footer">
+                @*<button type="button" class="btn btn-default" data-dismiss="modal">Close</button> *@
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="AddTemS">
+    <div class="modal-dialog" style=''>
+        <div class="modal-content" style="background-color:transparent;border:none;">
+            <div class="modal-header">
+                <button onclick="$('#AddTemS').modal('hide');" type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Añadir Categoría</h4>
+            </div>
+            <div id="modalBody" style='background-color:darkblue;' class="modal-body">
+                <form id="myFormTemS" method="post">
+                    <div>
+                        <label style="color:white;" for="title">Título</label>
+                        <input type="text" id="title" name="title">
+                    </div>
+                    <div>
+                        <button type="button" id="submitAddTemS">Enviar</button>
+                    </div>
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" id="idP" name="idP">
+                    <input type="hidden" id="idT" name="idT">
+                    <input type="hidden" id="tematica" name="tematica">
+                </form>
+
+            </div>
+            <div class="modal-footer">
+                @*<button type="button" class="btn btn-default" data-dismiss="modal">Close</button> *@
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="AddQuestS">
+    <div class="modal-dialog" style=''>
+        <div class="modal-content" style="background-color:transparent;border:none;">
+            <div class="modal-header">
+                <button onclick="$('#AddQuestS').modal('hide');" type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Añadir Producto</h4>
+            </div>
+            <div id="modalBody" style='background-color:darkblue;' class="modal-body">
+                <form id="myFormQuestS" method="post" enctype="multipart/form-data">
+                    <div>
+                        <label style="color:white;" for="title">Nombre</label>                        
+                        <input type="text" id="Qtitle" name="title"><br/>
+                        <input type="text" id="Qcontent" name="content"><br />
+                        <input type="number" id="Qprecio" name="precio"><br />
+                        <input type="number" id="Qstock" name="stock"><br />
+                        <input type="text" id="Qlanguaje" name="languaje"><br />
+                        <input type="text" id="Qcategorias" name="categorias"><br />
+
+
+                    </div>
+                    <div>
+                        <button type="button" id="submitAddProducto">Enviar</button>
+                    </div>
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" id="QidP" name="idP">                    
+                </form>
+
+            </div>
+            <div class="modal-footer">
+                @*<button type="button" class="btn btn-default" data-dismiss="modal">Close</button> *@
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+
+        $("#submitBtn").click(function (event) {
+            event.preventDefault(); // Prevenimos el comportamiento por defecto del botón
+
+            var formData = new FormData($("#myForm")[0]); // Creamos el objeto FormData con los datos del formulario
+            $.ajax({
+                type: "POST",
+                url: "/Ad001/AddFile",
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function (response) {
+                    // Aquí puedes hacer algo con la respuesta del controlador
+                    //alert("Archivo subido correctamente");
+                    var textarea = document.getElementById("taData");
+
+                    // Obtenemos la posición del inicio y fin de la selección
+                    var start = textarea.selectionStart;
+                    var end = textarea.selectionEnd;
+
+                    // Agregamos las etiquetas <b> y </b> al texto seleccionado
+                    var newText = "<a target='_blank' href='/User/GetFile?c=" + response + "'>" + document.getElementById('title').value + "</a>";
+
+                    // Insertamos el texto con las etiquetas en el textarea
+                    textarea.value = textarea.value.substring(0, start) + newText + textarea.value.substring(end);
+
+                    // Posicionamos el cursor al final del texto
+                    //var newEnd = end + eStar.length + eEnd.length; // 7 es la longitud de las etiquetas <b> y </b>
+                    //textarea.setSelectionRange(newEnd, newEnd);
+                    moveToResult();
+                    document.getElementById("nFile").value = "";
+                    document.getElementById("dFile").value = "";
+                    $('#ModalFileUP').modal('hide');
+                },
+                error: function (xhr, status, error) {
+                    // Aquí puedes manejar los errores de la llamada AJAX
+                    //alert("Error al subir el archivo");
+                }
+            });
+        });
+
+        $("#submitAddTemS").click(function (event) {
+            event.preventDefault(); // Prevenimos el comportamiento por defecto del botón
+
+            var formData = new FormData($("#myFormTemS")[0]);
+
+            $.ajax({
+                type: "POST",
+                url: "/Ad001/AddCategoriaS",
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function (response) {
+                    //INIT
+
+                    var objD = JSON.parse(response);
+
+                    var mainL = document.getElementById('mainList');
+                    mainL.innerHTML = '';
+                    let pila = [];
+                    objD.Categorias.reverse();
+                    objD.Categorias.forEach(function (t) {
+                        t.Nivel = 0;
+                        pila.push(t);
+                    });
+                    var adding = false;
+                    var tempAdd = "<li><button style='font-size: xx - small;' onclick='AddCategoriaS(null, null, null)'>+</button></li>";
+                    while (pila.length > 0) {
+                        let elemento = pila.pop();
+
+                        if (elemento.Nivel == 2) {
+                            tempAdd += "<ul>";
+                            //adding = true;
+                        }
+
+                        if (elemento.Nivel == 0) {
+
+                            var superT = null;
+                            if (elemento.SuperT != null) {
+                                superT = elemento.SuperT.Id;
+                            }
+
+                            tempAdd += "<li style='font-size:small;' onclick=''>" +
+                                "<button style='border:none;font-size:xx-small;' onclick=\"AddCategoriaS('" + elemento.IdTema + "', '" + elemento.Id + "', '" + superT + "')\">+</button>" +
+                                "<button style='border:none;font-size:x-small;' onclick=\"getContent('" + elemento.Id + "')\">" + elemento.Nombre + "</button>" +
+                                "<button style='border:none;font-size:xx-small;' onclick=\"AddCategoriaS('" + elemento.Id + "', null, '" + elemento.IdTematica + "')\">></button>" +
+                                "</li>";
+                        }
+
+                        if (elemento.Nivel == 1) {
+
+                            tempAdd += "</ul>";
+                            //adding = false;
+                        }
+
+                        if (elemento.CategoriasHIJAS != null && elemento.CategoriasHIJAS.length > 0) {
+                            pila.push(JSON.parse('{"Nivel": 1}'));
+                            elemento.CategoriasHIJAS.reverse().forEach(function (seccion) {
+                                seccion.Nivel = 0;
+                                pila.push(seccion);
+                            });
+                            pila.push(JSON.parse('{"Nivel": 2}'));
+                        }
+                    }
+
+                    mainL.innerHTML = tempAdd;
+
+                    //END
+                    document.getElementById("title").value = "";
+                    $('#AddTemS').modal('hide');
+                },
+                error: function (xhr, status, error) {
+                    alert(xhr.responseText);
+                }
+            });
+        });
+
+        $("#submitAddProducto").click(function (event) {
+            event.preventDefault(); // Prevenimos el comportamiento por defecto del botón
+            var formData = new FormData($("#myFormQuestS")[0]);
+
+            $.ajax({
+                type: "POST",
+                url: "/Ad001/AddProducto",
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function (response) {
+                    //INIT
+                    //alert(response);
+                    //ComponQuest(response);
+                    //////var objD = JSON.parse(response);
+
+                    //////var mainL = document.getElementById('questions');
+                    //////mainL.innerHTML = '';
+
+
+                    //////var tempAdd = "<li><button onclick=\"addQuest('" + objD.IdContent + "', null)\">+</button></li>";
+
+                    //////objD.Questions.forEach(function (question) {
+                    //////    tempAdd += "<li>" +
+                    //////        "<input type='checkbox' " + (question.MultiSelection ? "checked" : "") + " >" +
+                    //////        "<button style='border:none;'>" + question.Text + "</button>" +
+                    //////        "<button style='border:none;' onclick=\"addQuest('" + objD.IdContent + "', '" + question.Id + "')\">></button>" +
+                    //////        "</li>";
+                    //////    tempAdd += "<ul>";
+                    //////    question.Responses.forEach(function (response) {
+                    //////        tempAdd += "<li>" +
+                    //////            "<input type='checkbox' change=\"isCorrectMulti('" + response.Id + "')\" " + (response.MultiSelection ? "checked" : "") + " >" +
+                    //////            "<button style='border:none;'>" + response.Text + "</button></li>";
+
+                    //////    });
+                    //////    tempAdd += "</ul>";
+                    //////});
+
+                    //////document.getElementById("questions").innerHTML = tempAdd;
+
+                    //////mainL.innerHTML = tempAdd;
+
+                    ////////END
+                    //////document.getElementById("Qtitle").value = "";
+                    //////$('#AddQuestS').modal('hide');
+                },
+                error: function (xhr, status, error) {
+                    alert(xhr.responseText);
+                }
+            });
+        });
+
+    });
+
+    function AddCategoriaS(idT, idP, tematica) {
+        document.getElementById("title").value = '';
+        document.getElementById("idP").value = idP;
+        document.getElementById("idT").value = idT;
+        document.getElementById("tematica").value = tematica;
+        $('#AddTemS').modal('show');
+    }
+
+    function getProduct(idContent, title) {
+        //document.getElementById("contentTitle").innerHTML = title;
+        document.getElementById("saveContentID").value = idContent;
+        document.getElementById("idT").value = idContent;
+        var formData = new FormData($("#myFormTemS")[0]);
+
+        $.ajax({
+            type: "POST",
+            url: "/Ad001/GetProduct",
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function (response) {
+
+                var objD = JSON.parse(response);
+
+                document.getElementById('taData').value = objD.Contenido.replaceAll("<br/>", "\n").replaceAll("<br>", "\n"); //response.replace(/<br\/>/g, "\n");
+
+                document.getElementById("precio").innerHTML = objD.Precio;
+                document.getElementById("stock").innerHTML = objD.Stock;
+                document.getElementById("contentTitle").innerHTML = objD.Nombre;
+                document.getElementById("QidP").value = objD.Id;
+                document.getElementById("imgProd").src = objD.ImageUrl;
+                document.getElementById("imgProd").alt = objD.Nombre;
+
+                const elementosCA = document.querySelectorAll('[id*="CA"]');
+
+                // Iterar sobre los elementos y establecer checked en false
+                elementosCA.forEach(elemento => {
+                    if (elemento.type === 'checkbox') {
+                        elemento.checked = false;
+                    }
+                });
+
+                document.getElementById('Qcategorias').value = '';
+
+                objD.CategoriasProd.forEach(function (t) {
+                    document.getElementById(t.Id + 'CA').checked = true;
+                    document.getElementById('Qcategorias').value += t.Id + ';';
+                });
+                
+                //ComponQuest(response);
+                //////var tempAdd = "<li><button onclick=\"addQuest('" + idContent + "', null)\">+</button></li>";
+
+                //////objD.Questions.forEach(function (question) {
+                //////    tempAdd += "<li>" +
+                //////        "<input type='checkbox' " + (question.MultiSelection ? "checked" : "") + " >" +
+                //////        "<button style='border:none;'>" + question.Text + "</button>" +
+                //////        "<button style='border:none;' onclick=\"addQuest('" + idContent + "', '" + question.Id + "')\">></button>" +
+                //////        "</li>";
+                //////    tempAdd += "<ul>";
+                //////    question.Responses.forEach(function (response) {
+                //////        tempAdd += "<li>" +
+                //////            "<input type='checkbox' change=\"isCorrectMulti('" + response.Id + "')\" " + (response.MultiSelection ? "checked" : "") + " >" +
+                //////            "<button style='border:none;'>" + response.Text + "</button></li > ";
+
+                //////    });
+                //////    tempAdd += "</ul>";
+                //////});
+
+                //////document.getElementById("questions").innerHTML = tempAdd;
+
+
+                moveToResult();
+            },
+            error: function (xhr, status, error) {
+                // Aquí puedes manejar los errores de la llamada AJAX
+                //alert("Error al subir el archivo");
+            }
+        });
+    }
+
+    function saveProduct() {
+        //document.getElementById('taResult').innerHTML = taD.replace(/\n/g, "<br/>");
+                
+        document.getElementById("Qtitle").value = document.getElementById("contentTitle").innerHTML;
+        document.getElementById("Qprecio").value = document.getElementById("precio").innerHTML;
+        document.getElementById("Qstock").value = document.getElementById("stock").innerHTML;
+        document.getElementById("Qcontent").value = document.getElementById('taResult').innerHTML;
+        document.getElementById("Qlanguaje").value = document.getElementById('languajeP').value;
+        
+        var formData = new FormData($("#myFormQuestS")[0]);
+
+        var archivoInput = $("#dFile")[0];
+
+        formData.append('dFile', archivoInput.files[0]);
+
+        $.ajax({
+            type: "POST",
+            url: "/Ad001/SaveProduct",
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function (response) {
+                // Aquí puedes hacer algo con la respuesta del controlador
+                //alert("Archivo subido correctamente");
+
+            },
+            error: function (xhr, status, error) {
+                // Aquí puedes manejar los errores de la llamada AJAX
+                //alert("Error al subir el archivo");
+            }
+        });
+    }
+
+</script>

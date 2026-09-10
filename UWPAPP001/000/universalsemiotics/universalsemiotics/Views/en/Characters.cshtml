@@ -1,0 +1,34 @@
+﻿
+@{
+    ViewBag.Title = "Characters";
+}
+
+<h1>Characters</h1>
+<p>Here you can get characters for professional conversions with the latest Microsoft Cognitive Services products.<p>
+<p>The Professional Conversion project is in beta, if any type of failure is presented or detected, let us know, you will be able to access the contact information at <a href="../en/contact">Contact</a>, we will solve your problem as soon as possible.</p>
+<p>The questions that some texts have between their lines, can not be represented in the conversion as a question, keep this in mind before hiring the service if it is something of high priority.</p>
+<p>Remember to check the minimum number of characters that your conversion requires at <a href="../en/text_to_speech_pro">Professional Conversion</a></p>
+<p>Any questions or additional information you need, feel free to contact us. =)</p>
+<br/>
+<form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
+    <input type="hidden" name="cmd" value="_s-xclick">
+    <input type="hidden" name="hosted_button_id" value="N4HZUPEJFHQ8Q">
+    <table align="center">
+        <tr><td><input type="hidden" name="on0" value="Número de caracteres">Number of characters</td></tr>
+        <tr>
+            <td>
+                <select name="os0">
+                    <option value="100000 caracteres">100000 characters €5,00 EUR</option>
+                    <option value="200000 caracteres">200000 characters €10,00 EUR</option>
+                    <option value="600000 caracteres">600000 characters €25,00 EUR</option>
+                    <option value="1500000 caracteres">1500000 characters €50,00 EUR</option>
+                </select>
+            </td>
+        </tr>
+    </table>
+    <input type="hidden" name="currency_code" value="EUR">
+    <input name="custom" value="@(((Guid)Model).ToString())" type="hidden" />
+    <input name="notify_url" value="https://www.universalsemiotics.com/es/PayPal_IPNC" type="hidden" />
+    <input type="image" src="https://www.paypalobjects.com/es_ES/ES/i/btn/btn_buynowCC_LG.gif" border="0" name="submit" alt="PayPal, la forma rápida y segura de pagar en Internet.">
+    <img alt="" border="0" src="https://www.paypalobjects.com/es_ES/i/scr/pixel.gif" width="1" height="1">
+</form>

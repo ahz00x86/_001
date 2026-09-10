@@ -1,0 +1,316 @@
+﻿@using Microsoft.AspNetCore.Http
+@using seackers.Models.InApp
+@model TiendaOnlineViewModel
+
+
+<div class="row">
+    <div style="text-align:left;" class="col-md-3">
+   
+        @if (Model != null)
+        {
+
+            <ul id="mainList">
+                @*<tr><td><button onclick="addTemaS(null, null, null)">+</button></td></tr>*@
+                @{
+                    Stack<seackers.Models.InApp.Categoria> pila = new Stack<seackers.Models.InApp.Categoria>();
+                    Model.Categorias.Reverse();
+                    foreach (seackers.Models.InApp.Categoria t in Model.Categorias)
+                    {
+                        t.Nivel = 0;
+                        pila.Push(t);
+
+                    }
+
+                    while (pila.Count > 0)
+                    {
+                        // Obtener el siguiente elemento de la pila
+                        var elemento = pila.Pop();
+
+
+                        if (elemento.Nivel == 2)
+                        {
+                                                                    @Html.Raw("<ul>")
+                        }
+
+                        if (elemento.Nivel == 0)
+                        {
+                                                                    <li style="font-size:small;">
+                                                                        <input onchange="cateProd('@(elemento.Id);', this)" type="checkbox" id="@(elemento.Id)CA" /><button style="background-color:transparent;color:white;border:none;font-size:small;"><b>@elemento.Nombre</b></button>
+                                                                    </li>
+                        }
+
+                        if (elemento.Nivel == 1)
+                        {
+                                                                    @Html.Raw("</ul>")
+                        }
+
+                        // Añadir las secciones a la pila
+                                                                @if (elemento.CategoriasHIJAS != null && elemento.CategoriasHIJAS.Count > 0)
+                        {
+                            pila.Push(new seackers.Models.InApp.Categoria() { Nivel = 1 });
+                            elemento.CategoriasHIJAS.Reverse();
+                            foreach (var seccion in elemento.CategoriasHIJAS)
+                            {
+                                seccion.Nivel = 0;
+                                pila.Push(seccion);
+                            }
+                            pila.Push(new seackers.Models.InApp.Categoria() { Nivel = 2 });
+                        }
+                    }
+                }
+            </ul>
+        }
+    </div>
+    <div style="text-align:center;" class="col-md-6">
+        <div class="d-flex flex-wrap" id="productos">
+        </div>
+    </div>
+    <div style="text-align:right;" class="col-md-3" id="_CK_">
+        
+    </div>
+</div>
+
+<div class="modal fade" id="ModalFileUP">
+    <div class="modal-dialog" style=''>
+        <div class="modal-content" style="background-color:transparent;border:none;">
+            <div class="modal-header">
+                <button onclick="$('#ModalFileUP').modal('hide');" type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Añadir archivo</h4>
+            </div>
+            <div id="modalBody" style='background-color:darkblue;' class="modal-body">
+                <form id="myForm" method="post">
+                    <div>
+                        <label style="color:white;" for="nFile">Nombre del archivo:</label>
+                        <input type="text" id="nFile" name="nFile">
+                    </div>
+                    <div>
+                        <label style="color:white;" for="dFile">Archivo:</label>
+                        <input type="file" id="dFile" name="dFile" accept="application/pdf">
+                    </div>
+                    <div>
+                        <button type="button" id="submitBtn">Enviar</button>
+                    </div>
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" id="categorias" name="categorias" />
+                </form>
+
+            </div>
+            <div class="modal-footer">
+                @*<button type="button" class="btn btn-default" data-dismiss="modal">Close</button> *@
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+
+    function removeCKsw()
+    {
+        establecerValorEnCookie('CK_sw', '', 1);
+        updateCK();
+    }
+
+    function updateCK()
+    {
+        var texto = obtenerValorDeCookie("CK_sw");
+
+        var formData = new FormData($("#myForm")[0]);
+        formData.append("CKsw", texto);
+
+        $.ajax({
+            type: "POST",
+            url: "/User/GetPCKsw",
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function (response) {
+
+                var objD = JSON.parse(response);
+                let total = 0;
+
+                var prods = '<h3>PedidO <span style="color:red;cursor:pointer;" onclick="removeCKsw();"> &#128465;</span></h3>';
+
+                objD.ProductosINIT.forEach(function (t) {
+                    prods += '<b>';
+                    //prods += '<img src="' + t.ImageUrl + '" alt= "' + t.Nombre + '" width="50" height="50" style="width:50px;height:50px;float:left;" >';                    
+                    prods += t.Nombre + ' x ';
+                    prods += t.Cantidad.toString() + '<span style="color:red;cursor:pointer;" onclick="minKC(\'' + t.Id + '\');"> &#128465;</span> = ';
+                    prods += (t.Precio * t.Cantidad).toString() + " €";
+                    prods += '</b><br/>';
+                    total += t.Precio * t.Cantidad;
+                });
+                prods += '<b> Total: ' + total.toString() + ' €</b><br/>';
+                prods += '<button style="margin:5px;" onclick="addCKsw();" class="btn btn-lg btn-primary">Tramitar</button>';
+
+                //TODO: HACER PEDIDO
+                document.getElementById('_CK_').innerHTML = prods;
+
+
+            },
+            error: function (xhr, status, error) {
+                // Aquí puedes manejar los errores de la llamada AJAX
+                //alert("Error al subir el archivo");
+            }
+        });
+
+    }
+
+    function cateProd(IdResponse, input) {
+
+        if (input.checked) {
+            document.getElementById('categorias').value += IdResponse;
+        }
+        else {
+            var sValue = new String(document.getElementById('categorias').value);
+            sValue = sValue.replace(IdResponse, '');
+            document.getElementById('categorias').value = sValue;
+        }
+
+        var formData = new FormData($("#myForm")[0]); // Creamos el objeto FormData con los datos del formulario
+        $.ajax({
+            type: "POST",
+            url: "/User/GetProducts",
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function (response) {
+                            
+                var objD = JSON.parse(response);
+
+                var prods = '';
+
+                objD.ProductosINIT.forEach(function (t) {
+                    prods += '<div style="margin:10px;" class="flex-column">';
+                    prods += '<img src="' + t.ImageUrl + '" alt= "' + t.Nombre + '" width="200" height="200" style="width:200px;height:200px;float:left;" >';
+                    prods += '<h2>';
+                    prods += t.Nombre;
+                    prods += '</h2>';
+                    
+                    prods += '<b>';
+                    prods += t.Precio + ' €';
+                    prods += '</b></br>';
+                    prods += '<button style="margin:5px;" onclick="showPrOd(\'' + t.Id + '\');" class="btn btn-lg btn-primary">Ver</button>';
+                    prods += '<button style="margin:5px;" onclick="addKC(\'' + t.Id + '\');" class="btn btn-lg btn-primary">+ &#128722;</button>';                    
+                    prods += '</div>';
+
+                });
+                document.getElementById('productos').innerHTML = prods;
+
+            
+            },
+            error: function (xhr, status, error) {
+                // Aquí puedes manejar los errores de la llamada AJAX
+                //alert("Error al subir el archivo");
+            }
+        });                
+    }
+
+    function addKC(idP) {
+        var texto = obtenerValorDeCookie("CK_sw");
+        //var texto = document.getElementById('pSss').value;
+        var result = '';
+        establecerValorEnCookie('CK_sw', '', 1);
+        var add = true;
+
+        if (typeof texto !== 'undefined' && texto !== null && texto.trim() !== '') {
+           
+            var partes = texto.split("_");
+            
+
+            partes.forEach(function (t) {
+                var partes2 = t.split(",");
+                if (typeof partes2[0] !== 'undefined' && partes2[0] !== null && partes2[0].trim() !== '') { 
+                    result += partes2[0] + ",";
+                    let cI = parseInt(partes2[1]);
+                    if (partes2[0] == idP) {                        
+                        cI += 1;
+                        add = false;
+                    }
+                    result += cI.toString() + "_";
+                }
+            });
+        }
+
+        if (add) 
+        {
+            result += idP + ',1_';
+        }
+
+        //alert(result);
+        //document.getElementById('pSss').value = result;
+        establecerValorEnCookie('CK_sw', result, 1);
+        updateCK();
+
+    }
+
+    function minKC(idP) {
+        var texto = obtenerValorDeCookie("CK_sw");
+        //var texto = document.getElementById('pSss').value;
+        var result = '';
+        establecerValorEnCookie('CK_sw', '', 1);
+        var add = true;
+
+        if (typeof texto !== 'undefined' && texto !== null && texto.trim() !== '') {
+
+            var partes = texto.split("_");
+
+
+            partes.forEach(function (t) {
+                var partes2 = t.split(",");
+                if (typeof partes2[0] !== 'undefined' && partes2[0] !== null && partes2[0].trim() !== '') {
+                    result += partes2[0] + ",";
+                    let cI = parseInt(partes2[1]);
+                    if (partes2[0] == idP) {
+                        cI -= 1;
+                        add = false;
+                    }
+
+                    if (cI < 1) {
+                        result = result.replace(partes2[0] + ",", "");
+                    }
+                    else {
+                        result += cI.toString() + "_";
+                    }
+                }
+            });
+        }
+
+        if (add) {
+            result += idP + ',1_';
+        }
+
+        //alert(result);
+        //document.getElementById('pSss').value = result;
+        establecerValorEnCookie('CK_sw', result, 1);
+        updateCK();
+
+    }
+
+    // Función para establecer un valor en una cookie
+    function establecerValorEnCookie(nombre, valor, diasExpiracion) {
+        const fechaExpiracion = new Date();
+        fechaExpiracion.setTime(fechaExpiracion.getTime() + (diasExpiracion * 24 * 60 * 60 * 1000));
+        const expiracion = "expires=" + fechaExpiracion.toUTCString();
+        document.cookie = nombre + "=" + valor + ";" + expiracion + ";path=/";
+    }
+
+    // Función para obtener el valor de una cookie por su nombre
+    function obtenerValorDeCookie(nombre) {
+        const nombreCadena = nombre + "=";
+        const cookies = document.cookie.split(';');
+
+        for (let i = 0; i < cookies.length; i++) {
+            let cookie = cookies[i].trim();
+            if (cookie.indexOf(nombreCadena) === 0) {
+                return cookie.substring(nombreCadena.length, cookie.length);
+            }
+        }
+
+        return null;
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+        updateCK();
+    });    
+
+</script>

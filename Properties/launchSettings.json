@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "APZ001 (Package)": {
+      "commandName": "MsixPackage"
+    },
+    "APZ001 (Unpackaged)": {
+      "commandName": "Project"
+    }
+  }
+}

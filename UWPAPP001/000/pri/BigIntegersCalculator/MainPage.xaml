@@ -1,0 +1,151 @@
+﻿<Page
+    x:Class="BigIntegersCalculator.MainPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:BigIntegersCalculator"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"    
+    Loaded="Page_Loaded"
+    Loading="Page_Loading"
+    mc:Ignorable="d"
+    Background="White">
+    <!--xmlns:adsjumbo="using:AdsJumbo" "-->
+    <Grid Background="White">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+        </Grid.RowDefinitions>
+
+        <!--<UI:VungleAdControl x:Name="vungleBannerControl" AutomationProperties.AutomationId="vungleBannerControl" Grid.Row="5"
+            IsBannerAd="True"
+            AutoRun="True"
+            Width="728" 
+            Height="90" 
+            Margin="10" 
+            HorizontalAlignment="center"
+            AppID="5f65e5b90bff050001859d49"
+            Placement="BOTTOM-5652129">
+            <Border BorderBrush="Black" BorderThickness="1" Margin="10">
+                        <TextBlock Text="Los anuncios se mostrarán aquí... / Banner Ads will show here..." VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                    </Border>
+        </UI:VungleAdControl>-->
+        <!--<adsjumbo:BannerAd Grid.Row="5" HorizontalAlignment="Center"
+                   ApplicationId='2kavx9qws87z'
+                   WidthAd='728'
+                   HeightAd='90'
+                   Position='Bottom' />-->
+
+        <HyperlinkButton Grid.Row="0" HorizontalAlignment="Right" Content="apzyxGames" NavigateUri="http://apzyxGames.azurewebsites.net"
+                         FontWeight="Bold" Margin="5" Foreground="Black"/>
+
+        <StackPanel Grid.Row="0" HorizontalAlignment="Left" Orientation="Horizontal">
+            <Button Content="Criptografía / Cryptography" Margin="5" Click="TextoCrypto_Click" Background="Black" Foreground="White"/>
+            <Button Content="Triángulos / Triangles" Margin="5" Click="Triangulos_Click" Background="Black" Foreground="White"/>
+        </StackPanel>            
+
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Grid.Row="0">
+            <TextBlock Text="RESULTADO / RESULT" Margin="5" VerticalAlignment="Center" />
+            <ProgressBar x:Name="pBProcess" Value="100" Minimum="0" Maximum="100" IsIndeterminate="False"
+                         Width="100" Height="25" Margin="5"/>
+            <Button HorizontalAlignment="Center" Click="SaveText_Click" Content="Exportar resultado / Export result" Margin="5" Background="Black" Foreground="White"/>
+        </StackPanel>
+
+        <TextBox x:Name="lblResults" Text="=)" HorizontalAlignment="Center"   Grid.Row="1"
+                     TextWrapping="Wrap" Background="Transparent" BorderThickness="0"
+                     MaxHeight="100" ScrollViewer.VerticalScrollBarVisibility="Auto"
+                     Margin="5" />
+        
+        <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center" ScrollViewer.VerticalScrollBarVisibility="Auto"
+                    Grid.Row="2">
+            <TextBlock Text="BETA - Resolución de expresiones / Expression resolution (E: n^2 - n + 1)"  HorizontalAlignment="Center" Margin="5" />
+            <TextBlock Text="Operaciones válidas / Valid operations > '+' '-' '*' '/' '^' '(' ')' 'n'"  HorizontalAlignment="Center" Margin="5" />
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+            <TextBox x:Name="txtFormula" MinWidth="400" MaxWidth="400" MaxHeight="200" TextWrapping="Wrap" Margin="5" Width="auto" Height="auto"
+                     ScrollViewer.VerticalScrollBarVisibility="Auto" TextChanging="txtFormula_TextChanging"/>
+                <Button x:Name="btnResolve" Click="btnResolve_Click" Content="Resolver / Solve" Margin="5"  Background="Black" Foreground="White" />
+            </StackPanel>
+            <StackPanel x:Name="spN" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="Collapsed">
+                <TextBlock Text="n Desde / n From :"  HorizontalAlignment="Center" Margin="5" />
+                <TextBox x:Name="txtNDesde" MinWidth="100" MaxHeight="100" TextWrapping="Wrap" Margin="5" Width="auto" Height="auto" Text="-10"
+                     ScrollViewer.VerticalScrollBarVisibility="Auto" BeforeTextChanging="txt_BeforeTextChanging" TextChanging="txt_TextChanging"/>
+                <TextBlock Text="n Hasta / n Until :"  HorizontalAlignment="Center" Margin="5" />
+                <TextBox x:Name="txtNHasta" MinWidth="100" MaxHeight="100" TextWrapping="Wrap" Margin="5" Width="auto" Height="auto" Text="10"
+                     ScrollViewer.VerticalScrollBarVisibility="Auto" BeforeTextChanging="txt_BeforeTextChanging" TextChanging="txt_TextChanging"/>
+                <Button x:Name="btnGrafica" Content="Mostrar Gráfica / Show Graph" Click="MostrarGrafica_Click" Visibility="Collapsed" Margin="5"  Background="Black" Foreground="White" />
+            </StackPanel>
+        </StackPanel>
+
+        <Grid Grid.Row="3">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center"
+                    Grid.Column="0">
+                <TextBlock Text="N1"  HorizontalAlignment="Center" Margin="5" />
+                <TextBox x:Name="txtN1" MinWidth="300" MaxWidth="300" MaxHeight="100" TextWrapping="Wrap" Margin="5" Width="auto"
+                     ScrollViewer.VerticalScrollBarVisibility="Auto"
+                     BeforeTextChanging="txt_BeforeTextChanging"
+                     TextChanging="txt_TextChanging" />
+            </StackPanel>
+            <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center"
+                    Grid.Column="1">                
+                <TextBlock Text="N2"  HorizontalAlignment="Center" Margin="5" />
+                <TextBox x:Name="txtN2" MinWidth="300" MaxWidth="300" MaxHeight="100" TextWrapping="Wrap" Margin="5" Width="auto"
+                     ScrollViewer.VerticalScrollBarVisibility="Auto"
+                     BeforeTextChanging="txt_BeforeTextChanging"
+                     TextChanging="txt_TextChanging" />
+            </StackPanel>
+        </Grid>
+        
+        <!--<StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center"
+                    Grid.Row="3">
+            <TextBlock Text="N1"  HorizontalAlignment="Center" Margin="5" />
+            <TextBox x:Name="txtN1" MinWidth="200" MaxHeight="100" TextWrapping="Wrap" Margin="5"
+                     ScrollViewer.VerticalScrollBarVisibility="Auto"
+                     BeforeTextChanging="txt_BeforeTextChanging"
+                     TextChanging="txt_TextChanging" />
+            <TextBlock Text="N2"  HorizontalAlignment="Center" Margin="5" />
+            <TextBox x:Name="txtN2" MinWidth="200" MaxHeight="100" TextWrapping="Wrap" Margin="5"
+                     ScrollViewer.VerticalScrollBarVisibility="Auto"
+                     BeforeTextChanging="txt_BeforeTextChanging"
+                     TextChanging="txt_TextChanging" />
+        </StackPanel>-->
+
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Grid.Row="4">
+            <Button x:Name="btnCom" Click="btnCom_Click" Content="N1 &gt;=&lt; N2" Margin="5" Background="Black" Foreground="White" />
+            <Button x:Name="btnSum" Click="btnSum_Click" Content="N1 + N2" Margin="5" Background="Black" Foreground="White" />
+            <Button x:Name="btnRes" Click="btnRes_Click" Content="N1 - N2" Margin="5" Background="Black" Foreground="White" />
+            <Button x:Name="btnMult" Click="btnMult_Click" Content="N1 * N2" Margin="5" Background="Black" Foreground="White" />
+            <Button x:Name="btnDiv" Click="btnDiv_Click" Content="N1 / N2" Margin="5" Background="Black" Foreground="White" />
+            <Button x:Name="btnPot" Click="btnPot_Click" Content="N1 ^ N2" Margin="5" Background="Black" Foreground="White" />
+            <Button x:Name="btnFact" Click="btnFact_Click" Content="N1!" Margin="5" Background="Black" Foreground="White" />
+            <Button x:Name="btnBaseFrom10" Click="btnBaseFrom10_Click" Margin="5" Background="Black" Foreground="White">
+                <Button.Content>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="(N1"/>
+                        <TextBlock VerticalAlignment="Bottom" FontSize="8" Text="10"/>
+                        <TextBlock Text=")"/>
+                        <TextBlock VerticalAlignment="Bottom" FontSize="8" Text="N2"/>
+                    </StackPanel>
+                </Button.Content>
+            </Button>
+            <Button x:Name="btnBaseTo10" Click="btnBaseTo10_Click" Margin="5" Background="Black" Foreground="White">
+                <Button.Content>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="(N1"/>
+                        <TextBlock VerticalAlignment="Bottom" FontSize="8" Text="N2"/>
+                        <TextBlock Text=")"/>
+                        <TextBlock VerticalAlignment="Bottom" FontSize="8" Text="10"/>
+                    </StackPanel>
+                </Button.Content>
+            </Button>
+            <!--<Button x:Name="btnAd" Click="btnAd_Click" Content="Ver anuncio / Show Ad" Margin="5" />-->
+        </StackPanel>
+    </Grid>
+</Page>

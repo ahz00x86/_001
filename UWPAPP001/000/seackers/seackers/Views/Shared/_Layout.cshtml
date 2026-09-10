@@ -1,0 +1,322 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+<!DOCTYPE html>
+<html lang="@System.Threading.Thread.CurrentThread.CurrentUICulture.Name">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Se@ckers</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/seackers.styles.css" asp-append-version="true" />
+    <script src="https://www.google.com/recaptcha/enterprise.js?render=6LeynK4lAAAAAHX_UKIIB9bI8ALUrCv1NHdP637m"></script>
+    <script type='text/javascript' src='https://www.bing.com/api/maps/mapcontrol?callback=GetMap&key=ArJHNVu3mv8PcmDr5wpX4iJ-RlisiiN8UIRIIqOoszg_lHMRZu8fnpXxURRR5npx' async defer></script>
+
+    <style>
+        body {
+            background: linear-gradient(to top, darkblue, #00BFFF);
+            --background-color: #87CEEB; /* Color de fondo inspirado en el mar */
+            --background-image: url('imgs/seackersBI.jpg');
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            color: white;     
+            height: 100%;
+        }
+
+        header {
+            background: linear-gradient(to top, white, #1e90ff);
+            --background-color: #4682B4; /* Azul profundo */
+            color: white;
+            --padding: 10px;
+            text-align: center;
+        }
+
+        nav {
+            background-color: #87CEEB; /* Color de fondo inspirado en el mar */
+            --padding: 10px;
+            color:white;
+            text-align: center;
+        }
+
+            nav a {
+                color: white; /* Azul profundo */
+                text-decoration: none;
+                --padding: 10px;
+            }
+
+        footer {
+            --background-color: #8B4513; /* Azul profundo */
+            background-color: darkblue;
+            color: white;
+            --padding: 10px;
+            text-align: center;
+            position: relative;
+            bottom: 0;
+            width: 100%;
+            clear:both;
+            display:block;
+        }
+
+        .container-fluid {
+            --max-width: 1200px;
+            --margin: 0 auto;
+            color:white;
+            width: 100%;
+            height: 100%;
+            min-height: 100%;
+            --padding: 20px;
+            background-color: transparent;
+            border-radius: 5px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);                 
+            overflow: auto;
+            display: flex;            
+            flex-direction: column;
+        }
+
+        .bubble {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background-color: rgba(255, 255, 255, 0.6);
+            border-radius: 50%;
+            animation: bubble-rise 10s linear infinite;
+        }
+        
+        .bubble-rise {
+            animation-name: bubble-rise;
+            animation-duration: 10s;
+            animation-timing-function: linear;
+            animation-iteration-count: infinite;
+        }
+        
+        @@keyframes bubble-rise {
+            0% {
+                transform: translateY(100vh);
+                opacity: 0.6;
+            }
+            100% {
+                transform: translateY(-100px);
+                opacity: 0.1;
+            }
+        }
+
+        .form-control {
+            background-color: #1e90ff;
+        }
+    </style>
+
+</head>
+<body>
+    <script>
+        // Generar burbujas dinámicas con intervalos aleatorios
+        const numBubbles = 50;
+        for (let i = 0; i < numBubbles; i++) {
+            setTimeout(createBubble, Math.random() * 10000); // Intervalo aleatorio de 0 a 10000 ms
+        }
+
+        function createBubble() {
+            const bubble = document.createElement("div");
+            bubble.className = "bubble";
+            const size = Math.random() * 20 + 10;
+            bubble.style.width = size + "px";
+            bubble.style.height = size + "px";
+            bubble.style.left = Math.random() * 100 + "vw";
+            bubble.style.bottom = document.documentElement.clientHeight;
+            document.body.appendChild(bubble);
+        }
+    </script>
+    <header>
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-transparent border-bottom box-shadow mb-3">
+            <div class="container-fluid">                
+                <a style="color:yellow;" class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index"><b>Se@ckers</b></a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                        aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                    
+                    <ul class="navbar-nav flex-grow-1">
+                        <li class="nav-item">
+                            <a class="nav-link text-light" asp-area="" asp-controller="Home" asp-action="Index">Inicio</a>
+                        </li>
+
+                        @if (User != null)
+                        {
+                            if (User.IsInRole("Usuario"))
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link text-light" asp-area="" asp-controller="User" asp-action="TiendaOnline">Tienda Online</a>
+                                </li>
+                            }
+                            if (User.IsInRole("Administrador"))
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link text-light" asp-area="" asp-controller="Ad001" asp-action="ETiendaOnline">&#128221;</a>
+                                </li>
+                            }
+                            if (User.IsInRole("Usuario"))
+                            {
+                                @await Component.InvokeAsync("Contents")
+                            }
+                            if (User.IsInRole("Administrador"))
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link text-light" asp-area="" asp-controller="Ad001" asp-action="Formation">&#128221;</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-light" asp-area="" asp-controller="Ad001" asp-action="Centers">Centros</a>
+                                </li>
+                            }
+                            if (User.IsInRole("Centro"))
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link text-light" asp-area="" asp-controller="Center" asp-action="Users">Usuarios</a>
+                                </li>
+                            }
+                            
+                        }
+                        @*<li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">@Localizer["Privacy"]</a>
+                        </li>*@
+                    </ul>
+                    <partial name="_LoginPartial" />
+                    
+                        <form asp-controller="Home" asp-action="SetCulture" method="post">
+                            <input type="hidden" name="culture" value="es" />
+                            @*<select name="culture">
+                            <option value="en">English</option>
+                            <option value="es">Español</option>
+                            </select>*@
+                            <button type="submit" style="background-color:transparent;border:none;"><img src="~/imgs/es.png" /></button>
+                        </form>
+                        <form asp-controller="Home" asp-action="SetCulture" method="post">
+                            <input type="hidden" name="culture" value="en" />
+                            <button type="submit" style="background-color:transparent;border:none;"><img src="~/imgs/en.png" /></button>
+                        </form>
+                    
+                </div>
+            </div>
+        </nav>
+    </header>
+    <div class="container-fluid" style="width:100%">
+        <main role="main" class="pb-3" style="text-align:center;">
+            @RenderBody()
+        </main>        
+    </div>    
+    <footer class="position-sticky footer text-muted" @*style="position:sticky;bottom:0;"*@>
+        <div>
+            <b>&copy; 2023 - Se@ckers - <a style="font-size:x-small" asp-area="" asp-controller="Home" asp-action="Privacy">@Localizer["Privacy"]</a></b>
+        </div>
+    </footer>
+
+    @if (User != null && User.IsInRole("Usuario"))
+    {    
+        <!-- Modal -->
+        <div class="modal fade" id="KC">
+            <div class="modal-dialog" style=''>
+                <div class="modal-content" style="background-color:transparent;border:none;">
+                    <div class="modal-header">
+                        <button onclick="$('#AddQuestS').modal('hide');" type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title">Añadir Producto</h4>
+                    </div>
+                    <div id="mBKC" style='background-color:darkblue;' class="modal-body">
+                        <form id="formKC" method="post" enctype="multipart/form-data">
+                            <input id="pSss" name="pSss" type="hidden" value="" />                        
+                            <div id="productos">
+                            
+                            </div>
+                            <div>
+                                <button type="submit" id="submitKC">Enviar</button>
+                            </div>
+                            @Html.AntiForgeryToken()                        
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        @*<button type="button" class="btn btn-default" data-dismiss="modal">Close</button> *@
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+    
+</body>
+</html>
+
+
+
+
+@* <!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Título de tu sitio</title>
+    <style>
+        body {
+            background-color: #87CEEB; /* Color de fondo inspirado en el mar */
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background-color: #4682B4; /* Azul profundo */
+            color: white;
+            padding: 10px;
+            text-align: center;
+        }
+
+        nav {
+            background-color: #87CEEB; /* Color de fondo inspirado en el mar */
+            padding: 10px;
+            text-align: center;
+        }
+
+        nav a {
+            color: #4682B4; /* Azul profundo */
+            text-decoration: none;
+            padding: 10px;
+        }
+
+        footer {
+            background-color: #4682B4; /* Azul profundo */
+            color: white;
+            padding: 10px;
+            text-align: center;
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: white;
+            border-radius: 5px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Título de tu sitio</h1>
+    </header>
+    <nav>
+        <a href="/">Inicio</a>
+        <a href="/Productos">Productos</a>
+        <!-- Agrega más enlaces aquí -->
+    </nav>
+<div class="container">
+        @RenderBody()
+</div>
+<footer>
+    &copy; 2023 | Título de tu sitio
+</footer>
+</body>
+</html> *@
+

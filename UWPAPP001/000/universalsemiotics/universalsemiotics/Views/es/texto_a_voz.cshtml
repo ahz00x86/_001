@@ -1,0 +1,188 @@
+﻿@Scripts.Render("~/bundles/jquery")
+<script type='text/javascript'>
+
+    $(document).ready(function () {
+                
+        $('#modalProcessing').modal({
+            backdrop: 'static',
+            keyboard: false
+        })
+
+        $('#modalProcessing').modal('hide');
+
+        $('#buttonConv').click(function () {
+            $('#textoModal').text('... Procesando su solicitud ...');
+            $('#modalProcessing').modal('show');
+            
+            var data = new FormData();
+            var token = $('[name=__RequestVerificationToken]').val();
+            data.append("__RequestVerificationToken", token);
+            var titulo = $('#titulo').val();
+            data.append('titulo', titulo);
+            var idioma = $('#idioma').val();
+            data.append('idioma', idioma);
+            var texto = $('#textArea').val();
+            data.append('texto', texto);
+            var captchaResponse = grecaptcha.getResponse();            
+            data.append('g-Recaptcha-Response', captchaResponse);
+
+            $.ajax({
+                url: '../es/texto_a_voz',
+                processData: false,
+                contentType: false,
+                cache: false,
+                type: 'POST',
+                data: data,
+                success: function sfn(r) {
+                    $('#textoModal').text(r);
+                    if (r == '... TODO CORRECTO =) ...') {
+                        $('#textArea').val('');
+                        $('#titulo').val('');
+                    }
+                },
+                error: function myfunction() {                    
+                },
+                complete: function completefunc() {
+                    $('#modalClose').removeAttr('disabled');
+                    $("#modalClose").attr('class', 'btn-primary');
+                    grecaptcha.reset();
+                    return false;
+                }
+            });            
+        });
+        
+        $('#epubB').click(function () {
+            if (window.FormData !== undefined) {
+                $('#textoModal').text('... Leyendo texto ...');
+                $('#modalProcessing').modal('show');
+
+                // Create FormData object
+                var fileData = new FormData();
+
+                var token = $('[name=__RequestVerificationToken]').val();
+                fileData.append("__RequestVerificationToken", token);
+
+                var fileUpload = $("#file").get(0);
+                var files = fileUpload.files;
+
+                // Looping over all files and add it to FormData object
+                for (var i = 0; i < files.length; i++) {
+                    fileData.append(files[i].name, files[i]);
+                }
+                                
+                $.ajax({
+                    url: '../es/getEPUBPDFText',
+                    enctype: 'multipart/form-data',
+                    processData: false,
+                    contentType: false,
+                    cache: false,
+                    type: 'POST',
+                    data: fileData,
+                    success: function sfn(r) {
+                        $('#textoModal').text('... Texto Leído ...');
+                        $('#textArea').val(r);
+                        
+                    },
+                    error: function myfunction() {
+                        
+                    },
+                    complete: function completefunc() {
+                        $('#modalClose').removeAttr('disabled');
+                        $("#modalClose").attr('class', 'btn-primary');                        
+                        return false;
+                    }
+
+                });
+            }
+            else {
+                alert('not file');
+            }
+        });
+
+        $('#modalClose').click(function () {
+            $('#modalClose').attr('disabled');
+            $("#modalClose").attr('class', 'disabled'); 
+        });
+    });
+</script>
+@{
+    ViewBag.Title = "Conversión GRaTuiTa";
+}
+
+<h1>Conversión GRaTuiTa</h1>
+<script src='https://www.google.com/recaptcha/api.js'></script>
+
+<form id="__AjaxAntiForgeryForm" action="#" method="post">@Html.AntiForgeryToken()</form>
+<br/>
+<input id="file" type="file" name="file" accept=".epub, .pdf" />
+<br/>
+<button id="epubB" class="btn btn-primary">leer EPUB o PDF</button>
+<br />
+<br />
+<div class="row">
+    <div class="col-md-12">
+        <h4>Título del archivo mp3:</h4>
+        <input id="titulo" class="form-control" required name="titulo" type="text" style="width:400px;display:initial;" maxlength="50" />
+    </div>
+</div>    
+<div class="row">
+    <div class="col-md-12">
+        <h4>Idioma:</h4>
+        <select id="idioma" class="form-control" required name="idioma" type="radio" style="width:400px;display:initial;" onchange="">
+            <option value="es-ES" selected>Español</option>
+            <option value="en-US">Inglés</option>
+            <option value="fr-FR">Francés</option>
+            <option value="de-DE">Alemán</option>
+            <option value="it-IT">Italiano</option>
+        </select>
+    </div>
+</div>    
+<div class="row">
+    <div class="col-md-12">
+        <h4>Su texto</h4>
+        <textarea id="textArea" class="form-control" required name="texto" style="height:300px;display:initial;"></textarea>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+            <div style="display:inline-block;" class="g-recaptcha" data-sitekey="6Le6LtMaAAAAAPVe_tGHrSO4wX0O1Xt4PNztZh46"></div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <br />
+        <input id="buttonConv" class="btn btn-primary" value="convertir a MP3" />
+    </div>
+</div>
+
+<!-- Modal -->
+<div id="modalProcessing" class="modal hide" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div id="modalBody" class="modal-body" style="text-align:center;width:100%;height:100%;">
+                <table>
+                    <tr>
+                        <td width="100" style="width:100px;">
+                            @if (ViewBag.publiI1 is universalsemiotics.Models.PublicidadModel)
+                            {
+                                universalsemiotics.Models.PublicidadModel publi = (universalsemiotics.Models.PublicidadModel)ViewBag.publiI1;
+                                <a target="_blank" href="@publi.UrlD"><img height="100" width="100" style="height:100px;width:100px;" src="@publi.UrlImage" alt="@publi.Titulo" /></a>
+
+                            }
+                        </td>
+                        <td  width="100%" style="width:100%;"><p id="textoModal">... Leyendo texto ...</p></td>
+                        <td width="100" style="width:100px;">
+                            @if (ViewBag.publiD1 is universalsemiotics.Models.PublicidadModel)
+                            {
+                                universalsemiotics.Models.PublicidadModel publi = (universalsemiotics.Models.PublicidadModel)ViewBag.publiI1;
+                                <a target="_blank" href="@publi.UrlD"><img height="100" width="100" style="height:100px;width:100px;" src="@publi.UrlImage" alt="@publi.Titulo" /></a>
+
+                            }
+                        </td>
+                    </tr>
+                </table>                
+                <button id="modalClose" class="disabled" data-dismiss="modal" aria-hidden="true" disabled>Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>

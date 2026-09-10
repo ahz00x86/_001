@@ -1,0 +1,86 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@using seackers.Models.InApp
+@model UsersViewModel
+
+<h2>@Localizer["CentersList"] <Button class="btn btn-lg btn-primary" onclick="toggleNewUserS()"><b id="boldMm" style="font-size:x-large;">+</b></Button></h2>
+
+<script>
+    function toggleNewUserS() {
+        $("#newUserS").toggle();
+
+        if ($("#boldMm").text() == "+") {
+            $("#boldMm").text("-");
+        }
+        else {
+            $("#boldMm").text("+");
+        }
+
+    }
+</script>
+
+<div id="newUserS" class="row" style="display:none;">
+    <div class="col-md-4"></div>
+    <div class="col-md-4">
+        <h2>@Localizer["NewSeUser"]</h2>
+        <form asp-controller="Center" asp-action="AddUser" method="post">
+            <div class="form-floating mb-3">
+                <input asp-for="NewUserEmail" class="form-control" placeholder="@Localizer["NewUserEmail"]" />
+                <label asp-for="NewUserEmail" class="form-label">@Localizer["NewUserEmail"]</label>
+            </div>
+            @*<div class="form-group">
+                <input class="form-check-input" asp-for="Notificar" type="checkbox" checked />
+                <label asp-for="Notificar">@Localizer["CenterNotify"]</label>
+            </div>*@
+            <button class="w-100 btn btn-lg btn-primary" type="submit">@Localizer["AddNewUser"]</button>
+        </form>
+        <hr />
+    </div>
+    <div class="col-md-4"></div>
+</div>
+
+@{
+    if(Model.UsuariosSeacker.Count > 0)
+    {
+        <div class="table-responsive">
+            <table class="table table-bordered" align="center">
+                <thead>
+                    <tr>
+                        <th style="background-color:darkblue;color:white;"></th>
+                        <th style="background-color:darkblue;color:white;">Usuario Se@cker</th>
+                        <th style="background-color:darkblue;color:white;">Estado</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+
+                        @foreach (var usu in Model.UsuariosSeacker)
+                        {
+                        <tr>
+                            <td style="background-color:deepskyblue;color:white;"><img style="width:50px;height:50px;" src="@usu.UrlLogo" /></td>
+                            <td style="background-color:deepskyblue;color:white;">
+                                @(usu.Name ?? Localizer["NoName"].Value)<br />
+                                @usu.Email<br />
+                                &#128222;@usu.Phone                                
+                            </td>
+                            <td style="background-color:deepskyblue;color:white;">
+                                @{
+                                    if (usu.Accepted)
+                                    {
+                                        <b style='color:green;'>&#10004;</b>
+                                    }
+                                    else
+                                    {
+                                        <b>&#10006;<br/>El Usuario aún no confirmó la solicitud</b>
+                                    }
+                                }                               
+                            </td>
+                        </tr>
+                        }
+            </table>
+        </div>
+    }
+    else{
+        <p>@Localizer["NoUsers"]</p>
+    }
+}

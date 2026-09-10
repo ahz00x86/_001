@@ -1,0 +1,51 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31112.23
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "universalsemiotics", "universalsemiotics\universalsemiotics.csproj", "{B47921DC-394E-44F3-9687-BC7E0F5E8BF9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "universalsemioticsService", "universalsemioticsService\universalsemioticsService.csproj", "{51DEC4C9-4A66-446A-AB48-8D783F113446}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "universalsemioticsBlobController", "universalsemioticsBlobController\universalsemioticsBlobController.csproj", "{23364F9B-A8B9-41EE-BA97-ECBEFEFBC373}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Debug|x64 = Debug|x64
+		Release|Any CPU = Release|Any CPU
+		Release|x64 = Release|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B47921DC-394E-44F3-9687-BC7E0F5E8BF9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B47921DC-394E-44F3-9687-BC7E0F5E8BF9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B47921DC-394E-44F3-9687-BC7E0F5E8BF9}.Debug|x64.ActiveCfg = Debug|x64
+		{B47921DC-394E-44F3-9687-BC7E0F5E8BF9}.Debug|x64.Build.0 = Debug|x64
+		{B47921DC-394E-44F3-9687-BC7E0F5E8BF9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B47921DC-394E-44F3-9687-BC7E0F5E8BF9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B47921DC-394E-44F3-9687-BC7E0F5E8BF9}.Release|x64.ActiveCfg = Release|x64
+		{B47921DC-394E-44F3-9687-BC7E0F5E8BF9}.Release|x64.Build.0 = Release|x64
+		{51DEC4C9-4A66-446A-AB48-8D783F113446}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{51DEC4C9-4A66-446A-AB48-8D783F113446}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{51DEC4C9-4A66-446A-AB48-8D783F113446}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{51DEC4C9-4A66-446A-AB48-8D783F113446}.Debug|x64.Build.0 = Debug|Any CPU
+		{51DEC4C9-4A66-446A-AB48-8D783F113446}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{51DEC4C9-4A66-446A-AB48-8D783F113446}.Release|Any CPU.Build.0 = Release|Any CPU
+		{51DEC4C9-4A66-446A-AB48-8D783F113446}.Release|x64.ActiveCfg = Release|Any CPU
+		{51DEC4C9-4A66-446A-AB48-8D783F113446}.Release|x64.Build.0 = Release|Any CPU
+		{23364F9B-A8B9-41EE-BA97-ECBEFEFBC373}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{23364F9B-A8B9-41EE-BA97-ECBEFEFBC373}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{23364F9B-A8B9-41EE-BA97-ECBEFEFBC373}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{23364F9B-A8B9-41EE-BA97-ECBEFEFBC373}.Debug|x64.Build.0 = Debug|Any CPU
+		{23364F9B-A8B9-41EE-BA97-ECBEFEFBC373}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{23364F9B-A8B9-41EE-BA97-ECBEFEFBC373}.Release|Any CPU.Build.0 = Release|Any CPU
+		{23364F9B-A8B9-41EE-BA97-ECBEFEFBC373}.Release|x64.ActiveCfg = Release|Any CPU
+		{23364F9B-A8B9-41EE-BA97-ECBEFEFBC373}.Release|x64.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {AE2A324A-E963-4E9D-A34B-37A436F465DA}
+	EndGlobalSection
+EndGlobal

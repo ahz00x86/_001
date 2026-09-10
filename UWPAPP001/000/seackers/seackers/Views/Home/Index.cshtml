@@ -1,0 +1,88 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@using seackers.Models.InApp
+@inject IViewLocalizer Localizer
+@model IndexViewModel
+<div class="text-center">
+    <h1><b>@Localizer["init"]</b></h1>
+    
+    <div id="myMap" style='width:100%;height:300px;'></div>
+    
+</div>
+
+<script type='text/javascript'>    
+
+    function ver(s)
+    {
+        alert(s);
+        window.location.href = '/View/' + s;
+    }
+
+    function GetMap() {
+        var map = new Microsoft.Maps.Map('#myMap', {
+            center: new Microsoft.Maps.Location(40.416775, -3.703790), // Madrid, España
+            zoom: 2
+        });
+
+        @{
+            foreach (var sitio in Model.Centers)
+            {                
+                <text>
+
+                var ubicacion = new Microsoft.Maps.Location(@sitio.Latitud, @sitio.Longitud);
+                var marcador = new Microsoft.Maps.Pushpin(new Microsoft.Maps.Location(@sitio.Latitud, @sitio.Longitud), {
+                    title: '@sitio.Name', color: 'darkblue' //, icon: '', anchor: new Microsoft.Maps.Point(32, 32)
+                });
+
+                //// Agrega un evento de clic al Pushpin
+                //Microsoft.Maps.Events.addHandler(marcador, 'click', function () {
+                //    // Abre la URL del sitio web en una nueva ventana del navegador
+                //    //window.location.href = "/MiControlador/MiAccion";
+                //    //window.open('@sitio.WebSite');
+                //});
+
+                //alert(marcador.getLocation());
+                // Agrega un evento de mouseover al Pushpin
+                Microsoft.Maps.Events.addHandler(marcador, 'click', function (e) {
+                    // Muestra la descripción del Pushpin en un tooltip
+                    var tooltip = new Microsoft.Maps.Infobox(new Microsoft.Maps.Location(@sitio.Latitud, @sitio.Longitud), {
+                        title: '@sitio.Name 💖@sitio.Likes.ToString()',
+                        description: '<table><tr><td><img style="width:50px;height:50px;" src="@sitio.Logo" /></td><td>&#128222;@sitio.Phone<br/><a target="_blank" href="@sitio.WebSite">web</a>&nbsp;&nbsp;<a target="_blank" href="https://www.google.com/maps/dir/?api=1&destination=@sitio.Latitud,@sitio.Longitud">&#128663;</a>&nbsp;&nbsp;<a href="/View/@sitio.Name">Ver</a></td></tr></table>',
+                        visible: true
+                    });
+                    //tooltip.addEventListener('click', function () {
+                    //                window.location.href = '/View/F';
+                    //            });
+
+                    // Agregar evento click al título de la infobox
+                    //Microsoft.Maps.Events.addHandler(tooltip, 'infoboxchanged', function () {
+                    //    var titleElement = document.querySelector('.MicrosoftMap .Infobox-title');
+                    //    if (titleElement) {
+                    //        titleElement.addEventListener('click', function () {
+                    //            window.location.href = '/View/@sitio.Name';
+                    //        });
+                    //    }
+                    //});
+
+                    tooltip.setMap(map);
+                });
+
+                
+
+                // Agrega un evento de mouseout al Pushpin
+                //Microsoft.Maps.Events.addHandler(marcador, 'mouseout', function (e) {
+                //    // Oculta el tooltip cuando el cursor sale del Pushpin
+                //    tooltip.setOptions({ visible: false });
+                //});
+
+                // Agrega el Pushpin al mapa
+                map.entities.push(marcador);
+
+                
+                </text>
+            }
+        }
+    }
+</script>
+
+
+        

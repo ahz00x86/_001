@@ -1,0 +1,7 @@
+{
+  "profiles": {
+    "UWPAPP_001": {
+      "commandName": "MsixPackage"
+    }
+  }
+}

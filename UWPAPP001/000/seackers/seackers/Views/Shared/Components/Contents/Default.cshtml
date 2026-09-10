@@ -1,0 +1,20 @@
+﻿@using seackers.Models.InApp
+@model ContenidosViewModel
+
+
+@{
+    if (Model != null && Model.ContenidosUsuario != null)
+    {
+        foreach (seackers.Models.InApp.Contenido c in Model.ContenidosUsuario)
+        {
+            <li class="nav-item text-light">
+                <form class="form-inline" style="display:inline-block;" asp-controller="User" asp-action="GetContent" method="post">
+                    <input type="hidden" name="ContentId" value="@c.Id"/>
+                    @Html.AntiForgeryToken()
+                    <button type="submit" class="nav-link btn btn-link text-light">@c.Title</button>
+                </form>
+            </li>
+        }
+    }
+
+}

@@ -1,0 +1,54 @@
+﻿<Page
+    x:Class="FileToVideo_VideoToFile.MainPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:FileToVideo_VideoToFile"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Loaded="Page_Loaded"
+    Background="Red">
+
+    <Grid>
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="auto"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="auto"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="auto"/>
+        </Grid.ColumnDefinitions>
+
+        <StackPanel Grid.Row="0" Grid.Column="1" HorizontalAlignment="Center" Orientation="Horizontal">
+            <Button x:Name="btnFileToVideo" Content="Encode File to VideoF" Click="FileToVideo_Click" Margin="5" Background="Black" Foreground="White"/>
+            <Button x:Name="btnVideoToFile" Content="Decode VideoF to File" Click="VideoToFile_Click" Margin="5" Background="Black" Foreground="White"/>                        
+        </StackPanel>
+
+        <HyperlinkButton Grid.Row="0" Foreground="White" FontWeight="Bold" Margin="5" Grid.Column="1" HorizontalAlignment="Right" VerticalAlignment="Center" NavigateUri="http://apzyxGames.azurewebsites.net" Content="apzyxGames"/>
+
+        <!--<StackPanel Grid.Row="1" Grid.Column="1" HorizontalAlignment="Center" Orientation="Horizontal">
+            <Button x:Name="btnImagesToFile" Content="Images to Video" Click="ImagesToVideo_Click" Margin="5" Background="Black" Foreground="White"/>
+            <Button x:Name="btnVideoToImages" Content="Convert Video to Images" Click="VideoToImage_Click" Margin="5" Background="Black" Foreground="White"/>
+            <Border VerticalAlignment="Center" Background="White">
+                <TextBlock Text="Increase between frames" Margin="5" Foreground="Black"/>
+            </Border>
+            <TextBox Text="1" x:Name="tbIncremento" Margin="5" Background="White" Foreground="Black"/>
+            <Button x:Name="apzCodeGenerate" Content="TEMP Generate apzCode" Click="apzCodeGenerate_Click" Margin="5" Visibility="Collapsed"/>
+            <Button x:Name="apzCodeDecode" Content="TEMP Decode apzCode" Click="apzCodeDecode_Click" Margin="5" Visibility="Collapsed"/>
+            <Button x:Name="imgBase64" Content="TEMP Base 64" Click="imgBase64_Click" Margin="5" Visibility="Collapsed"/>
+        </StackPanel>-->
+
+        <Canvas x:Name="cMain" Grid.Row="2" Grid.Column="1" Background="Black" />
+
+        <ScrollViewer Grid.Row="3" Grid.Column="1" ScrollViewer.VerticalScrollBarVisibility="Auto">
+            <Border Background="LightYellow" HorizontalAlignment="Center">
+                <TextBlock TextWrapping="Wrap" FontWeight="Bold" x:Name="textBlock" Margin="5" Foreground="Red"/>
+            </Border>
+        </ScrollViewer>
+        
+    </Grid>
+</Page>

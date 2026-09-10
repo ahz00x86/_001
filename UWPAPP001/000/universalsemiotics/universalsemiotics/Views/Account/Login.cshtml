@@ -1,0 +1,66 @@
+﻿@using universalsemiotics.Models
+@model LoginViewModel
+@{
+    ViewBag.Title = Resources.universalsemiotics.iniciar_sesion;
+}
+
+<h1>@(@Resources.universalsemiotics.iniciar_sesion).</h1>
+<script src='https://www.google.com/recaptcha/api.js'></script>
+<div class="row">
+    <div class="col-md-12 text-center">
+        <section id="loginForm">
+            @using (Html.BeginForm("Login", "Account", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+            {
+                @Html.AntiForgeryToken()
+                @Html.ValidationSummary(true, "", new { @class = "text-danger", @style = "display:initial;" })
+                <div class="form-group">
+                    <label class="col-md-12 control-label" style="display:initial;">@(Resources.universalsemiotics.correo_electronico)</label>
+                    @*@Html.LabelFor(m => m.Email, new { @class = "col-md-12 control-label" })*@
+                    <div class="col-md-12">
+                        @Html.TextBoxFor(m => m.Email, new { @class = "form-control text-center", @style = "display:initial;" })
+                        <br />
+                        @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger", @style = "display:initial;" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-md-12 control-label" style="display:initial;">@(Resources.universalsemiotics.contrasenia)</label>
+                    @*@Html.LabelFor(m => m.Password, new { @class = "col-md-12 control-label", @style = "display:initial;" })*@
+                    <div class="col-md-12">
+                        @Html.PasswordFor(m => m.Password, new { @class = "form-control text-center", @style = "display:initial;" })
+                        <br />
+                        @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger", @style = "display:initial;" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-12">
+                        <div style="display:inline-block;" class="g-recaptcha" data-sitekey="6Le6LtMaAAAAAPVe_tGHrSO4wX0O1Xt4PNztZh46"></div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-12">
+                        <div class="checkbox">
+                            @Html.CheckBoxFor(m => m.RememberMe)
+                            <label>@(Resources.universalsemiotics.recuerdame)</label>
+                            @*@Html.LabelFor(m => m.RememberMe)*@
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-12">
+                        <input type="submit" value="@(Resources.universalsemiotics.iniciar_sesion)" class="btn btn-primary" />
+                    </div>
+                </div>
+                <p>
+                    @Html.ActionLink(Resources.universalsemiotics.usuario_nuevo, "Register")
+                </p>
+                <p>
+                    @Html.ActionLink(Resources.universalsemiotics.olvido_contrasenia, "ForgotPassword")
+                </p>
+            }
+        </section>
+    </div>
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

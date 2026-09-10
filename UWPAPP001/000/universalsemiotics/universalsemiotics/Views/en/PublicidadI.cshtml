@@ -1,0 +1,104 @@
+﻿@Scripts.Render("~/bundles/jquery")
+<script type='text/javascript'>
+
+    $(document).ready(function () {
+
+        $('#modalProcessing').modal({
+            backdrop: 'static',
+            keyboard: false
+        })
+
+        $('#modalProcessing').modal('hide');
+
+        $('#bannerclick').click(function () {
+            if (window.FormData !== undefined) {
+                $('#textoModal').text('... Adding banner ...');
+                $('#modalProcessing').modal('show');
+
+                // Create FormData object
+                var fileData = new FormData();
+
+                var token = $('[name=__RequestVerificationToken]').val();
+                fileData.append("__RequestVerificationToken", token);
+
+                var fileUpload = $("#image").get(0);
+                var files = fileUpload.files;
+
+                // Looping over all files and add it to FormData object
+                for (var i = 0; i < files.length; i++) {
+                    fileData.append(files[i].name, files[i]);
+                    fileData.append('titulo', $('#titulo').val());
+                    fileData.append('urlD', $('#urlD').val());
+                }
+
+                $.ajax({
+                    url: '../en/PublicidadI',
+                    enctype: 'multipart/form-data',
+                    processData: false,
+                    contentType: false,
+                    cache: false,
+                    type: 'POST',
+                    data: fileData,
+                    success: function sfn(r) {
+                        $('#textoModal').text(r);
+                        $('#titulo').val('');
+                        $('#urlD').val('');
+                    },
+                    error: function myfunction() {
+
+                    },
+                    complete: function completefunc() {
+                        $('#modalClose').removeAttr('disabled')
+                        $("#modalClose").attr('class', 'btn-primary');
+                        return false;
+                    }
+
+                });
+            }
+            else {
+                alert('not file');
+            }
+        });
+    });
+</script>
+@{
+    ViewBag.Title = "Advertising Banner Left";
+}
+
+<h1>Advertising Banner Left</h1>
+
+<form id="__AjaxAntiForgeryForm" action="#" method="post">@Html.AntiForgeryToken()</form>
+
+<br /><p>Image: 100 x 100 px</p>
+<input id="image" style="display:inline-block;" name="image" type="file" required />
+<br />
+<br /><p>Site name:</p>
+<input id="titulo" width="200" style="width:200px;color:black;" name="titulo" type="text" value="" required />
+<br />
+<br /><p>Destination Url: (Your web)</p>
+<input id="urlD" width="400" style="width:400px;color:black;" name="urlD" type="url" value="https://" required />
+<br />
+<br />
+<input id="bannerclick" class="btn btn-primary" type="button" value="Enviar para validar" />
+
+<br />
+<br />
+<p>
+    <i>(The banner will go through a validation process, which after acceptance will receive an email with which you can make your investment.</i><br />
+    <i>The banner will be sorted more or less ascending depending on that investment, appearing in the top position the banners in which a greater investment has been made.)</i><br />
+    <i>The investment in the banner will last 90 days, being able to make discontinuous payments over time, which will be computed together in the current periods of the same.</i><br />
+    <i>Banners of xenophobic, racist or sexual content will not be accepted, however we reserve the right to deny any type of banner for any reason.</i><br />
+    <i>Banners occupying the top position of each list (left and right) will also appear on the Free Conversion loading screens.</i>
+</p>
+
+<!-- Modal -->
+<div id="modalProcessing" class="modal hide" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div id="modalBody" class="modal-body" style="text-align:center;width:100%;height:100%;">
+                <p id="textoModal">... Adding banner ...</p>
+                <button id="modalClose" class="disabled" data-dismiss="modal" aria-hidden="true" disabled>Close</button>
+            </div>
+        </div>
+    </div>
+</div>

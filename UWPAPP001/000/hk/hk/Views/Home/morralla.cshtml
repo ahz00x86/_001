@@ -1,0 +1,141 @@
+﻿
+
+
+////////https://history.hive-engine.com/accountHistory?account=apzyx&limit=1000&offset=0&symbol=BUDS
+                //////$.ajax({
+                //////    //url: "https://api.hive.blog",
+                //////    url: "https://history.hive-engine.com/accountHistory",                    
+                //////    method: "GET",
+                //////    contentType: "json",
+                //////    async: false,
+                //////    //data: '{"jsonrpc":"2.0", "method":"account_history_api.get_account_history", "params":{"account":"' + accountV + '", "start":' + startV + ', "limit":1000}, "id":1}'
+                //////    //data: '{"jsonrpc":"2.0", "method":"condenser_api.get_account_history", "params":["' + accountV + '", -1, 1000], "id":1}'
+                //////    data: '{account=' + accountV + ', "offset=' + startV + ', "limit=1000}'
+                //////    ,
+                    
+                //////    success: function(response) {
+                //////        console.log(response);
+                            
+                //////        //////if (false) {
+                //////        //////    for (var i = 0; i < response.result.history.length; i++) {
+
+                //////        //////        var bloqueActual = BigInt(response.result.history[i][0]);
+
+                //////        //////        if (bloqueActual <= bloqueFinal) {
+                //////        //////            completarDatos = false;
+                //////        //////        }
+                //////        //////        else {
+                //////        //////            arrayHKNVAULT.push(response.result.history[i]);
+                //////        //////            bloqueFinal = bloqueActual;
+                //////        //////        }
+
+                //////        //////    }
+
+                //////        //////    startV = startV + BigInt(1000);
+                //////        //////}
+                            
+                //////    },
+                //////    error: function() {
+                //////        alert("error");
+                //////    }
+                //////});
+                //completarDatos = false;
+
+
+
+                  
+
+                ////////alert(myJSON);
+                //////if (arrayHKNVAULT[i][1].op.value.json != undefined) {
+                //////    var json = JSON.parse(arrayHKNVAULT[i][1].op.value.json);                    
+
+                //////    if (json.contractPayload != undefined) {
+                //////        if (json.contractPayload.symbol == 'BUDS') {
+                //////            //console.log(json);                            
+                //////            if (json.contractAction == 'transfer') {
+                //////                if (json.contractPayload.to == 'null') {
+                //////                    quemado = quemado + parseFloat(json.contractPayload.quantity);
+                //////                }
+                //////                else {
+                //////                    if (json.contractPayload.to == accountV) {
+                //////                        recibidos = recibidos + parseFloat(json.contractPayload.quantity);                                        
+                //////                    }
+                //////                    else {
+                //////                        enviados = enviados + parseFloat(json.contractPayload.quantity);
+                //////                    }
+                //////                }
+                //////            }
+                //////            else if (json.contractAction == 'buy') {
+                //////                comprados = comprados + parseFloat(json.contractPayload.quantity);
+                //////            }
+                //////            else {
+                //////                //alert(myJSON);
+                //////                //alert(myJSON);
+                //////            }
+
+                //////        } else {
+                //////            //if (myJSON.includes('BUDS')) {
+                //////            //    alert(myJSON);
+                //////            //}
+                //////            //alert(myJSON);
+                //////        }
+                //////    }
+                //////    else {
+                //////        //if (myJSON.includes('BUDS')) {
+                //////        //        alert(myJSON);
+                //////        //    }
+                //////        //alert(myJSON);
+                //////    }
+                ////////}
+
+
+
+                
+        //function getTrx(trxId)
+        //{
+        //    $.ajax({
+        //        url:"https://api.hive.blog",
+        //        method:"POST",
+        //        contentType: "json",                
+        //        data:'{"jsonrpc":"2.0", "method":"account_history_api.get_transaction", "params":{"id":"95d25b1e1eec806dce7dbc6a36a3a589443a5179"}, "id":1}'                
+        //        ,
+        //        success:function(response) {
+        //            console.log(response);
+        //            alert("response2");
+        //       },
+        //       error:function(){
+        //            alert("error2");
+        //       }
+
+        //      });
+
+        //}
+        //getTrx('95d25b1e1eec806dce7dbc6a36a3a589443a5179');
+
+
+        //ssc.find(
+        //    'nft',
+        //    'HKFARMinstances',
+        //    {
+        //        account: "apzyx",
+        //        "properties.TYPE": "plot",
+        //        offset: 0,
+        //        limit: 500
+        //    }, 1000, 0, [], (err, result) => {
+        //        console.log(err, result);
+        //    });
+
+        //$.get({
+        //    url: "https://history.hive-engine.com/accountHistory",
+        //    data: {
+        //        account: "apzyx",
+        //        "properties.TYPE": "plot",
+        //        offset: 0,
+        //        limit: 500
+        //    },
+        //    async: false
+        //},
+        //    function(data, status) {
+        //        console.log(data);
+        //        console.log(status);
+        //    });

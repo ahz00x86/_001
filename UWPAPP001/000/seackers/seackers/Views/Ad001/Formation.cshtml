@@ -1,0 +1,580 @@
+﻿@using seackers.Models.InApp
+@model FormationViewModel
+
+
+<div class="row">
+    <div style="text-align:left;height:max-content;" class="col-md-3">
+        @*<div class="list-group">
+            <a href="#item1" class="list-group-item list-group-item-action active">Item 1</a>
+            <div id="item1" class="list-group-item-content">
+                <a href="#subitem1" class="list-group-item list-group-item-action">Subitem 1</a>
+                <div id="subitem1" class="list-group-item-content">
+                    <p>Contenido del subitem 1</p>
+                </div>
+                <a href="#subitem2" class="list-group-item list-group-item-action">Subitem 2</a>
+                <div id="subitem2" class="list-group-item-content">
+                    <p>Contenido del subitem 2</p>
+                </div>
+            </div>
+            <a href="#item2" class="list-group-item list-group-item-action">Item 2</a>
+            <div id="item2" class="list-group-item-content">
+                <a href="#subitem3" class="list-group-item list-group-item-action">Subitem 3</a>
+                <div id="subitem3" class="list-group-item-content">
+                    <p>Contenido del subitem 3</p>
+                </div>
+            </div>
+        </div>*@
+
+        <ul id="mainList">
+            @*<tr><td><button onclick="addTemaS(null, null, null)">+</button></td></tr>*@
+            <li><button style="font-size:xx-small;" onclick="addTemaS(null, null, null)">+</button></li>
+            @{
+                Stack<TemaS> pila = new Stack<TemaS>();
+                Model.Temas.Reverse();
+                foreach(TemaS t in Model.Temas)
+                {
+                    t.Nivel = 0;
+                    pila.Push(t);
+
+                }
+
+                while (pila.Count > 0)
+                {
+                    // Obtener el siguiente elemento de la pila
+                    var elemento = pila.Pop();
+
+                    
+                    if(elemento.Nivel == 2)
+                    {
+                        @Html.Raw("<ul>")
+                    }
+
+                    if (elemento.Nivel == 0)
+                    {
+                        <li style="font-size:small;" onclick="">
+                            <button style="border:none;font-size:xx-small;" onclick="addTemaS('@elemento.IdTema', '@elemento.Id', '@(elemento.SuperT != null ? elemento.SuperT.Id.ToString() : "null")')">+</button>
+                            <button style="border:none;font-size:x-small;" onclick="getContent('@elemento.Id', '@elemento.Titulo')">@elemento.Titulo</button>
+                            <button style="border:none;font-size:xx-small;" onclick="addTemaS('@elemento.Id', null, '@elemento.IdTematica')">></button>
+                        </li>
+                    }
+
+                    if (elemento.Nivel == 1)
+                    {
+                        @Html.Raw("</ul>")
+                    }
+
+                    // Añadir las secciones a la pila
+                    @if (elemento.Secciones != null && elemento.Secciones.Count > 0)
+                    {
+                        pila.Push(new TemaS() { Nivel = 1 });
+                        elemento.Secciones.Reverse();
+                        foreach (var seccion in elemento.Secciones)
+                        {
+                            seccion.Nivel = 0;
+                            pila.Push(seccion);
+                        }
+                        pila.Push(new TemaS() { Nivel = 2 });
+                    }
+                }                
+            }
+        </ul>
+    </div>
+    <div class="col-md-3" style="height:max-content;">
+        <div id="contentTitle" style="font-size:xx-large;" contenteditable="true"></div>
+        <table>
+            <tr><td align="left"><button onclick="agregarEtiquetas('<b>','</b>')"><b style="font-size:x-large;">N</b></button><button onclick="agregarEtiquetas('<i>', '</i>')"><i style="font-size:x-large;">I</i></button><button style="font-size:x-large;" onclick="$('#ModalFileUP').modal('show');">📎</button></td></tr>
+            <tr><td align="left"><button onclick="agregarEtiquetas('<h1>','</h1>')"><h1>Titulo</h1></button></td><td><button onclick="agregarEtiquetas('<h2>','</h2>')"><h2>Titulo</h2></button></td><td><button onclick="agregarEtiquetas('<h3>','</h3>')"><h3>Titulo</h3></button></td></tr>            
+        </table>
+        <textarea id="taData" style="width:100%;min-height:300px;" onchange="moveToResult()" onkeyup="moveToResult()" onkeypress="moveToResult()"></textarea>        
+    </div>
+    <div class="col-md-3" style="height:max-content;">
+        <input type="hidden" id="saveContentID"/>
+        <button class="btn btn-lg btn-primary" id="saveContentBTN" onclick="saveContent()">GUARDAR CAMBIOS</button><br />
+        <div class="text-wrap" id="taResult"></div>
+    </div>
+    <div class="col-md-3">
+        <div>Quests<br /><ul id="questions"></ul></div>
+    </div>
+</div>
+
+<script>
+    function moveToResult()
+    {
+        var taD = document.getElementById('taData').value;
+        document.getElementById('taResult').innerHTML = taD.replaceAll("\n", "<br/>"); //taD.replace(/\n/g, '<br/>');
+    }
+
+    function agregarEtiquetas(eStar, eEnd) {
+        // Obtenemos el elemento textarea
+        var textarea = document.getElementById("taData");
+
+        // Obtenemos la posición del inicio y fin de la selección
+        var start = textarea.selectionStart;
+        var end = textarea.selectionEnd;
+
+        // Obtenemos el texto seleccionado
+        var selectedText = textarea.value.substring(start, end);
+
+        // Agregamos las etiquetas <b> y </b> al texto seleccionado
+        var newText = eStar + selectedText + eEnd;
+
+        // Insertamos el texto con las etiquetas en el textarea
+        textarea.value = textarea.value.substring(0, start) + newText + textarea.value.substring(end);
+
+        // Posicionamos el cursor al final del texto
+        var newEnd = end + eStar.length + eEnd.length; // 7 es la longitud de las etiquetas <b> y </b>
+        textarea.setSelectionRange(newEnd, newEnd);
+        moveToResult();
+    }
+
+</script>
+
+<!-- Modal -->
+<div class="modal fade" id="ModalFileUP">
+    <div class="modal-dialog" style=''>
+        <div class="modal-content" style="background-color:transparent;border:none;">
+            <div class="modal-header">
+                <button onclick="$('#ModalFileUP').modal('hide');" type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Añadir archivo</h4>
+            </div>
+            <div id="modalBody" style='background-color:darkblue;' class="modal-body">
+                <form id="myForm" method="post">
+                    <div>
+                        <label style="color:white;" for="nFile">Nombre del archivo:</label>
+                        <input type="text" id="nFile" name="nFile">
+                    </div>
+                    <div>
+                        <label style="color:white;" for="dFile">Archivo:</label>
+                        <input type="file" id="dFile" name="dFile" accept="application/pdf">
+                    </div>
+                    <div>
+                        <button type="button" id="submitBtn">Enviar</button>
+                    </div>       
+                    @Html.AntiForgeryToken()
+                </form>
+
+            </div>
+            <div class="modal-footer">
+                @*<button type="button" class="btn btn-default" data-dismiss="modal">Close</button> *@
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="AddTemS">
+    <div class="modal-dialog" style=''>
+        <div class="modal-content" style="background-color:transparent;border:none;">
+            <div class="modal-header">
+                <button onclick="$('#AddTemS').modal('hide');" type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Añadir Tema/Sección</h4>
+            </div>
+            <div id="modalBody" style='background-color:darkblue;' class="modal-body">
+                <form id="myFormTemS" method="post">
+                    <div>
+                        <label style="color:white;" for="title">Título</label>
+                        <input type="text" id="title" name="title">                        
+                    </div>                                        
+                    <div>
+                        <button type="button" id="submitAddTemS">Enviar</button>
+                    </div>
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" id="idP" name="idP">
+                    <input type="hidden" id="idT" name="idT">
+                    <input type="hidden" id="tematica" name="tematica">
+                </form>
+
+            </div>
+            <div class="modal-footer">
+                @*<button type="button" class="btn btn-default" data-dismiss="modal">Close</button> *@
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="AddQuestS">
+    <div class="modal-dialog" style=''>
+        <div class="modal-content" style="background-color:transparent;border:none;">
+            <div class="modal-header">
+                <button onclick="$('#AddQuestS').modal('hide');" type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Añadir Tema/Sección</h4>
+            </div>
+            <div id="modalBody" style='background-color:darkblue;' class="modal-body">
+                <form id="myFormQuestS" method="post">
+                    <div>
+                        <label style="color:white;" for="title">Título</label>
+                        <input type="checkbox" id="QisCorrect" name="QisCorrect">
+                        <input type="text" id="Qtitle" name="title">                           
+                    </div>
+                    <div>
+                        <button type="button" id="submitAddQuestS">Enviar</button>
+                    </div>
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" id="QidP" name="idP">
+                    <input type="hidden" id="QidT" name="idT">
+                </form>
+
+            </div>
+            <div class="modal-footer">
+                @*<button type="button" class="btn btn-default" data-dismiss="modal">Close</button> *@
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+
+        $("#submitBtn").click(function (event) {
+            event.preventDefault(); // Prevenimos el comportamiento por defecto del botón
+
+            var formData = new FormData($("#myForm")[0]); // Creamos el objeto FormData con los datos del formulario
+            $.ajax({
+                type: "POST",
+                url: "/Ad001/AddFile",
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function (response) {
+                    // Aquí puedes hacer algo con la respuesta del controlador
+                    //alert("Archivo subido correctamente");
+                    var textarea = document.getElementById("taData");
+
+                    // Obtenemos la posición del inicio y fin de la selección
+                    var start = textarea.selectionStart;
+                    var end = textarea.selectionEnd;
+
+                    // Agregamos las etiquetas <b> y </b> al texto seleccionado
+                    var newText = "<a target='_blank' href='/User/GetFile?c=" + response + "'>" + document.getElementById('title').value + "</a>";
+
+                    // Insertamos el texto con las etiquetas en el textarea
+                    textarea.value = textarea.value.substring(0, start) + newText + textarea.value.substring(end);
+
+                    // Posicionamos el cursor al final del texto
+                    //var newEnd = end + eStar.length + eEnd.length; // 7 es la longitud de las etiquetas <b> y </b>
+                    //textarea.setSelectionRange(newEnd, newEnd);
+                    moveToResult();
+                    document.getElementById("nFile").value = "";
+                    document.getElementById("dFile").value = "";
+                    $('#ModalFileUP').modal('hide');
+                },
+                error: function (xhr, status, error) {
+                    // Aquí puedes manejar los errores de la llamada AJAX
+                    //alert("Error al subir el archivo");
+                }
+            });
+        });
+
+        $("#submitAddTemS").click(function (event) {
+            event.preventDefault(); // Prevenimos el comportamiento por defecto del botón
+
+            var formData = new FormData($("#myFormTemS")[0]);
+
+            $.ajax({
+                type: "POST",
+                url: "/Ad001/AddTemaS",
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function (response) {
+                    //INIT
+
+                    var objD = JSON.parse(response);                    
+
+                    var mainL = document.getElementById('mainList');
+                    mainL.innerHTML = '';
+                    let pila = [];
+                    objD.Temas.reverse();
+                    objD.Temas.forEach(function (t) {
+                        t.Nivel = 0;
+                        pila.push(t);
+                    });                    
+                    var adding = false;
+                    var tempAdd = "<li><button style='font-size: xx - small;' onclick='addTemaS(null, null, null)'>+</button></li>";
+                    while (pila.length > 0) {
+                        let elemento = pila.pop();
+
+                        if (elemento.Nivel == 2) {                            
+                            tempAdd += "<ul>";
+                            //adding = true;
+                        }
+
+                        if (elemento.Nivel == 0) {
+                            
+                            var superT = null;
+                            if (elemento.SuperT != null)
+                            {
+                                superT = elemento.SuperT.Id;
+                            }
+
+                            tempAdd += "<li style='font-size:small;' onclick=''>" +
+                                "<button style='border:none;font-size:xx-small;' onclick=\"addTemaS('" + elemento.IdTema + "', '" + elemento.Id + "', '" + superT + "')\">+</button>" +
+                            "<button style='border:none;font-size:x-small;' onclick=\"getContent('" + elemento.Id + "')\">" + elemento.Titulo + "</button>" +
+                            "<button style='border:none;font-size:xx-small;' onclick=\"addTemaS('" + elemento.Id + "', null, '" + elemento.IdTematica + "')\">></button>" +
+                            "</li>";
+                        }
+
+                        if (elemento.Nivel == 1) {
+                            
+                            tempAdd += "</ul>";
+                            //adding = false;
+                        }
+
+                        if (elemento.Secciones != null && elemento.Secciones.length > 0) {
+                            pila.push(JSON.parse('{"Nivel": 1}'));
+                            elemento.Secciones.reverse().forEach(function (seccion) {                            
+                                seccion.Nivel = 0;
+                                pila.push(seccion);
+                            });
+                            pila.push(JSON.parse('{"Nivel": 2}'));
+                        }
+                    }
+
+                    mainL.innerHTML = tempAdd;
+
+                    //END
+                    document.getElementById("title").value = "";
+                    $('#AddTemS').modal('hide');
+                },
+                error: function(xhr, status, error) {
+                    alert(xhr.responseText);
+                }
+            });
+        });
+
+        $("#submitAddQuestS").click(function (event) {
+            event.preventDefault(); // Prevenimos el comportamiento por defecto del botón            
+            var formData = new FormData($("#myFormQuestS")[0]);
+
+            $.ajax({
+                type: "POST",
+                url: "/Ad001/AddQuestS",
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function (response) {
+                    //INIT
+                    //alert(response);
+                    ComponQuest(response);
+                    //////var objD = JSON.parse(response);
+
+                    //////var mainL = document.getElementById('questions');
+                    //////mainL.innerHTML = '';
+                    
+                                        
+                    //////var tempAdd = "<li><button onclick=\"addQuest('" + objD.IdContent + "', null)\">+</button></li>";
+
+                    //////objD.Questions.forEach(function (question) {
+                    //////    tempAdd += "<li>" +
+                    //////        "<input type='checkbox' " + (question.MultiSelection ? "checked" : "") + " >" +
+                    //////        "<button style='border:none;'>" + question.Text + "</button>" +
+                    //////        "<button style='border:none;' onclick=\"addQuest('" + objD.IdContent + "', '" + question.Id + "')\">></button>" +
+                    //////        "</li>";
+                    //////    tempAdd += "<ul>";
+                    //////    question.Responses.forEach(function (response) {
+                    //////        tempAdd += "<li>" +
+                    //////            "<input type='checkbox' change=\"isCorrectMulti('" + response.Id + "')\" " + (response.MultiSelection ? "checked" : "") + " >" +
+                    //////            "<button style='border:none;'>" + response.Text + "</button></li>";
+
+                    //////    });
+                    //////    tempAdd += "</ul>";
+                    //////});
+
+                    //////document.getElementById("questions").innerHTML = tempAdd;
+
+                    //////mainL.innerHTML = tempAdd;
+
+                    ////////END
+                    //////document.getElementById("Qtitle").value = "";
+                    //////$('#AddQuestS').modal('hide');
+                },
+                error: function (xhr, status, error) {
+                    alert(xhr.responseText);
+                }
+            });
+        });
+
+    });
+
+    function addTemaS(idT, idP, tematica) {
+        document.getElementById("title").value = '';
+        document.getElementById("idP").value = idP;
+        document.getElementById("idT").value = idT;
+        document.getElementById("tematica").value = tematica;
+        $('#AddTemS').modal('show');
+    }
+
+    function getContent(idContent, title)
+    {        
+        document.getElementById("contentTitle").innerHTML = title;
+        document.getElementById("saveContentID").value = idContent;
+        document.getElementById("idT").value = idContent;
+        var formData = new FormData($("#myFormTemS")[0]);
+
+        $.ajax({
+            type: "POST",
+            url: "/Ad001/GetContent",
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function (response) {
+                
+                var objD = JSON.parse(response);
+
+                document.getElementById('taData').value = objD.Content.replaceAll("<br/>", "\n").replaceAll("<br>", "\n"); //response.replace(/<br\/>/g, "\n");
+
+                ComponQuest(response);
+                //////var tempAdd = "<li><button onclick=\"addQuest('" + idContent + "', null)\">+</button></li>";
+
+                //////objD.Questions.forEach(function (question) {
+                //////    tempAdd += "<li>" +
+                //////        "<input type='checkbox' " + (question.MultiSelection ? "checked" : "") + " >" +
+                //////        "<button style='border:none;'>" + question.Text + "</button>" +
+                //////        "<button style='border:none;' onclick=\"addQuest('" + idContent + "', '" + question.Id + "')\">></button>" +
+                //////        "</li>";
+                //////    tempAdd += "<ul>";
+                //////    question.Responses.forEach(function (response) {
+                //////        tempAdd += "<li>" +
+                //////            "<input type='checkbox' change=\"isCorrectMulti('" + response.Id + "')\" " + (response.MultiSelection ? "checked" : "") + " >" +
+                //////            "<button style='border:none;'>" + response.Text + "</button></li > ";
+
+                //////    });
+                //////    tempAdd += "</ul>";
+                //////});
+
+                //////document.getElementById("questions").innerHTML = tempAdd;
+                
+
+                moveToResult();
+            },
+            error: function (xhr, status, error) {
+                // Aquí puedes manejar los errores de la llamada AJAX
+                //alert("Error al subir el archivo");
+            }
+        });
+    }
+
+    function saveContent() {
+        //document.getElementById('taResult').innerHTML = taD.replace(/\n/g, "<br/>");;
+        document.getElementById("idP").value = document.getElementById("contentTitle").innerHTML;
+        document.getElementById("title").value = document.getElementById('taResult').innerHTML;
+        document.getElementById("idT").value = document.getElementById("saveContentID").value;
+        var formData = new FormData($("#myFormTemS")[0]);
+
+        $.ajax({
+            type: "POST",
+            url: "/Ad001/SaveContent",
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function (response) {
+                // Aquí puedes hacer algo con la respuesta del controlador
+                //alert("Archivo subido correctamente");
+
+            },
+            error: function (xhr, status, error) {
+                // Aquí puedes manejar los errores de la llamada AJAX
+                //alert("Error al subir el archivo");
+            }
+        });
+    }
+
+    function addQuest(idT, idP) {
+        document.getElementById("Qtitle").value = '';
+        document.getElementById("QidP").value = idP;
+        document.getElementById("QidT").value = idT;
+        $('#AddQuestS').modal('show');    
+    }
+
+    function isCorrectMulti(idT, idP, checked)
+    {        
+        document.getElementById("QisCorrect").checked = checked;
+        document.getElementById("QisCorrect").value = checked;
+        document.getElementById("QidT").value = idT;
+        document.getElementById("QidP").value = idP;
+        var formData = new FormData($("#myFormQuestS")[0]);
+
+        $.ajax({
+            type: "POST",
+            url: "/Ad001/IsCorrectMulti",
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function (response) {
+                //INIT
+                //alert(response);
+                ComponQuest(response);
+                //////var objD = JSON.parse(response);
+
+                //////var mainL = document.getElementById('questions');
+                //////mainL.innerHTML = '';
+
+
+                //////var tempAdd = "<li><button onclick=\"addQuest('" + objD.IdContent + "', null)\">+</button></li>";
+
+                //////objD.Questions.forEach(function (question) {
+                //////    tempAdd += "<li>" +
+                //////        "<input type='checkbox' " + (question.MultiSelection ? "checked" : "") + " >" +
+                //////        "<button style='border:none;'>" + question.Text + "</button>" +
+                //////        "<button style='border:none;' onclick=\"addQuest('" + objD.IdContent + "', '" + question.Id + "')\">></button>" +
+                //////        "</li>";
+                //////    tempAdd += "<ul>";
+                //////    question.Responses.forEach(function (response) {
+                //////        tempAdd += "<li>" +
+                //////            "<input type='checkbox' change=\"isCorrectMulti('" + response.Id + "')\" " + (response.MultiSelection ? "checked" : "") + " >" +
+                //////        "<button style='border:none;'>" + response.Text + "</button></li>";
+
+                //////    });
+                //////    tempAdd += "</ul>";
+                //////});
+
+                //////document.getElementById("questions").innerHTML = tempAdd;
+
+                //////mainL.innerHTML = tempAdd;
+
+                ////////END
+                //////document.getElementById("Qtitle").value = "";
+                //////$('#AddQuestS').modal('hide');
+            },
+            error: function (xhr, status, error) {
+                alert(xhr.responseText);
+            }
+        });
+    }
+
+    function ComponQuest(QsjsonT)
+    {
+        var objD = JSON.parse(QsjsonT);
+
+        var mainL = document.getElementById('questions');
+        mainL.innerHTML = '';
+
+        var tempAdd = "<li><button onclick=\"addQuest('" + objD.IdContent + "', null)\">+</button></li>";
+
+        objD.Questions.forEach(function (question) {
+            tempAdd += "<br/><li>" +
+                "<input type='checkbox' " + (question.MultiSelection ? "checked" : "") + " >" +
+                "<button style='border:none;'>" + question.Text + "</button>" +
+                "<button style='border:none;' onclick=\"addQuest('" + objD.IdContent + "', '" + question.Id + "')\">></button>" +
+                "</li>";
+            tempAdd += "<ul>";
+            question.Responses.forEach(function (response) {
+                tempAdd += "<li>" +
+                    "<input type='checkbox' onchange=\"isCorrectMulti('" + objD.IdContent + "','" + response.Id + "', this.checked)\" " + (response.MultiSelection ? "checked" : "") + " >" +
+                    "<button style='border:none;'>" + response.Text + "</button></li>";
+
+            });
+            tempAdd += "</ul>";
+        });
+
+        document.getElementById("questions").innerHTML = tempAdd;
+
+        mainL.innerHTML = tempAdd;
+
+        //END
+        document.getElementById("Qtitle").value = "";
+        $('#AddQuestS').modal('hide');
+    }
+
+</script>

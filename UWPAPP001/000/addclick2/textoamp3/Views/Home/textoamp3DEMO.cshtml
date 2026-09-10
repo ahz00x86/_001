@@ -1,0 +1,56 @@
+﻿@{ViewBag.Title = "DEMO - ";}
+<form action="~/Home/textoamp3DEMO" method="post" style="text-align:center;margin:15px;padding:15px;background-color:deepskyblue;border-radius:15px;color:white;">
+    @Html.AntiForgeryToken()
+    <div class="form-row">
+        <div class="col-md-12">
+            <h2>DEMO</h2>
+        </div>
+    </div>
+    <p class="text-success">@ViewBag.StatusMessage</p>
+    <p class="text-danger">@ViewBag.DEMO4</p>
+    <div class="form-row">
+        <div class="col-md-12">
+            <h4>Correo electrónico:</h4>
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="col-md-12">
+            <input class="form-control" required name="email" type="text" style="width:400px;display:initial;" />
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="col-md-12">
+            <h4>Título del archivo mp3:</h4>
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="col-md-12">
+            <input class="form-control" required name="titulo" type="text" style="width:400px;display:initial;" />
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="col-md-12">
+            <h4>Su texto DEMO</h4><p>(max 500 caracteres + publicidad):</p>
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="col-md-12">
+            <textarea class="form-control" required name="texto" maxlength="500" style="height:250px;width:350px;display:initial;"></textarea>
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="col-md-12">
+            <br />
+            <input type="submit" class="btn btn-primary" value="convertir a MP3 - DEMO" />
+        </div>
+    </div>
+</form>
+<br/>
+<div class="row">
+    <div class="col-md-6">
+        <p><a href="~/Account/Login">Iniciar sesión</a></p>
+    </div>
+    <div class="col-md-6">
+        <p><a href="~/Account/Register">Regístrese</a></p>
+    </div>
+</div>

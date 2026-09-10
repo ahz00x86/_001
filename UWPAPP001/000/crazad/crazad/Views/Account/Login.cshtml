@@ -1,0 +1,55 @@
+﻿@using crazad.Models
+@model LoginViewModel
+@{
+    ViewBag.Title = "Iniciar sesión";
+}
+
+<h1>@ViewBag.Title</h1>
+
+<section id="loginForm">
+    @using (Html.BeginForm("Login", "Account", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "", role = "form" }))
+    {
+        @Html.AntiForgeryToken()
+        
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <div class="form-group">
+            @Html.LabelFor(m => m.Email, new { @class = "col-md-2 control-label" })
+            <div class="">
+                @Html.TextBoxFor(m => m.Email, new { @class = "form-control" })<br />
+                @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(m => m.Password, new { @class = "col-md-2 control-label" })
+            <div class="">
+                @Html.PasswordFor(m => m.Password, new { @class = "form-control" })<br />
+                @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="">
+                <div class="checkbox">
+                    @Html.CheckBoxFor(m => m.RememberMe)
+                    @Html.LabelFor(m => m.RememberMe)
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="">
+                <input type="submit" value="Iniciar sesión" class="btn btn-primary" />
+            </div>
+        </div>
+        <p>
+            @Html.ActionLink("Registrarse como usuario nuevo", "Register")
+        </p>
+        @* Habilite esta opción una vez tenga la confirmación de la cuenta habilitada para la funcionalidad de restablecimiento de contraseña
+            <p>
+                @Html.ActionLink("¿Ha olvidado su contraseña?", "ForgotPassword")
+            </p>*@
+    }
+</section>
+
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

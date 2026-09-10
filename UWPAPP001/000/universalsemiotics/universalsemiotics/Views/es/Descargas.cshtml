@@ -1,0 +1,82 @@
+﻿
+@{
+    ViewBag.Title = "Descargas";
+    universalsemiotics.Models.MP3sModel modelFree = Model;
+}
+
+<div class="row">
+    <div class="col-md-12">
+        <h1>Conversiones Profesionales</h1>
+        <p>(Los archivos se borrarán después de 7 días desde su conversión, el periodo en proceso no aplica a esta temporalidad)</p>
+    </div>
+</div>
+
+@if (modelFree.DescargasPro == null || modelFree.DescargasPro.Count == 0)
+{
+    <div class="row">
+        <div class="col-md-12">
+            <p>(Aún no dispone de ninguna conversión)</p>
+        </div>
+    </div>
+}
+else
+{
+    foreach (universalsemiotics.Models.MP3ProModel d in modelFree.DescargasPro)
+    {
+        if (d.EnProceso)
+        {
+            <div class="row">
+                <div class="col-md-12">
+                    <br /><p style="font-size:25px;"><b class='text-success'>@String.Format("{0:dd/MM/yyyy HH:mm}", d.Fecha)</b> <label>Su archivo @d.Titulo se está convirtiendo</label> <a class="btn btn-primary" href="javascript:window.location.reload()">Actualizar</a></p>
+                </div>
+            </div>
+        }
+        else
+        {
+            <div class="row">
+                <div class="col-md-12">
+                    <br /><p style="font-size:25px;">@Html.Raw(String.Concat("<b class='text-success'>", String.Format("{0:dd/MM/yyyy HH:mm}", d.Fecha), " </b>")) <a href="~/es/DownloadPro?id=@(d.Id)" target="_blank" download="@(d.Titulo.Replace("\"","_")).mp3">@(d.Titulo).mp3</a></p>
+                </div>
+            </div>
+        }
+    }
+}
+<br/>
+<br />
+<div class="row">
+    <div class="col-md-12">
+        <h1>Conversiones GRaTuiTaS</h1>
+        <p>(Los archivos se borrarán después de 2 días desde su conversión, el periodo en cola no aplica a esta temporalidad)</p>
+    </div>
+</div>
+
+@if (modelFree.DescargasFree == null || modelFree.DescargasFree.Count == 0)
+{
+    <div class="row">
+        <div class="col-md-12">
+            <p>(Aún no dispone de ninguna conversión)</p>
+        </div>
+    </div>
+}
+else
+{
+    foreach (universalsemiotics.Models.MP3FreeModel d in modelFree.DescargasFree)
+    {
+        if (d.EnCola)
+        {
+            <div class="row">
+                <div class="col-md-12">
+                    <br /><p style="font-size:25px;"><b class='text-success'>@String.Format("{0:dd/MM/yyyy HH:mm}", d.Fecha)</b> <label>su archivo @d.Titulo está en cola ... Tiene @d.Cola archivos por delante</label> <a class="btn btn-primary" href="javascript:window.location.reload()">Actualizar</a></p>
+                </div>
+            </div>
+        }
+        else
+        {
+            <div class="row">
+                <div class="col-md-12">
+                    <br /><p style="font-size:25px;">@Html.Raw(String.Concat("<b class='text-success'>", String.Format("{0:dd/MM/yyyy HH:mm}", d.Fecha), " </b>")) <a href="~/es/Download?id=@(d.Id)" target="_blank" download="@(d.Titulo.Replace("\"","_")).mp3">@(d.Titulo).mp3</a></p>
+                </div>
+            </div>
+        }
+    }
+}

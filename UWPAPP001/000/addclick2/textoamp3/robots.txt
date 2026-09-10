@@ -1,0 +1,5 @@
+# Regla 1
+User-agent: *
+Allow: /
+
+Sitemap: https://www.conversordetextoamp3.com/sitemap.txt

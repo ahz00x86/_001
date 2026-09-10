@@ -1,0 +1,34 @@
+﻿
+@{
+    ViewBag.Title = "Caracteres";
+}
+
+<h1>Caracteres</h1>
+<p>Aquí podrá obtener caracteres para realizar conversiones profesionales con los últimos productos de Microsoft Cognitive Services.<p>
+<p>El proyecto de Conversión Profesional está en fase beta, si se presenta o detecta algún tipo de fallo, háganoslo saber, podrá acceder a la información de contacto en <a href="../es/contacto">Contacto</a>, solucionaremos su problema lo antes posible.</p>
+<p>Las preguntas que algunos textos que queremos convertir incluyen entre sus líneas, pueden no ser representadas en la conversión como una pregunta, tenga esto en cuenta antes de contratar el servicio si es algo de alta prioridad.</p>
+<p>Recuerde consultar el número mínimo de caracteres que requiere su conversión para poder realizarla en <a href="../es/texto_a_voz_pro">Conversión Profesional</a></p>
+<p>Cualquier pregunta o información adicional que necesite, no dude en contactarnos. =)</p>
+<br />
+<form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
+    <input type="hidden" name="cmd" value="_s-xclick">
+    <input type="hidden" name="hosted_button_id" value="N4HZUPEJFHQ8Q">
+    <table align="center">
+        <tr><td><input type="hidden" name="on0" value="Número de caracteres">Número de caracteres</td></tr>
+        <tr>
+            <td>
+                <select name="os0">
+                    <option value="100000 caracteres">100000 caracteres €5,00 EUR</option>
+                    <option value="200000 caracteres">200000 caracteres €10,00 EUR</option>
+                    <option value="600000 caracteres">600000 caracteres €25,00 EUR</option>
+                    <option value="1500000 caracteres">1500000 caracteres €50,00 EUR</option>
+                </select>
+            </td>
+        </tr>
+    </table>
+    <input type="hidden" name="currency_code" value="EUR">
+    <input name="custom" value="@(((Guid)Model).ToString())" type="hidden" />
+    <input name="notify_url" value="https://www.universalsemiotics.com/es/PayPal_IPNC" type="hidden" />
+    <input type="image" src="https://www.paypalobjects.com/es_ES/ES/i/btn/btn_buynowCC_LG.gif" border="0" name="submit" alt="PayPal, la forma rápida y segura de pagar en Internet.">
+    <img alt="" border="0" src="https://www.paypalobjects.com/es_ES/i/scr/pixel.gif" width="1" height="1">
+</form>

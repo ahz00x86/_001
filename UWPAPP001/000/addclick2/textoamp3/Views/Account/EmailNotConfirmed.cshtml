@@ -1,0 +1,15 @@
+﻿
+@{
+    ViewBag.Title = "Email sin confirmar - ";
+}
+
+<h2>Email sin confirmar</h2>
+<p class="text-success">@ViewBag.StatusMessage</p>
+<p>Le hemos enviado un correo electrónico para validar su cuenta, si pasados unos minutos este no le ha llegado o si lo ha borrado o perdido, podemos reenviarle otro haciendo click en este botón:</p>
+
+<form action="~/Account/EmailNotConfirmed" method="post">
+    @Html.AntiForgeryToken()
+    <input type="hidden" name="empty" value="empty"/>
+    <input class="btn btn-primary" type="submit" value="Reenviar link"/>
+</form>
+

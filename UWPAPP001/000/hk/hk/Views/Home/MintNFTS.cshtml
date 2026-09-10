@@ -1,0 +1,114 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+<div class="text-center">
+    <h1 class="display-4">MINTEO DE NFTS</h1>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/&#64;hiveio/hive-js/dist/hive.min.js"></script>
+<script>
+
+    async function startNFTs() {
+        console.log('1')
+        var propAccount = document.getElementById("accountId").value;
+        var actPrivKey = document.getElementById("activePrivatekeyId").value;
+
+        await createNfts(propAccount, 1, actPrivKey);
+        console.log('terminó')
+
+    }
+
+    async function createNfts(propAccount, quantity, actPrivKey) { //max 10 nfts
+        console.log('2')
+        let instances = [];
+
+        const properties = {            
+            LVL: 7,
+            PROP: "HK UNIVERSITY",
+            VALID: true,
+        };
+
+        const instance = {
+            symbol: 'HKPROJECT',
+            to: 'apzyx',
+            feeSymbol: "PAL",
+            properties,
+        };
+
+        for (let index = 0; index < quantity; index++) {
+            instances.push(instance);
+        }
+
+        let json = {
+            contractName: "nft",
+            contractAction: "issueMultiple",
+            contractPayload: {
+                instances: instances,
+            },
+        };
+
+        console.log('3')
+
+        return new Promise((resolve, reject) => {
+            hive.broadcast.customJson(
+                actPrivKey, //ACTIVEKEY
+                [propAccount], //CONTRACT_CREATOR
+                [],
+                "ssc-mainnet-hive",
+                JSON.stringify(json),
+                function (err, result) {
+                    if (err) {
+                        console.log(err, 'err')
+                        reject(err);
+                    } else {
+                        console.log(result, 'result')
+                        resolve(result);
+                    }
+                }
+            );
+        });
+    }
+
+    function generateToken() {
+        console.log('1')
+        var propAccount = document.getElementById("accountId").value;
+        var actPrivKey = document.getElementById("activePrivatekeyId").value;
+
+        let json = {
+            contractName: "tokens",
+            contractAction: "issue",
+            contractPayload: {
+                symbol: 'HKLEARN',
+                to: 'apzyx',
+                quantity: "1.000",
+            },
+        };
+
+        console.log('2')
+        return new Promise((resolve, reject) => {
+            hive.broadcast.customJson(
+                actPrivKey, //ACTIVEKEY
+                [propAccount], //CONTRACT_CREATOR
+                [],
+                "ssc-mainnet-hive",
+                JSON.stringify(json),
+                async function (err, result) {
+                    if (err) {
+                        console.log(err, 'err')
+                        reject(err);
+                    } else {
+                        console.log(result, 'result')
+                        resolve(result);
+                    }
+                });
+        });
+    };
+
+</script>
+<div class="text-center">
+    <h3>USUARIO CREADOR HIVE</h3>
+    <input id="accountId" type="text" />
+    <h3>ACTIVE PRIVATE KEY</h3>
+    <input id="activePrivatekeyId" type="text" />
+    <br/><input type="button" class="btn btn-secondary" id="btCreateNFTs" name="btCreateNFTs" value="CREAR NFTs" onclick="startNFTs()">
+    <br /><input type="button" class="btn btn-secondary" id="btCreateTokens" name="btCreateTokens" value="CREAR TOKENs" onclick="generateToken()">
+</div>

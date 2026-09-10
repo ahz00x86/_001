@@ -1,0 +1,43 @@
+/CIDInit /ProcSet findresource begin
+12 dict begin
+begincmap
+/CIDSystemInfo
+<< /Registry (Adobe)
+/Ordering (UCS) /Supplement 0 >> def
+/CMapName /Adobe-Identity-UCS def
+/CMapType 2 def
+1 begincodespacerange
+<0000> <FFFF>
+endcodespacerange
+55 beginbfchar
+<20> <0020>
+<2C> <002C>
+<2D> <002D>
+<2E> <002E>
+<30> <00bE730> <05E73sge
+56/CMa /gge
+5A/CMa /re
+5A/CMa /CMa /6ra1a /CMa1a6ra <00bE430> 44<00bE440> 47<00bE470> 4CMa /g4e
+5A49Ma /g49
+5A4CMa /r4
+5A/4 <00204
+<2C4 <002C4
+<2D4F<002C4000<5 <002E5
+<305 <00bE530> 505E73s5e
+5654<00bE540> 56<00bE560> 57<00bE570> 59Ma /g59
+5A61a /CM61a6r6 <00bE630> 605E73s6e
+5664<00bE640> 65<00bE650> 66<00bE660> 67<00bE670> 6CMa /g6e
+5A69Ma /g69
+5A6CMa /r6
+5A/6 <00206
+<2C6 <002C6
+<2D6 <002D6
+<2E6F<002C6000<7 <002E7
+<3071a /CMg7a6r6 <70bE670> 605773s67
+5664<70bE670> 65<g7bE650>766<07bE660>767<07bE670>76CMa7/g6e
+5g79Ma /g79
+5A91a /201e
+5g93a /201
+5A/94a /201Dpacerodespacceran
+1 /Supplemecurref
+findrdobe-ty-Uine/CIDInit pop cer cer

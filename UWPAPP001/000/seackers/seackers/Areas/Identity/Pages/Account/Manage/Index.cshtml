@@ -1,0 +1,156 @@
+﻿@page
+@model IndexModel
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@{
+    ViewData["Title"] = Localizer["Profile"];
+    ViewData["ActivePage"] = ManageNavPages.Index;
+}
+
+<script>
+
+    function onSubmit(token) {
+        document.getElementById("profile-form").submit();
+    }
+
+    function GetMap() {
+        var map = new Microsoft.Maps.Map('#myMap', {
+            center: new Microsoft.Maps.Location(40.416775, -3.703790), // Madrid, España
+            zoom: 5
+        });
+        Microsoft.Maps.Events.addHandler(map, 'click', function (e) {
+            // Obtener la ubicación del clic
+            var ubicacion = e.location;
+
+            // Obtener las coordenadas de latitud y longitud
+            var latitud = ubicacion.latitude;
+            var longitud = ubicacion.longitude;
+
+            var lat = document.getElementById('Latitud');
+            var lon = document.getElementById('Longitud');
+
+            lat.value = latitud;
+            lon.value = longitud;
+
+            // Hacer algo con las coordenadas, por ejemplo mostrarlas en una alerta
+            //alert("Latitud: " + latitud + "\nLongitud: " + longitud);
+
+            $("#MymodalPreventScript").modal("hide");
+        });
+    }
+
+    function showModal(){
+        $('#MymodalPreventScript').on('shown.bs.modal', function () {
+            // Obtener el tamaño de la ventana modal
+            var modal = document.getElementById('modalBody');
+            var ancho = modal.clientWidth;
+            var alto = modal.clientHeight;
+
+            // Ajustar el tamaño del contenedor del mapa
+            var contenedorMapa = document.getElementById('myMap');
+            contenedorMapa.style.width = ancho + 'px';
+            contenedorMapa.style.height = alto + 'px';
+
+            // Ajustar el tamaño del mapa
+            map.setOptions({
+                width: ancho,
+                height: alto
+            });
+        });
+           $('#MymodalPreventScript').modal({
+            backdrop: 'static',
+            keyboard: false
+        });
+           // MODAL
+           $("#MymodalPreventScript").modal("show");
+           GetMap();
+        //$("#MymodalPreventScript").modal("hide");
+    }
+
+</script>
+
+<h3>@ViewData["Title"]</h3>
+<partial name="_StatusMessage" for="StatusMessage" />
+<div class="row">
+    <div class="col-md-3"></div>
+    <div class="col-md-6">
+        <form id="profile-form" method="post" enctype="multipart/form-data">
+            @Html.AntiForgeryToken()
+            <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+            <div class="form-floating mb-3">
+                <input asp-for="Username" class="form-control" placeholder="Please choose your username." disabled />
+                <label asp-for="Username" class="form-label"></label>
+            </div>
+            <div class="form-floating mb-3">
+                <input asp-for="Input.PhoneNumber" class="form-control" placeholder="Introduce tu número de teléfono."/>
+                <label asp-for="Input.PhoneNumber" class="form-label"></label>
+                <span asp-validation-for="Input.PhoneNumber" class="text-danger"></span>
+            </div>
+            <div class="form-floating mb-3">
+                <input asp-for="Input.Name" class="form-control" placeholder="@Localizer["CSName"]" />
+                <label asp-for="Input.Name" class="form-label">@Localizer["CSName"]</label>
+                <span asp-validation-for="Input.Name" class="text-danger"></span>
+            </div>
+            <div class="form-floating mb-3">
+                <input asp-for="Input.FLogo" type="file" class="form-control" placeholder="@Localizer["CSLogo"] (max 1Mb)" accept="image/*" />
+                <label asp-for="Input.FLogo" class="form-label">@Localizer["CSLogo"] (max 1Mb)</label>
+                <span asp-validation-for="Input.FLogo" class="text-danger"></span>
+            </div>
+            @if (User.IsInRole("Centro"))
+            {                
+                <div class="form-floating mb-3">
+                    <input asp-for="Input.Url" class="form-control" placeholder="@Localizer["CSUrlWeb"]" />
+                    <label asp-for="Input.Url" class="form-label">@Localizer["CSUrlWeb"]</label>
+                    <span asp-validation-for="Input.Url" class="text-danger"></span>
+                </div>                
+                <div class="form-floating mb-3">
+                    <input asp-for="Input.FHead" type="file" class="form-control" placeholder="Imagen Cabecera (max 5Mb)" accept="image/*" />
+                    <label asp-for="Input.FHead" class="form-label">Imagen Cabecera (max 5Mb)</label>
+                    <span asp-validation-for="Input.FHead" class="text-danger"></span>
+                </div>
+                <button type="button" class="w-100 btn btn-lg btn-primary" onclick="showModal()">GPS &#128070;</button>
+                <div class="form-floating mb-3">
+                    <input asp-for="Input.Latitud" id="Latitud" class="form-control" placeholder="Latitud" />
+                    <label asp-for="Input.Latitud" class="form-label">Latitud</label>
+                    <span asp-validation-for="Input.Latitud" class="text-danger"></span>
+                </div>
+                <div class="form-floating mb-3">
+                    <input asp-for="Input.Longitud" id="Longitud" class="form-control" placeholder="Longitud" />
+                    <label asp-for="Input.Longitud" class="form-label">Longitud</label>
+                    <span asp-validation-for="Input.Longitud" class="text-danger"></span>
+                </div>                                
+            }
+            <button class="g-recaptcha w-100 btn btn-lg btn-primary"
+                    data-sitekey="6LeynK4lAAAAAHX_UKIIB9bI8ALUrCv1NHdP637m"
+                    data-callback='onSubmit'
+                    data-action='submit'>
+                @Localizer["Save"]
+            </button>
+            @*<button id="update-profile-button" type="submit" class="w-100 btn btn-lg btn-primary">@Localizer["Save"]</button>*@
+        </form>
+    </div>
+    <div class="col-md-3"></div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
+
+<!-- Modal -->
+<div class="modal fade" id="MymodalPreventScript">
+    <div class="modal-dialog" style='width:100%;height:100%;'>
+        <div class="modal-content" style="width:100%;height:100%;background-color:transparent;border:none;">
+            <div class="modal-header">
+                <button onclick="$('#MymodalPreventScript').modal('hide');" type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Geolocalizando Centro Se@cker</h4>
+            </div>
+            <div id="modalBody" style='width:100%;height:100%;' class="modal-body">
+                <div id="myMap" style='width:100%;height:100%;'></div>
+
+            </div>
+            <div class="modal-footer">
+                @*<button type="button" class="btn btn-default" data-dismiss="modal">Close</button> *@
+            </div>
+        </div>
+    </div>
+</div>

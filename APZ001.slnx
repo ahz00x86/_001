@@ -1,0 +1,36 @@
+<Solution>
+  <Configurations>
+    <Platform Name="Any CPU" />
+    <Platform Name="ARM" />
+    <Platform Name="ARM64" />
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Project Path="APZ001.csproj">
+    <Platform Solution="*|Any CPU" Project="x64" />
+    <Platform Solution="*|ARM" Project="x64" />
+    <Platform Solution="*|ARM64" Project="ARM64" />
+    <Platform Solution="*|x64" Project="x64" />
+    <Platform Solution="*|x86" Project="x86" />
+    <Deploy />
+  </Project>
+  <Project Path="consoleAPP001/consoleAPP001.csproj" />
+  <Project Path="UWPAPP001/UWPAPP001.csproj" Id="19cbb15e-fa62-41a3-bca6-c17ba722b03b">
+    <Platform Solution="*|Any CPU" Project="x64" />
+    <Platform Solution="*|ARM" Project="x64" />
+    <Platform Solution="*|ARM64" Project="arm64" />
+    <Platform Solution="*|x64" Project="x64" />
+    <Platform Solution="*|x86" Project="x86" />
+    <Deploy />
+  </Project>
+  <Project Path="UWPAPP_001/UWPAPP_001.csproj" Id="cbc5dfb6-c578-473b-b4ab-e9dbaf5734ad">
+    <Platform Solution="*|Any CPU" Project="x64" />
+    <Platform Solution="*|ARM" Project="x64" />
+    <Platform Solution="*|ARM64" Project="arm64" />
+    <Platform Solution="*|x64" Project="x64" />
+    <Platform Solution="*|x86" Project="x86" />
+    <Deploy />
+  </Project>
+  <Project Path="webAPP001/webAPP001.csproj" Id="c8594015-ea9d-4eb0-a76d-3761d7187e6f" />
+  <Project Path="WINAPP001/WINAPP001.csproj" Id="07b392d8-a39b-4642-bb9a-99f7e7098ea8" />
+</Solution>

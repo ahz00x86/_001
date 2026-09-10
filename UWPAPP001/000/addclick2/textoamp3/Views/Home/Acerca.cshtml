@@ -1,0 +1,25 @@
+﻿@Html.AntiForgeryToken()
+@{
+    ViewBag.Title = "Acerca - ";
+}
+<article title="Acerca - conversordetextoamp3.com" style="margin:15px;padding:15px;background-color:deepskyblue;border-radius:15px;color:white;">
+    <header><h1>Acerca</h1></header>
+    <section title="Acerca" style="text-align:center;">
+        <h3>@ViewBag.Message</h3>
+        <p>Datos y dirección de contacto</p>
+        <address>
+            Pérez Sánchez, Pablo<br />
+            c\ Fuensanta Nº 40 30152 (Murcia) ESPAÑA<br />
+            <abbr title="Phone">Teléfono:</abbr>
+            +34 645263898 (Spanish)
+        </address>
+        <address>
+            <strong>Admin:</strong>   <a href="mailto:apzyx@yahoo.com">apzyx@yahoo.com</a><br />
+        </address>
+    </section>
+    <aside>
+        <hr />
+        <h3>BITCOIN & CRYPTOs</h3>
+        <p>Puedes contribuir al proyecto donando a esta dirección de Bitcoin (BTC)<br />BTC: <b>34mRRwCkXNeULaKhVSgE9RGWGi9NvztQKQ</b></p>
+    </aside>
+</article>

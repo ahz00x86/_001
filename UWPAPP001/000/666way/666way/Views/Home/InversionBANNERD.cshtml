@@ -1,0 +1,23 @@
+﻿
+@{
+    ViewBag.Title = "Inversión banner Derecho";
+    _666way.Models.publicidadModel pD = (_666way.Models.publicidadModel)Model;
+}
+
+<h1>Inversión banner Derecho</h1>
+<p>Ahora podrá realizar la inversión en su banner (lado derecho)</p>
+<p>Así se verá su banner en el conjunto de banners derecho:</p>
+<br />
+<br />
+<a target="_blank" href="@pD.UrlD"><img src="@pD.UrlImage" height="100" width="100" style="height:100px;width:100px;" /></a>
+<br />
+<br />
+<p>Recuerde, a mayor inversión mayor posición en la lista de banners.</p>
+<form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
+    <input type="hidden" name="cmd" value="_s-xclick">
+    <input type="hidden" name="hosted_button_id" value="6YP28PDCGTBWU">
+    <input name="custom" value="@pD.Id" type="hidden" />
+    <input name="notify_url" value="http://www.666way.com/Home/PayPal_IPND" type="hidden" />
+    <input type="image" src="https://www.paypalobjects.com/es_ES/ES/i/btn/btn_paynowCC_LG.gif" border="0" name="submit" alt="PayPal, la forma rápida y segura de pagar en Internet.">
+    <img alt="" border="0" src="https://www.paypalobjects.com/es_ES/i/scr/pixel.gif" width="1" height="1">
+</form>

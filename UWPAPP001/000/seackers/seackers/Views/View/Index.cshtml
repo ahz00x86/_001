@@ -1,0 +1,104 @@
+﻿@using seackers.Models.InApp
+@model ViewViewModel
+@Html.AntiForgeryToken()
+
+<div class="row">    
+    <div class="col-md-6">
+        <table style="width:100%;text-align:center;">
+            <tr>
+                <td>
+                    <h2><b>@Model.Center.Name 💖@Model.Center.Likes.ToString()</b></h2>
+                    <img style="height:100px;width:100px;" src="@Model.Center.Logo" /><br />
+                    <b>&#128222;@Model.Center.Phone</b>&nbsp;&nbsp;
+                    @if (!String.IsNullOrEmpty(Model.Center.WebSite))
+                    {
+                        <a target="_blank" href="@Model.Center.WebSite">web</a>
+                        <b>&nbsp;&nbsp;</b>
+                    }
+                    <a target="_blank" href="https://www.google.com/maps/dir/?api=1&destination=@Model.Center.Latitud,@Model.Center.Longitud">&#128663;</a>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    @{
+                        if (User != null && User.IsInRole("Usuario"))
+                        {
+                            if (Model.Center.MyLike.HasValue && Model.Center.MyLike.Value)
+                            {
+                                <button style="border:none;background-color:transparent;" id="deslikeB"><div id="heart"></div></button>
+                                <button style="border:none;background-color:transparent;display:none;" id="likeB"><div id="emptyHeart"></div></button>
+                            }
+                            else
+                            {
+                                <button style="border:none;background-color:transparent;display:none;" id="deslikeB"><div id="heart"></div></button>
+                                <button style="border:none;background-color:transparent;" id="likeB"><div id="emptyHeart"></div></button>
+                            }
+
+                            <script>
+                                window.addEventListener('load', function () {
+
+                                    $(document).ready(function () {
+
+                                        $('#likeB').click(function () {
+                                            var parametroCadena = '@Model.Center.Id';
+                                            var parametroBooleano = true;
+                                            var token = $('input[name="__RequestVerificationToken"]').val();
+
+                                            $.ajax({
+                                                type: 'POST',
+                                                url: '@Url.Action("Like", "User")',
+                                                data: {
+                                                    centerId: parametroCadena,
+                                                    like: parametroBooleano,
+                                                    __RequestVerificationToken: token
+                                                },
+                                                success: function (result) {
+
+                                                    $('#deslikeB').show();
+                                                    $('#likeB').hide();
+                                                    
+                                                }
+                                            });
+                                        });
+
+                                        $('#deslikeB').click(function () {
+                                            var parametroCadena = '@Model.Center.Id';
+                                            var parametroBooleano = false;
+                                            var token = $('input[name="__RequestVerificationToken"]').val();
+
+                                            $.ajax({
+                                                type: 'POST',
+                                                url: '@Url.Action("Like", "User")',
+                                                data: {
+                                                    centerId: parametroCadena,
+                                                    like: parametroBooleano,
+                                                    __RequestVerificationToken: token
+                                                },
+                                                success: function (result) {
+
+                                                    $('#likeB').show();
+                                                    $('#deslikeB').hide();
+
+                                                }
+                                            });
+                                        });
+
+                                    });
+                                });
+                            </script>
+
+                        }
+                    }
+                </td>
+            </tr>
+
+        </table>        
+    </div>
+    <div class="col-md-6">
+        @if (!String.IsNullOrEmpty(Model.Center.Head))
+        {
+            <img style="height:200px;width:400px;" src="@Model.Center.Head"/>
+        }
+    </div>
+</div>
+

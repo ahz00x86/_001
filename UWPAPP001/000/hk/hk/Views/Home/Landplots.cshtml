@@ -1,0 +1,204 @@
+﻿@{
+    ViewData["Title"] = "hk - TIERRAS";
+}
+
+<div class="text-center">
+    <h1 class="display-4">TIERRAS</h1>    
+</div>
+
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sscjs@latest/dist/ssc.min.js"></script>
+
+<script>
+    const ssc = new SSC('https://api.hive-engine.com/rpc');        
+    const baseRow = document.createElement('tr');
+    const baseCell = document.createElement('td');
+    const baseTH = document.createElement('th');
+    const lineBreak = document.createElement('br');
+
+    async function landplots() {
+        var money = new Intl.NumberFormat('en-EN');
+        money.style = 'currency';
+        var btn = document.getElementById('btLandPlots');
+            btn.disabled = true;
+        var container = document.getElementById('container');
+        container.innerHTML = "";
+        container.append("CARGANDO DATOS");
+        
+        $.ajaxSetup({ async: false });
+        var offsetV = BigInt(0);
+        var completarDatos = true;
+        var arrayLANDPLOTSbyRegions = [];
+        var usuariosUnicos = [];
+        while (completarDatos) {
+                        
+            await $.ajax({
+                url: "https://engine.rishipanthee.com/contracts",
+                method: "POST",
+                contentType: "application/json",
+                async: false,
+                data: '{"jsonrpc":"2.0", "method":"find", "params":{"contract":"nft", "table":"HKFARMinstances","query":{"properties.TYPE": "plot"},"offset":'+ offsetV + ', "limit":1000, "indexes":[]}, "id": 1}'
+                ,
+
+                success: function(response) {
+                    console.log(response.result);
+                    for (var i = 0; i < response.result.length; i++) {
+                                                
+                        var dataS = JSON.stringify(response.result[i])
+                        var dataJs = JSON.parse(dataS);
+
+                        var region = dataJs.properties.NAME;
+                        var account = dataJs.account;
+                        var occupied = dataJs.properties.OCCUPIED;
+
+                        if (!usuariosUnicos.includes(account)) {
+                            usuariosUnicos.push(account);
+                        }
+
+                        var encontradaRegion = false;
+                        for (var j = 0; j < arrayLANDPLOTSbyRegions.length; j++) {
+
+                            if (arrayLANDPLOTSbyRegions[j].region == region)
+                            {
+                                encontradaRegion = true;
+                                arrayLANDPLOTSbyRegions[j].nplots++;
+
+                                if (occupied) {
+                                    arrayLANDPLOTSbyRegions[j].occupied++;
+                                }
+
+                                if (!arrayLANDPLOTSbyRegions[j].accounts.includes(account)) {
+                                    arrayLANDPLOTSbyRegions[j].accounts.push(account);
+                                }
+
+                            }
+                        }
+
+                        if (!encontradaRegion) {
+
+                            var occupiedTemp = 0;
+                            if (occupied) {
+                                occupiedTemp++;
+                            }
+
+                            var regionJs = JSON.parse('{"region":"' + region + '", "nplots":1, "occupied":' + occupiedTemp + ', "accounts":["'+account+'"]}');
+                            arrayLANDPLOTSbyRegions.push(regionJs);
+                        }
+
+                    }
+
+                    if (response.result.length < 1000) {
+                        completarDatos = false;
+                    }
+                    
+                    offsetV = offsetV + BigInt(1000);
+                },
+                error: function(error) {
+                    console.log(error);
+                    alert("error");
+                    completarDatos = false;
+                }
+            });
+        }
+
+        console.log(arrayLANDPLOTSbyRegions);
+
+        // Preparamos la tabla que contendrá los datos
+        var table = document.createElement('table');
+        table.style.marginLeft = 'auto';
+        table.style.marginRight = 'auto';
+
+        
+        container.innerHTML = "";
+        container.append(lineBreak.cloneNode(false));
+        container.append(lineBreak.cloneNode(false));
+        
+        // ESTALBECEMOS LAS CABECERAS
+        var headRow = baseRow.cloneNode(false);
+        headRow.style.backgroundColor = 'DarkGreen';
+
+        var regionHeadCell = baseTH.cloneNode(false);
+        regionHeadCell.innerHTML = '<b>REGIÓN</b>';
+        headRow.appendChild(regionHeadCell);
+
+        var plotsHeadCell = baseTH.cloneNode(false);
+        plotsHeadCell.innerHTML = '<b>PLOTS</b>';
+        headRow.appendChild(plotsHeadCell);
+
+        var occupiedHeadCell = baseTH.cloneNode(false);
+        occupiedHeadCell.innerHTML = '<b>OCUPADOS</b>';
+        headRow.appendChild(occupiedHeadCell);
+
+        var accountsHeadCell = baseTH.cloneNode(false);
+        accountsHeadCell.innerHTML = '<b>DUEÑOS</b>';
+        headRow.appendChild(accountsHeadCell);
+
+        table.appendChild(headRow);
+                        
+        var plotsTotal = parseFloat(0);
+        var occupiedTotal = parseFloat(0);
+
+        for (var j = 0; j < arrayLANDPLOTSbyRegions.length; j++) {
+            var myRow = baseRow.cloneNode(false);
+
+            var regionCell = baseCell.cloneNode(false);
+            regionCell.style.backgroundColor = 'DarkSeaGreen';
+            regionCell.innerHTML = arrayLANDPLOTSbyRegions[j].region;
+            myRow.appendChild(regionCell);
+                        
+            var plotsCell = baseCell.cloneNode(false);
+            plotsCell.innerHTML = money.format(arrayLANDPLOTSbyRegions[j].nplots);
+            myRow.appendChild(plotsCell);
+
+            var occupiedCell = baseCell.cloneNode(false);
+            occupiedCell.innerHTML = money.format(arrayLANDPLOTSbyRegions[j].occupied);
+            myRow.appendChild(occupiedCell);
+
+            var accountsCell = baseCell.cloneNode(false);
+            accountsCell.innerHTML = money.format(arrayLANDPLOTSbyRegions[j].accounts.length);
+            accountsCell.title = arrayLANDPLOTSbyRegions[j].accounts;
+            myRow.appendChild(accountsCell);
+                        
+            table.appendChild(myRow);
+
+
+            plotsTotal = plotsTotal + arrayLANDPLOTSbyRegions[j].nplots;
+            occupiedTotal = occupiedTotal + arrayLANDPLOTSbyRegions[j].occupied;
+
+        }
+
+        // Introducimos fila final con el total
+        var footRow = baseRow.cloneNode(false);
+        footRow.style.backgroundColor = 'silver';
+
+        var regionFootCell = baseCell.cloneNode(false);
+        regionFootCell.innerHTML = 'TOTAL';
+        footRow.appendChild(regionFootCell);
+
+        var plotsFootCell = baseCell.cloneNode(false);
+        plotsFootCell.innerHTML = money.format(plotsTotal);
+        footRow.appendChild(plotsFootCell);
+
+        var occupiedFootCell = baseCell.cloneNode(false);
+        occupiedFootCell.innerHTML = money.format(occupiedTotal);
+        footRow.appendChild(occupiedFootCell);
+
+        var accountsFootCell = baseCell.cloneNode(false);        
+        accountsFootCell.innerHTML = money.format(usuariosUnicos.length) + '<b>*</b>';
+        footRow.appendChild(accountsFootCell);
+                    
+        table.appendChild(footRow);
+
+        container.append(table);
+        container.append(lineBreak.cloneNode(false));        
+        container.append('* TOTAL DE DUEÑOS ÚNICOS (No se corresponde con el total de la columna, ya que un mismo dueño puede contabilizar en varias regiones)');
+        btn.disabled = false;
+    }
+
+</script>
+<div class="text-center">
+    <input type="button" class="btn btn-secondary" id="btLandPlots" name="btLandPlots" value="Obtener" onclick="landplots()">
+</div>
+<div class="text-center" id="container">   
+</div>
+

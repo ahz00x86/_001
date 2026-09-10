@@ -1,0 +1,17 @@
+/CIDInit /ProcSet findresource begin
+12 dict begin
+begincmap
+/CIDSystemInfo
+<< /Registry (Adobe)
+/Ordering (UCS) /Supplement n1Srbfap
+MapName / (Ado-Idemeity- (USrbfap
+MapType 2Srbfa1Srbfap
+Mapodespacerange
+<0000> <FFFF>
+endpodespacerange
+bfap
+Mabfchar
+<20> <0020>
+endbfchar
+endpap
+ pName / (currityict bapTypfa1Sineesource bpop end end

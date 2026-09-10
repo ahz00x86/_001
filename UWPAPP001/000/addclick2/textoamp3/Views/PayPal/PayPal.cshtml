@@ -1,0 +1,56 @@
+﻿
+@{
+    ViewBag.Title = "PayPal";
+    textoamp3.Models.PayPalModel model = Model;
+}
+
+<h2>PayPal</h2>
+
+<form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
+    <input type="hidden" name="cmd" value="_s-xclick">
+    <input type="hidden" name="hosted_button_id" value="MQJZHRZMF9GR2">
+    <input type="hidden" name="custom" value="@ViewBag.email">
+    <input name="notify_url" value="http://www.conversordetextoamp3.com/PayPal/PayPalPaymentNotification" type="hidden" />
+    <table style="width:100%;">
+        <tr><td><input type="hidden" name="on0" value="Opciones">Opciones</td></tr>
+        <tr>
+            <td>
+                <select name="os0">
+                    <option value="Seleccion 1 dia">Seleccion 1 dia €5,99 EUR</option>
+                    <option value="Seleccion 31 dias">Seleccion 31 dias €50,00 EUR</option>
+                </select>
+            </td>
+        </tr>
+    </table>
+    <input type="hidden" name="currency_code" value="EUR">
+    <input type="image" src="https://www.paypalobjects.com/es_ES/ES/i/btn/btn_paynow_LG.gif" border="0" name="submit" alt="PayPal, la forma rápida y segura de pagar en Internet.">
+    <img alt="" border="0" src="https://www.paypalobjects.com/es_ES/i/scr/pixel.gif" width="1" height="1">
+</form>
+
+<br />
+(La selección 1 o 31 días activará la conversión SIN PUBLICIDAD y de más de 500 caracteres, podrá convertir todos los archivos durante ese periodo de tiempo, tenga en cuenta que sólo podrá convertir un archivo a la vez, cuando termine el que tiene en curso podrá procesar otro, sus archivos no estarán limitados a 500 caracteres.)
+<br />
+<br />
+<a class="btn btn-primary" href="javascript:window.location.reload()">Actualizar</a>
+<br />
+<br />
+@if (model.Payments == null || model.Payments.Count == 0)
+{
+    <div class="row">
+        <div class="col-md-12">
+            <p>(Aún no dipone de ningún pago)</p>
+        </div>
+    </div>
+}
+else
+{
+    foreach (textoamp3.Models.PayPalUserPay d in model.Payments)
+    {
+        <div class="row">
+            <div class="col-md-12">
+                <br /><p style="font-size:25px;">@Html.Raw(String.Concat("<b class='text-success'>", String.Format("{0:dd/MM/yyyy}", d.Fecha), " </b>")) @d.Importe €</p>
+            </div>
+        </div>
+    }
+}
+

@@ -1,0 +1,882 @@
+﻿@{
+    ViewData["Title"] = "hk - E/S & QUEMA";
+}
+
+<div class="text-center">
+    <h1 class="display-4">E/S & QUEMA</h1>   
+    
+    <input type="checkbox" id="hk-vault" name="hk-vault" value="hk-vault" checked>
+    <label for="vehicle1"> hk-vault</label>
+
+    <input type="checkbox" id="hk-nvault" name="hk-nvault" value="hk-nvault" checked>
+    <label for="vehicle2"> hk-nvault</label>
+
+    <input type="checkbox" id="hk-forge" name="hk-forge" value="hk-forge" checked>
+    <label for="vehicle3"> hk-forge</label>
+
+    <input type="checkbox" id="hk-dev" name="hk-dev" value="hk-dev" checked>
+    <label for="vehicle1"> hk-dev</label>
+
+    <input type="checkbox" id="hashkings" name="hashkings" value="hashkings" checked>
+    <label for="vehicle2"> hashkings</label>
+
+    <input type="checkbox" id="hk-bang" name="hk-bang" value="hk-bang" checked>
+    <label for="vehicle3"> hk-bang</label><br><br>
+
+    <input type="button" class="btn btn-secondary" id="btSearch" name="btSearch" value="Histórico" onclick="historico()">
+    <input type="button" class="btn btn-secondary" id="btLastBurn" name="btLastBurn" value="Última quema" onclick="LastBurn()">
+
+</div>
+
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sscjs@latest/dist/ssc.min.js"></script>
+<script>
+    const ssc = new SSC('https://api.hive-engine.com/rpc');
+    var quemadoTotal = parseFloat(0);
+    var enviadosTotal = parseFloat(0);
+    var recibidosTotal = parseFloat(0);
+    var compradosTotal = parseFloat(0);
+    var balanceTotal = parseFloat(0);
+    var balanceCTotal = parseFloat(0);
+    var marketTotal = parseFloat(0);
+    var swapTotal = parseFloat(0);
+    var contractTotal = parseFloat(0);
+    var marketOrderTotal = parseFloat(0);
+    const baseRow = document.createElement('tr');
+    const baseCell = document.createElement('td');
+    const baseTH = document.createElement('th');
+    const lineBreak = document.createElement('br');
+    var counterN = 0;
+    var counterN2 = 0;
+
+    function sleep(ms) {
+          var start = new Date().getTime(), expire = start + ms;
+          while (new Date().getTime() < expire) { }
+          return;
+        }
+
+    async function LastBurn() {  
+        
+        try {
+
+            var btn = document.getElementById('btSearch');
+            btn.disabled = true;
+
+            var btn2 = document.getElementById('btLastBurn');
+            btn2.disabled = true;
+
+            //   $('#MymodalPreventScript').modal({
+            //    backdrop: 'static',
+            //    keyboard: false
+            //});
+            //   // MODAL
+            //   $("#MymodalPreventScript").modal("show");
+
+            $.ajaxSetup({ async: false });
+
+            quemadoTotal = parseFloat(0);
+            enviadosTotal = parseFloat(0);
+            recibidosTotal = parseFloat(0);
+            compradosTotal = parseFloat(0);
+            balanceTotal = parseFloat(0);
+            balanceCTotal = parseFloat(0);
+            marketTotal = parseFloat(0);
+            marketOrderTotal = parseFloat(0);
+            swapTotal = parseFloat(0);
+            contractTotal = parseFloat(0);
+
+            // Preparamos la tabla que contendrá los datos
+            var table = document.createElement('table');
+            table.style.marginLeft = 'auto';
+            table.style.marginRight = 'auto';
+
+            var container = document.getElementById('container');
+            container.innerHTML = "";
+            container.append(lineBreak.cloneNode(false));
+            container.append(lineBreak.cloneNode(false));
+            container.innerHTML = "CARGANDO DATOS";
+            
+
+            // ESTALBECEMOS LAS CABECERAS
+            var headRow = baseRow.cloneNode(false);
+            headRow.style.backgroundColor = 'DarkGreen';
+
+            var accountHeadCell = baseTH.cloneNode(false);
+            accountHeadCell.innerHTML = '<b>CUENTA</b>';
+            headRow.appendChild(accountHeadCell);
+
+            var quemadoHeadCell = baseTH.cloneNode(false);
+            quemadoHeadCell.innerHTML = '<b>BUDS ÚLTIMA QUEMA</b>';
+            headRow.appendChild(quemadoHeadCell);
+
+            var BUDSHeadCell = baseTH.cloneNode(false);
+            BUDSHeadCell.innerHTML = '<b>BUDS RECIBIDOS</b>';
+            headRow.appendChild(BUDSHeadCell);
+
+            var RwardsHeadCell = baseTH.cloneNode(false);
+            RwardsHeadCell.innerHTML = '<b>BUDS ENVIADOS</b>';
+            headRow.appendChild(RwardsHeadCell);
+
+            var compradosHeadCell = baseTH.cloneNode(false);
+            compradosHeadCell.innerHTML = '<b>BUDS COMPRADOS</b>';
+            headRow.appendChild(compradosHeadCell);
+
+            var marketHeadCell = baseTH.cloneNode(false);
+            marketHeadCell.innerHTML = '<b>BUDS MARKET FEE</b>';
+            headRow.appendChild(marketHeadCell);
+
+            var marketOrdersHeadCell = baseTH.cloneNode(false);
+            marketOrdersHeadCell.innerHTML = '<b>BUDS MARKET</b>';
+            headRow.appendChild(marketOrdersHeadCell);
+
+            var contractHeadCell = baseTH.cloneNode(false);
+            contractHeadCell.innerHTML = '<b>BUDS SWAP</b>';
+            headRow.appendChild(contractHeadCell);
+
+            var swapHeadCell = baseTH.cloneNode(false);
+            swapHeadCell.innerHTML = '<b>BUDS CONTRACT</b>';
+            headRow.appendChild(swapHeadCell);
+
+            //var balanceHeadCell = baseTH.cloneNode(false);
+            //balanceHeadCell.innerHTML = '<b>BUDS BALANCE REAL</b>';
+            //headRow.appendChild(balanceHeadCell);
+
+            var balanceCHeadCell = baseTH.cloneNode(false);
+            balanceCHeadCell.innerHTML = '<b>BUDS BALANCE CALCULADO</b>';
+            headRow.appendChild(balanceCHeadCell);
+
+            table.appendChild(headRow);
+
+            //hk-vault   (`paquetes de avatares)
+            //hk-nvault (porros)
+            //hk-forge  (forja)
+            //hk-dev     (shared market fee)
+            //hashkings  (torres de agua)
+            //hk-bang   (paquetes bang!)
+            var cuentas = [];
+            if (document.querySelector('#hk-vault').checked) {
+                cuentas.push('hk-vault');
+                //getAccountHistory("hk-vault", table);
+            }
+            if (document.querySelector('#hk-nvault').checked) {
+                cuentas.push('hk-nvault');
+                //getAccountHistory("hk-nvault", table);
+            }
+            if (document.querySelector('#hk-forge').checked) {
+                cuentas.push('hk-forge');
+                //getAccountHistory("hk-forge", table);
+            }
+            if (document.querySelector('#hk-dev').checked) {
+                cuentas.push('hk-dev');
+                //getAccountHistory("hk-dev", table);
+            }
+            if (document.querySelector('#hashkings').checked) {
+                cuentas.push('hashkings');
+                //getAccountHistory("hashkings", table);
+            }
+            if (document.querySelector('#hk-bang').checked) {
+                cuentas.push('hk-bang');
+                //getAccountHistory("hk-bang", table);
+            }
+
+            counterN2 = 0;
+
+            for (var i = 0; i < cuentas.length; i++) {
+                await getAccountLastBurn(cuentas[i], table, cuentas[cuentas.length - 1], i);
+            }
+        }
+        catch(err) {
+          var btn = document.getElementById('btSearch');
+            btn.disabled = false;
+
+            var btn2 = document.getElementById('btLastBurn');
+            btn2.disabled = false;
+
+            alert('OCURRIO UN ERROR EN LA BúSQUEDA, INTéNTELO DE NUEVO' + err);
+        }
+    };
+
+async function getAccountLastBurn(accountV, table, cuentaFinal, k) {
+    var money = new Intl.NumberFormat('en-EN');
+    money.style = 'currency';
+    var container = document.getElementById('container');
+    var btn = document.getElementById('btSearch');
+    var btn2 = document.getElementById('btLastBurn');
+
+    //await ssc.findOne(
+    //    'tokens',
+    //    'balances',
+    //    {
+    //        account: accountV,
+    //        symbol: "BUDS"
+    //    },
+    //    (err, result) => {
+
+
+    //        var balance = parseFloat(0);
+    //        if (result != null) {
+    //            balance = parseFloat(result.balance);
+    //        }
+
+
+    var startV = BigInt(0);
+    var completarDatos = true;
+    var arrayHKNVAULT = [];
+    while (completarDatos) {
+        await  $.get({
+            url: "https://history.hive-engine.com/accountHistory",
+            data: {
+                account: accountV,
+                symbol: "BUDS",
+                offset: startV,
+                limit: 500
+            },
+            async: false
+        },
+            function(data, status) {
+
+                console.log(data);
+                console.log(status);
+
+                for (var i = 0; i < data.length; i++) {
+                    arrayHKNVAULT.push(data[i]);
+
+                    var dataS = JSON.stringify(data[i])
+                    var dataJs = JSON.parse(dataS);
+
+                    if (dataJs.symbol == 'BUDS') {
+                        if (dataJs.operation == 'tokens_transfer') {
+                            if (dataJs.to == 'null') {
+                                completarDatos = false;
+                            }
+                        }
+                    }
+                }
+
+                if (data.length < 500) {
+
+                    completarDatos = false;
+                }
+
+                startV = startV + BigInt(500);
+            });
+        sleep(333);
+    }
+
+    console.log(arrayHKNVAULT);
+    var quemado = parseFloat(0);
+    var enviados = parseFloat(0);
+    var recibidos = parseFloat(0);
+    var comprados = parseFloat(0);
+    var balanceC = parseFloat(0);
+    var marketFees = parseFloat(0);
+    var marketOrder = parseFloat(0);
+    var swap = parseFloat(0);
+    var contract = parseFloat(0);
+
+    var quema = false;
+    for (var i = 0; i < arrayHKNVAULT.length; i++) {
+        var myJson = JSON.stringify(arrayHKNVAULT[i])
+        var json = JSON.parse(myJson);
+        if (!quema) {
+            if (json.symbol == 'BUDS') {
+                if (json.operation == 'tokens_transfer') {
+                    if (json.to == 'null') {
+                        quemado = parseFloat(json.quantity);
+                        quema = true;
+
+                        //quemadoTotal = parseFloat(0);
+                        //enviadosTotal = parseFloat(0);
+                        //recibidosTotal = parseFloat(0);
+                        //compradosTotal = parseFloat(0);
+                        //balanceTotal = parseFloat(0);
+                        //balanceCTotal = parseFloat(0);
+                        //marketTotal = parseFloat(0);
+                        //marketOrderTotal = parseFloat(0);
+                        //swapTotal = parseFloat(0);
+                        //contractTotal = parseFloat(0);
+
+                    }
+                    else {
+                        if (json.to == accountV) {
+                            recibidos = recibidos + parseFloat(json.quantity);
+                        }
+                        else {
+                            enviados = enviados + parseFloat(json.quantity);
+                        }
+                    }
+                }
+                else if (json.operation == 'market_buy') {
+                    comprados = comprados + parseFloat(json.quantityTokens);
+
+                }
+                else if (json.operation == 'nftmarket_transferFee') {
+                    if (json.to == accountV) {
+                        marketFees = marketFees + parseFloat(json.quantity);
+                    }
+                }
+                else if (json.operation == 'tokens_issue') {
+                    if (json.to == accountV) {
+                        contract = contract + parseFloat(json.quantity);
+                    }
+                }
+                else if (json.operation == 'market_sell') {
+                    marketOrder = marketOrder + parseFloat(json.quantityHive);
+
+                }
+                else if (json.operation == 'marketpools_swapTokens') {
+                    if (json.to == accountV) {
+                        swap = swap + parseFloat(json.quantity);
+                    }
+                }
+                else {
+                    console.log(myJson);
+                };
+            }
+        }
+    }
+
+    var myRow = baseRow.cloneNode(false);
+
+    var accountCell = baseCell.cloneNode(false);
+    accountCell.innerHTML = accountV;
+    myRow.appendChild(accountCell);
+
+    var quemadoCell = baseCell.cloneNode(false);
+    quemadoCell.innerHTML = money.format(Math.round(quemado));
+    myRow.appendChild(quemadoCell);
+
+    var BUDSCell = baseCell.cloneNode(false);
+    BUDSCell.innerHTML = money.format(Math.round(recibidos));
+    myRow.appendChild(BUDSCell);
+
+    var RewardsCell = baseCell.cloneNode(false);
+    RewardsCell.innerHTML = money.format(Math.round(enviados));
+    myRow.appendChild(RewardsCell);
+
+    var compradosCell = baseCell.cloneNode(false);
+    compradosCell.innerHTML = money.format(Math.round(comprados));
+    myRow.appendChild(compradosCell);
+
+    var marketCell = baseCell.cloneNode(false);
+    marketCell.innerHTML = money.format(Math.round(marketFees));
+    myRow.appendChild(marketCell);
+
+    var marketOrderCell = baseCell.cloneNode(false);
+    marketOrderCell.innerHTML = money.format(Math.round(marketOrder));
+    myRow.appendChild(marketOrderCell);
+
+    var swapCell = baseCell.cloneNode(false);
+    swapCell.innerHTML = money.format(Math.round(swap));
+    myRow.appendChild(swapCell);
+
+    var contractCell = baseCell.cloneNode(false);
+    contractCell.innerHTML = money.format(Math.round(contract));
+    myRow.appendChild(contractCell);
+
+    //var balanceCell = baseCell.cloneNode(false);
+    //balanceCell.style.backgroundColor = 'DarkSeaGreen';
+    //balanceCell.innerHTML = Math.round(balance);
+    //myRow.appendChild(balanceCell);
+
+    balanceC = recibidos + comprados + marketFees + marketOrder + swap + contract - enviados;
+
+    var balanceCCell = baseCell.cloneNode(false);
+    balanceCCell.style.backgroundColor = 'DarkSeaGreen';
+    balanceCCell.innerHTML = money.format(Math.round(balanceC));
+    myRow.appendChild(balanceCCell);
+
+    table.appendChild(myRow);
+
+    quemadoTotal = quemadoTotal + quemado;
+    enviadosTotal = enviadosTotal + enviados;
+    recibidosTotal = recibidosTotal + recibidos;
+    compradosTotal = compradosTotal + comprados;
+    //balanceTotal = balanceTotal + balance;
+    balanceCTotal = balanceCTotal + balanceC;
+    marketTotal = marketTotal + marketFees;
+    marketOrderTotal = marketOrderTotal + marketOrder;
+    swapTotal = swapTotal + swap;
+    contractTotal = contractTotal + contract;
+
+    counterN2 = counterN2 + 1;
+
+    if (accountV == cuentaFinal) {
+        // Introducimos fila final con el total
+        var footRow = baseRow.cloneNode(false);
+        footRow.style.backgroundColor = 'silver';
+
+        var accountFootCell = baseCell.cloneNode(false);
+        accountFootCell.innerHTML = 'TOTAL';
+        footRow.appendChild(accountFootCell);
+
+        var quemadoFootCell = baseCell.cloneNode(false);
+        quemadoFootCell.innerHTML = money.format(Math.round(quemadoTotal));
+        footRow.appendChild(quemadoFootCell);
+
+        var BUDSFootCell = baseCell.cloneNode(false);
+        BUDSFootCell.innerHTML = money.format(Math.round(recibidosTotal));
+        footRow.appendChild(BUDSFootCell);
+
+        var RewardsFootCell = baseCell.cloneNode(false);
+        RewardsFootCell.innerHTML = money.format(Math.round(enviadosTotal));
+        footRow.appendChild(RewardsFootCell);
+
+        var compradosFootCell = baseCell.cloneNode(false);
+        compradosFootCell.innerHTML = money.format(Math.round(compradosTotal));
+        footRow.appendChild(compradosFootCell);
+
+        var marketFootCell = baseCell.cloneNode(false);
+        marketFootCell.innerHTML = money.format(Math.round(marketTotal));
+        footRow.appendChild(marketFootCell);
+
+        var marketOrderFootCell = baseCell.cloneNode(false);
+        marketOrderFootCell.innerHTML = money.format(Math.round(marketOrderTotal));
+        footRow.appendChild(marketOrderFootCell);
+
+        var swapFootCell = baseCell.cloneNode(false);
+        swapFootCell.innerHTML = money.format(Math.round(swapTotal));
+        footRow.appendChild(swapFootCell);
+
+        var contractFootCell = baseCell.cloneNode(false);
+        contractFootCell.innerHTML = money.format(Math.round(contractTotal));
+        footRow.appendChild(contractFootCell);
+
+        //var balanceFootCell = baseCell.cloneNode(false);
+        //balanceFootCell.innerHTML = Math.round(balanceTotal);
+        //footRow.appendChild(balanceFootCell);
+
+        var balanceCFootCell = baseCell.cloneNode(false);
+        balanceCFootCell.innerHTML = money.format(Math.round(balanceCTotal));
+        footRow.appendChild(balanceCFootCell);
+
+        table.appendChild(footRow);
+
+        container.innerHTML = "";
+        container.append(lineBreak.cloneNode(false));
+        container.append(lineBreak.cloneNode(false));
+        container.append('ÚLTIMA QUEMA');
+        container.append(lineBreak.cloneNode(false));
+        container.append(table);
+        container.append(lineBreak.cloneNode(false));
+        container.append('* BALANCE CALCULADO = BUDS RECIBIDOS + BUDS COMPRADOS + BUDS MARKET FEES + BUDS MARKET + BUDS SWAP + BUDS CONTRACT - BUDS ENVIADOS');
+
+        //$("#MymodalPreventScript").modal("hide");
+
+        btn.disabled = false;
+        btn2.disabled = false;
+    }
+
+    //});
+}
+
+    async function historico() {
+
+        try {
+
+            var btn = document.getElementById('btSearch');
+            btn.disabled = true;
+
+            var btn2 = document.getElementById('btLastBurn');
+            btn2.disabled = true;
+
+            //   $('#MymodalPreventScript').modal({
+            //    backdrop: 'static',
+            //    keyboard: false
+            //});
+            //   // MODAL
+            //   $("#MymodalPreventScript").modal("show");
+
+            $.ajaxSetup({ async: false });
+
+            quemadoTotal = parseFloat(0);
+            enviadosTotal = parseFloat(0);
+            recibidosTotal = parseFloat(0);
+            compradosTotal = parseFloat(0);
+            balanceTotal = parseFloat(0);
+            balanceCTotal = parseFloat(0);
+            marketTotal = parseFloat(0);
+            marketOrderTotal = parseFloat(0);
+            swapTotal = parseFloat(0);
+            contractTotal = parseFloat(0);
+
+            // Preparamos la tabla que contendrá los datos
+            var table = document.createElement('table');
+            table.style.marginLeft = 'auto';
+            table.style.marginRight = 'auto';
+
+            var container = document.getElementById('container');
+            container.innerHTML = "";
+            container.append(lineBreak.cloneNode(false));
+            container.append(lineBreak.cloneNode(false));
+            container.innerHTML = "CARGANDO DATOS (Es un histórico, paciencia)";
+            
+
+            // ESTALBECEMOS LAS CABECERAS
+            var headRow = baseRow.cloneNode(false);
+            headRow.style.backgroundColor = 'DarkGreen';
+
+            var accountHeadCell = baseTH.cloneNode(false);
+            accountHeadCell.innerHTML = '<b>CUENTA</b>';
+            headRow.appendChild(accountHeadCell);
+
+            var quemadoHeadCell = baseTH.cloneNode(false);
+            quemadoHeadCell.innerHTML = '<b>BUDS QUEMADOS</b>';
+            headRow.appendChild(quemadoHeadCell);
+
+            var BUDSHeadCell = baseTH.cloneNode(false);
+            BUDSHeadCell.innerHTML = '<b>BUDS RECIBIDOS</b>';
+            headRow.appendChild(BUDSHeadCell);
+
+            var RwardsHeadCell = baseTH.cloneNode(false);
+            RwardsHeadCell.innerHTML = '<b>BUDS ENVIADOS</b>';
+            headRow.appendChild(RwardsHeadCell);
+
+            var compradosHeadCell = baseTH.cloneNode(false);
+            compradosHeadCell.innerHTML = '<b>BUDS COMPRADOS</b>';
+            headRow.appendChild(compradosHeadCell);
+
+            var marketHeadCell = baseTH.cloneNode(false);
+            marketHeadCell.innerHTML = '<b>BUDS MARKET FEE</b>';
+            headRow.appendChild(marketHeadCell);
+
+            var marketOrdersHeadCell = baseTH.cloneNode(false);
+            marketOrdersHeadCell.innerHTML = '<b>BUDS MARKET</b>';
+            headRow.appendChild(marketOrdersHeadCell);
+
+            var contractHeadCell = baseTH.cloneNode(false);
+            contractHeadCell.innerHTML = '<b>BUDS SWAP</b>';
+            headRow.appendChild(contractHeadCell);
+
+            var swapHeadCell = baseTH.cloneNode(false);
+            swapHeadCell.innerHTML = '<b>BUDS CONTRACT</b>';
+            headRow.appendChild(swapHeadCell);
+
+            var balanceHeadCell = baseTH.cloneNode(false);
+            balanceHeadCell.innerHTML = '<b>BUDS BALANCE REAL</b>';
+            headRow.appendChild(balanceHeadCell);
+
+            var balanceCHeadCell = baseTH.cloneNode(false);
+            balanceCHeadCell.innerHTML = '<b>BUDS BALANCE CALCULADO</b>';
+            headRow.appendChild(balanceCHeadCell);
+
+            table.appendChild(headRow);
+
+            //hk-vault   (`paquetes de avatares)
+            //hk-nvault (porros)
+            //hk-forge  (forja)
+            //hk-dev     (shared market fee)
+            //hashkings  (torres de agua)
+            //hk-bang   (paquetes bang!)
+            var cuentas = [];
+            if (document.querySelector('#hk-vault').checked) {
+                cuentas.push('hk-vault');
+                //getAccountHistory("hk-vault", table);
+            }
+            if (document.querySelector('#hk-nvault').checked) {
+                cuentas.push('hk-nvault');
+                //getAccountHistory("hk-nvault", table);
+            }
+            if (document.querySelector('#hk-forge').checked) {
+                cuentas.push('hk-forge');
+                //getAccountHistory("hk-forge", table);
+            }
+            if (document.querySelector('#hk-dev').checked) {
+                cuentas.push('hk-dev');
+                //getAccountHistory("hk-dev", table);
+            }
+            if (document.querySelector('#hashkings').checked) {
+                cuentas.push('hashkings');
+                //getAccountHistory("hashkings", table);
+            }
+            if (document.querySelector('#hk-bang').checked) {
+                cuentas.push('hk-bang');
+                //getAccountHistory("hk-bang", table);
+            }
+
+            counterN2 = 0;
+
+            for (var i = 0; i < cuentas.length; i++) {
+                await getAccountHistory(cuentas[i], table, cuentas[cuentas.length - 1], i);
+            }
+        }
+        catch(err) {
+          var btn = document.getElementById('btSearch');
+            btn.disabled = false;
+
+            var btn2 = document.getElementById('btLastBurn');
+            btn2.disabled = false;
+
+            alert('OCURRIO UN ERROR EN LA BúSQUEDA, INTéNTELO DE NUEVO');
+        }
+    };
+
+    async function getAccountHistory(accountV, table, cuentaFinal, k)
+    {   
+        var money = new Intl.NumberFormat('en-EN');
+        money.style = 'currency';
+        var container = document.getElementById('container');
+        var btn = document.getElementById('btSearch');
+        var btn2 = document.getElementById('btLastBurn');
+
+        var balance = parseFloat(0);
+        await ssc.findOne(
+            'tokens',
+            'balances',
+            {
+                account: accountV,
+                symbol: "BUDS"
+            },
+            (err, result) => {
+                if (result != null) {
+                    balance = parseFloat(result.balance);
+                }
+            });
+
+            var startV = BigInt(0);
+                var completarDatos = true;
+                var arrayHKNVAULT = [];
+                while (completarDatos) {
+                    await $.get({
+                        url: "https://history.hive-engine.com/accountHistory",
+                        data: {
+                            account: accountV,
+                            symbol: "BUDS",
+                            offset: startV,
+                            limit: 500
+                        },
+                        async: false
+                    },
+                        function(data, status) {
+
+                            console.log(data);
+                            console.log(status);
+
+                            for (var i = 0; i < data.length; i++) {
+                                arrayHKNVAULT.push(data[i]);
+                            }
+
+                            if (data.length < 500) {
+
+                                completarDatos = false;
+                            }
+
+                            startV = startV + BigInt(500);
+                        });
+                    sleep(333);
+                }
+
+                console.log(arrayHKNVAULT);
+                var quemado = parseFloat(0);
+                var enviados = parseFloat(0);
+                var recibidos = parseFloat(0);
+                var comprados = parseFloat(0);
+                var balanceC = parseFloat(0);
+                var marketFees = parseFloat(0);
+                var marketOrder = parseFloat(0);
+                var swap = parseFloat(0);
+                var contract = parseFloat(0);
+
+                for (var i = 0; i < arrayHKNVAULT.length; i++) {
+                    var myJson = JSON.stringify(arrayHKNVAULT[i])
+                    var json = JSON.parse(myJson);
+
+                    if (json.symbol == 'BUDS')
+                    {
+                        if (json.operation == 'tokens_transfer') {
+                            if (json.to == 'null') {
+                                quemado = quemado + parseFloat(json.quantity);
+                            }
+                            else {
+                                if (json.to == accountV) {
+                                    recibidos = recibidos + parseFloat(json.quantity);
+                                }
+                                else {
+                                    enviados = enviados + parseFloat(json.quantity);
+                                }
+                            }
+                        }
+                        else if (json.operation == 'market_buy') {
+                            comprados = comprados + parseFloat(json.quantityTokens);
+
+                        }
+                        else if (json.operation == 'nftmarket_transferFee') {
+                            if (json.to == accountV) {
+                                marketFees = marketFees + parseFloat(json.quantity);
+                            }
+                        }
+                        else if (json.operation == 'tokens_issue') {
+                            if (json.to == accountV) {
+                                contract = contract + parseFloat(json.quantity);
+                            }
+                        }
+                        else if (json.operation == 'market_sell') {
+                            marketOrder = marketOrder + parseFloat(json.quantityHive);
+                            
+                        }
+                        else if (json.operation == 'marketpools_swapTokens') {
+                            if (json.to == accountV) {
+                                swap = swap + parseFloat(json.quantity);
+                            }
+                        }
+                        else
+                        {
+                            console.log(myJson);
+                        };
+                    }
+                }
+
+                var myRow = baseRow.cloneNode(false);
+
+                var accountCell = baseCell.cloneNode(false);
+                accountCell.innerHTML = accountV;
+                myRow.appendChild(accountCell);
+
+                var quemadoCell = baseCell.cloneNode(false);
+                quemadoCell.innerHTML = money.format(Math.round(quemado));
+                myRow.appendChild(quemadoCell);
+
+                var BUDSCell = baseCell.cloneNode(false);
+                BUDSCell.innerHTML = money.format(Math.round(recibidos));
+                myRow.appendChild(BUDSCell);
+
+                var RewardsCell = baseCell.cloneNode(false);
+                RewardsCell.innerHTML = money.format(Math.round(enviados));
+                myRow.appendChild(RewardsCell);
+
+                var compradosCell = baseCell.cloneNode(false);
+                compradosCell.innerHTML = money.format(Math.round(comprados));
+                myRow.appendChild(compradosCell);
+
+                var marketCell = baseCell.cloneNode(false);
+                marketCell.innerHTML = money.format(Math.round(marketFees));
+                myRow.appendChild(marketCell);
+
+                var marketOrderCell = baseCell.cloneNode(false);
+                marketOrderCell.innerHTML = money.format(Math.round(marketOrder));
+                myRow.appendChild(marketOrderCell);
+
+                var swapCell = baseCell.cloneNode(false);
+                swapCell.innerHTML = money.format(Math.round(swap));
+                myRow.appendChild(swapCell);
+
+                var contractCell = baseCell.cloneNode(false);
+                contractCell.innerHTML = money.format(Math.round(contract));
+                myRow.appendChild(contractCell);
+
+                var balanceCell = baseCell.cloneNode(false);
+                balanceCell.style.backgroundColor = 'DarkSeaGreen';
+                balanceCell.innerHTML = money.format(Math.round(balance));
+                myRow.appendChild(balanceCell);
+
+                balanceC = recibidos + comprados + marketFees + marketOrder + swap + contract - enviados - quemado;
+
+                var balanceCCell = baseCell.cloneNode(false);
+                balanceCCell.style.backgroundColor = 'DarkSeaGreen';
+                balanceCCell.innerHTML = money.format(Math.round(balanceC));
+                myRow.appendChild(balanceCCell);
+
+                table.appendChild(myRow);
+
+                quemadoTotal = quemadoTotal + quemado;
+                enviadosTotal = enviadosTotal + enviados;
+                recibidosTotal = recibidosTotal + recibidos;
+                compradosTotal = compradosTotal + comprados;
+                balanceTotal = balanceTotal + balance;
+                balanceCTotal = balanceCTotal + balanceC;
+                marketTotal = marketTotal + marketFees;
+                marketOrderTotal = marketOrderTotal + marketOrder;
+                swapTotal = swapTotal + swap;
+                contractTotal = contractTotal + contract;
+
+                counterN2 = counterN2 + 1;
+                
+                if (accountV == cuentaFinal) {
+                    // Introducimos fila final con el total
+                    var footRow = baseRow.cloneNode(false);
+                    footRow.style.backgroundColor = 'silver';
+
+                    var accountFootCell = baseCell.cloneNode(false);
+                    accountFootCell.innerHTML = 'TOTAL';
+                    footRow.appendChild(accountFootCell);
+
+                    var quemadoFootCell = baseCell.cloneNode(false);
+                    quemadoFootCell.innerHTML = money.format(Math.round(quemadoTotal));
+                    footRow.appendChild(quemadoFootCell);
+
+                    var BUDSFootCell = baseCell.cloneNode(false);
+                    BUDSFootCell.innerHTML = money.format(Math.round(recibidosTotal));
+                    footRow.appendChild(BUDSFootCell);
+
+                    var RewardsFootCell = baseCell.cloneNode(false);
+                    RewardsFootCell.innerHTML = money.format(Math.round(enviadosTotal));
+                    footRow.appendChild(RewardsFootCell);
+
+                    var compradosFootCell = baseCell.cloneNode(false);
+                    compradosFootCell.innerHTML = money.format(Math.round(compradosTotal));
+                    footRow.appendChild(compradosFootCell);
+
+                    var marketFootCell = baseCell.cloneNode(false);
+                    marketFootCell.innerHTML = money.format(Math.round(marketTotal));
+                    footRow.appendChild(marketFootCell);
+
+                    var marketOrderFootCell = baseCell.cloneNode(false);
+                    marketOrderFootCell.innerHTML = money.format(Math.round(marketOrderTotal));
+                    footRow.appendChild(marketOrderFootCell);
+
+                    var swapFootCell = baseCell.cloneNode(false);
+                    swapFootCell.innerHTML = money.format(Math.round(swapTotal));
+                    footRow.appendChild(swapFootCell);
+
+                    var contractFootCell = baseCell.cloneNode(false);
+                    contractFootCell.innerHTML = money.format(Math.round(contractTotal));
+                    footRow.appendChild(contractFootCell);
+
+                    var balanceFootCell = baseCell.cloneNode(false);
+                    balanceFootCell.innerHTML = money.format(Math.round(balanceTotal));
+                    footRow.appendChild(balanceFootCell);
+
+                    var balanceCFootCell = baseCell.cloneNode(false);
+                    balanceCFootCell.innerHTML = money.format(Math.round(balanceCTotal));
+                    footRow.appendChild(balanceCFootCell);
+
+                    table.appendChild(footRow);
+
+                    container.innerHTML = "";
+                    container.append(lineBreak.cloneNode(false));
+                    container.append(lineBreak.cloneNode(false));
+                    container.append('HISTÓRICO');
+                    container.append(lineBreak.cloneNode(false));
+                    container.append(table);
+                    container.append(lineBreak.cloneNode(false));
+                    container.append('* BALANCE CALCULADO = BUDS RECIBIDOS + BUDS COMPRADOS + BUDS MARKET FEES + BUDS MARKET + BUDS SWAP + BUDS CONTRACT - BUDS ENVIADOS - BUDS QUEMADOS');
+
+                    //$("#MymodalPreventScript").modal("hide");
+
+                    btn.disabled = false;
+                    btn2.disabled = false;
+                }
+    }
+
+</script>
+
+<div class="text-center" id="container">   
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="MymodalPreventScript">
+	<div class="modal-dialog">
+		<div class="modal-content" style="background-color:transparent;border:none;">
+			<div class="modal-header">
+				@*<button type="button" class="close" data-dismiss="modal">&times;</button> *@
+				<h4 class="modal-title">Obteniendo datos</h4>                                                             
+			</div> 
+			<div class="modal-body">
+				<img src="/imgs/R.gif" height="250" width="250"/>
+			</div>   
+			<div class="modal-footer">
+				@*<button type="button" class="btn btn-default" data-dismiss="modal">Close</button> *@
+			</div>
+		</div>                                                                       
+	</div>                                          
+</div>

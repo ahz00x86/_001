@@ -1,0 +1,33 @@
+﻿<Page
+    x:Class="_666_way.MainPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:_666_way"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Loaded="Page_Loaded" Background="White"
+    >
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+        </Grid.RowDefinitions>
+
+        <Canvas x:Name="cWay" Grid.Row="0"/>
+        
+        <StackPanel x:Name="selDiffSP" Grid.Row="1" HorizontalAlignment="Center" Orientation="Horizontal">
+            <Button Click="Button_Click" Content="20" Tag="20"/>
+            <Button Click="Button_Click" Content="30" Tag="30"/>
+            <Button Click="Button_Click" Content="40" Tag="40"/>
+        </StackPanel>
+        
+        <StackPanel x:Name="UpRigthSP" Grid.Row="1" HorizontalAlignment="Center" Orientation="Horizontal" Visibility="Collapsed">
+            <Button Click="ButtonDOWN_Click" Content="DOWN / ABAJO"/>
+            <Button Click="ButtonRIGHT_Click" Content="RIGHT / DERECHA"/>
+        </StackPanel>
+
+    </Grid>
+</Page>

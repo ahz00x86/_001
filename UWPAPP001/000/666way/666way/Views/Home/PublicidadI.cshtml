@@ -1,0 +1,23 @@
+﻿
+@{
+    ViewBag.Title = "Publicidad";
+}
+
+<h1>Publicidad Banner Izquierdo</h1>
+
+<form action="~/Home/PublicidadI" method="post" enctype="multipart/form-data">
+    <br/><p>Imagen: 100x100px</p>
+    <input style="display:inline-block;" name="image" type="file" required /><br/>
+    <br/><p>Url destino: (Su web)</p>
+    <input width="400" style="width:400px;color:black;" name="urlD" type="url" value="http://" required /><br/>
+    <br/><p>Email:</p>
+    <input width="300" style="width:300px;color:black;" name="emailD" type="email" required /><br/>
+    <br/>
+    <button style="background-color:red;" type="submit">Enviar para validar</button>
+</form>
+<br/><br/>
+<p>
+    <i>(El banner pasará por un proceso de validación, que tras su aceptación recibirá un correo electrónico con el que poder hacer su inversión.</i>
+    <i>El banner se ordenará más o menos ascendentemente dependiendo de dicha inversión, apareciendo en la posición superior los banners en los que se ha realizado una mayor inversión.)</i>    
+</p>
+

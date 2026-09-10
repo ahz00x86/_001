@@ -1,0 +1,40 @@
+﻿@{
+    ViewBag.Title = "Registro";
+}
+@{ if (TempData["msgKO"] != null)
+    {
+        <b style="background-color:salmon;">@TempData["msgKO"]</b>
+    }
+    if (TempData["msgOK"] != null)
+    {
+        <b style="background-color:lightgreen;">@TempData["msgOK"]</b>
+    }
+}
+<form method="post" resource="~/Login/Registro">
+    @Html.AntiForgeryToken()
+    <div class="row">
+        <div class="col-md-12">
+            <h3>Nombre:</h3>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <input style="width:150px;" name="name" type="text" maxlength="31" />
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <h3>E-Mail:</h3>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <input required style="width:250px;" name="email" type="email" maxlength="255" />
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <br /><button class="btn btn-default" type="submit">Registrar</button>
+        </div>
+    </div>
+</form>

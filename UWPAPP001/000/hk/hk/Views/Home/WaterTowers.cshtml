@@ -1,0 +1,357 @@
+﻿@{
+    ViewData["Title"] = "hk - TORRES DE AGUA";
+}
+
+<div class="text-center">
+    <h1 class="display-4">TORRES DE AGUA</h1>    
+</div>
+
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sscjs@latest/dist/ssc.min.js"></script>
+
+<script>
+    const ssc = new SSC('https://api.hive-engine.com/rpc');        
+    const baseRow = document.createElement('tr');
+    const baseCell = document.createElement('td');
+    const baseTH = document.createElement('th');
+    const lineBreak = document.createElement('br');
+    
+    function sleep(ms) {
+          var start = new Date().getTime(), expire = start + ms;
+          while (new Date().getTime() < expire) { }
+          return;
+        }
+
+    async function waterTowers() {
+        var money = new Intl.NumberFormat('en-EN');
+        money.style = 'currency';
+        var btn = document.getElementById('btWaterTowers');
+        btn.disabled = true;
+        //var btn2 = document.getElementById('btActiveAvatars');
+        //btn2.disabled = true;
+        var container = document.getElementById('container');
+        container.innerHTML = "";
+        container.append("CARGANDO DATOS");
+
+        $.ajaxSetup({ async: false });
+        var offsetV = BigInt(0);
+        var completarDatos = true;
+
+        var supplyTotalTowers = 0;
+        var arrayWATERbyLEVEL = [];
+        var dropHKWATER = BigInt(0);
+        while (completarDatos) {
+
+            await $.ajax({
+                url: "https://engine.rishipanthee.com/contracts",
+                method: "POST",
+                contentType: "application/json",
+                async: false,
+                data: '{"jsonrpc":"2.0", "method":"find", "params":{"contract":"nft", "table":"HKFARMinstances","query":{"properties.TYPE": "water"},"offset":' + offsetV + ', "limit":1000, "indexes":[]}, "id": 1}'
+                ,
+
+                success: function(response) {
+                    console.log(response.result);
+
+                    for (var i = 0; i < response.result.length; i++) {
+
+                        supplyTotalTowers++;
+
+                        var dataS = JSON.stringify(response.result[i])
+                        var dataJs = JSON.parse(dataS);
+
+                        var level = dataJs.properties.LVL;
+                        var account = dataJs.account;
+                        var water = dataJs.properties.WATER;
+                        var id = dataJs.properties._id;
+                                                
+                        dropHKWATER = dropHKWATER + BigInt(water);
+
+                        if (level == undefined) {
+                            level = -1;
+                            //alert(dataS);
+                        }
+
+                        var encontradoNivel = false;
+                        for (var j = 0; j < arrayWATERbyLEVEL.length; j++) {
+
+                            if (arrayWATERbyLEVEL[j].level == level) {
+                                encontradoNivel = true;
+                                arrayWATERbyLEVEL[j].nTowers++;
+                                arrayWATERbyLEVEL[j].water = arrayWATERbyLEVEL[j].water + water;
+
+                                //if (!arrayWATERbyLEVEL[j].accounts.includes(account)) {
+                                //    arrayWATERbyLEVEL[j].accounts.push(account);
+                                //}
+
+                            }
+                        }
+
+                        if (!encontradoNivel) {
+
+                            var regionJs = JSON.parse('{"level":' + level + ', "nTowers":1,"water":' + water + '}');
+                            arrayWATERbyLEVEL.push(regionJs);
+                        }
+
+                    }
+
+                    if (response.result.length < 1000) {
+                        completarDatos = false;
+                    }
+
+                    offsetV = offsetV + BigInt(1000);
+                },
+                error: function(error) {
+                    console.log(error);
+                    alert("error");
+                    completarDatos = false;
+                }
+            });
+
+        }
+                        
+        var arrayTransferenciasUpgradeTowers = [];
+        var tokens = ["BUDS", "HIVE", "SWAP.HIVE"];
+        for (var k = 0; k < tokens.length; k++) {
+            
+            var startV = BigInt(0);    
+            var completarDatos = true;
+            while (completarDatos) {
+                await $.get({
+                    url: "https://history.hive-engine.com/accountHistory",
+                    data: {
+                        account: "hashkings",
+                        symbol: tokens[k],
+                        ops: "tokens_transfer",
+                        offset: startV,
+                        limit: 500
+                    },
+                    async: false
+                },
+                    function(data, status) {
+
+                        console.log(data);
+                        console.log(status);
+
+                        for (var i = 0; i < data.length; i++) {
+
+                            var dataS = JSON.stringify(data[i])
+                            var dataJs = JSON.parse(dataS);
+
+                            if (dataJs.symbol == tokens[k]) {
+                                if (dataJs.operation == 'tokens_transfer') {
+                                    if (dataJs.to == "hashkings") {
+                                        if (dataJs.memo != null) {
+                                            if (dataJs.memo.includes('Upgrade Water')) {
+                                                var encontradoNivel = false;
+                                                for (var j = 0; j < arrayTransferenciasUpgradeTowers.length; j++) {
+
+                                                    if (arrayTransferenciasUpgradeTowers[j].token == tokens[k]) {
+                                                        encontradoNivel = true;
+                                                        arrayTransferenciasUpgradeTowers[j].nToken++;
+                                                    }
+                                                }
+
+                                                if (!encontradoNivel) {
+
+                                                    var regionJs = JSON.parse('{"token":"' + tokens[k] + '", "nToken":1}');
+                                                    arrayTransferenciasUpgradeTowers.push(regionJs);
+                                                }
+                                            }
+                                            else {
+                                                if (dataJs.memo.includes('Water') || dataJs.memo.includes('water') || dataJs.memo.includes('upgrade') || dataJs.memo.includes('Upgrade')) {
+                                                    //alert(dataS);
+                                                }
+                                            }
+                                        }
+                                    }
+                                    else {
+                                        if (dataJs.memo != null) {
+                                            if (dataJs.memo.includes('Upgrade Water')) {
+                                                //alert(dataS);
+                                            }
+                                        }
+                                    }
+                                }
+                                else {
+                                        if (dataJs.memo != null) {
+                                            if (dataJs.memo.includes('Upgrade Water')) {
+                                                //alert(dataS);
+                                            }
+                                        }
+                                    }
+                            }
+                        }
+
+                        if (data.length < 500) {
+
+                            completarDatos = false;
+                        }
+
+                        startV = startV + BigInt(500);
+                    });
+                sleep(333);
+            }
+        }
+        console.log(arrayTransferenciasUpgradeTowers);
+
+        console.log(arrayWATERbyLEVEL);
+
+        // Preparamos la tabla que contendrá los datos
+        var table = document.createElement('table');
+        table.style.marginLeft = 'auto';
+        table.style.marginRight = 'auto';
+
+        container.innerHTML = "";
+        container.append(lineBreak.cloneNode(false));
+        container.append(lineBreak.cloneNode(false));
+        //container.append("Supply total torres de agua: " + money.format(supplyTotalTowers));
+        //container.append(lineBreak.cloneNode(false));
+        //container.append("Producción total diaria de HKWATER: " + money.format(dropHKWATER));
+        //container.append(lineBreak.cloneNode(false));
+        //container.append(lineBreak.cloneNode(false));
+
+        // ESTALBECEMOS LAS CABECERAS
+        var headRow = baseRow.cloneNode(false);
+        headRow.style.backgroundColor = 'DarkGreen';
+
+        var levelHeadCell = baseTH.cloneNode(false);
+        levelHeadCell.innerHTML = '<b>NIVEL</b>';
+        headRow.appendChild(levelHeadCell);
+
+        var nTowersHeadCell = baseTH.cloneNode(false);
+        nTowersHeadCell.innerHTML = '<b>NÚMERO DE TORRES</b>';
+        headRow.appendChild(nTowersHeadCell);
+
+        var dailyWaterHeadCell = baseTH.cloneNode(false);
+        dailyWaterHeadCell.innerHTML = '<b>HKWATER DIARIO</b>';
+        headRow.appendChild(dailyWaterHeadCell);
+
+        table.appendChild(headRow);
+
+        var totalNTowers = 0;
+        var totalWater = 0;
+
+        arrayWATERbyLEVEL = arrayWATERbyLEVEL.sort(function(a, b) { return a.level - b.level });
+
+        for (var j = 0; j < arrayWATERbyLEVEL.length; j++) {
+
+            // FILA DE DATOS
+            var myRow = baseRow.cloneNode(false);
+
+            var levelCell = baseCell.cloneNode(false);
+            levelCell.style.backgroundColor = 'DarkSeaGreen';
+            levelCell.innerHTML = arrayWATERbyLEVEL[j].level;
+            myRow.appendChild(levelCell);
+
+            var nTowersCell = baseCell.cloneNode(false);
+            nTowersCell.innerHTML = money.format(arrayWATERbyLEVEL[j].nTowers);
+            myRow.appendChild(nTowersCell);
+
+            var dailyWaterCell = baseCell.cloneNode(false);
+            dailyWaterCell.innerHTML = money.format(arrayWATERbyLEVEL[j].water);
+            myRow.appendChild(dailyWaterCell);
+
+            table.appendChild(myRow);
+
+            totalNTowers = totalNTowers + arrayWATERbyLEVEL[j].nTowers;
+            totalWater = totalWater + arrayWATERbyLEVEL[j].water;
+
+        }
+
+        // Introducimos fila final con el total
+        var footRow = baseRow.cloneNode(false);
+        footRow.style.backgroundColor = 'silver';
+
+        var levelFootCell = baseCell.cloneNode(false);
+        levelFootCell.innerHTML = 'TOTAL';
+        footRow.appendChild(levelFootCell);
+
+        var nTowersFootCell = baseCell.cloneNode(false);
+        nTowersFootCell.innerHTML = money.format(totalNTowers);
+        footRow.appendChild(nTowersFootCell);
+
+        var dailyWaterFootCell = baseCell.cloneNode(false);
+        dailyWaterFootCell.innerHTML = money.format(totalWater);
+        footRow.appendChild(dailyWaterFootCell);
+
+        table.appendChild(footRow);
+
+        container.append(table);
+        container.append(lineBreak.cloneNode(false));
+        //container.append("*Tooltip al poner el cursor sobre cualquier elemento");
+
+        // Preparamos la tabla que contendrá los datos
+        var table2 = document.createElement('table');
+        table2.style.marginLeft = 'auto';
+        table2.style.marginRight = 'auto';
+
+        container.append(lineBreak.cloneNode(false));
+        container.append(lineBreak.cloneNode(false));
+        container.append("ACTUALIZACIONES");
+
+        // ESTALBECEMOS LAS CABECERAS
+        var headRow = baseRow.cloneNode(false);
+        headRow.style.backgroundColor = 'DarkGreen';
+
+        var tokenHeadCell = baseTH.cloneNode(false);
+        tokenHeadCell.innerHTML = '<b>TOKEN</b>';
+        headRow.appendChild(tokenHeadCell);
+
+        var nTowersUpgradeHeadCell = baseTH.cloneNode(false);
+        nTowersUpgradeHeadCell.innerHTML = '<b>TORRES ACTUALIZADAS</b>';
+        headRow.appendChild(nTowersUpgradeHeadCell);
+
+        table2.appendChild(headRow);
+
+        var totalUpgrades = 0;
+
+        arrayTransferenciasUpgradeTowers = arrayTransferenciasUpgradeTowers.sort(function(a, b) { return b[1] - a[1] });
+
+        for (var j = 0; j < arrayTransferenciasUpgradeTowers.length; j++) {
+
+            // FILA DE DATOS
+            var myRow = baseRow.cloneNode(false);
+
+            var tokenCell = baseCell.cloneNode(false);
+            tokenCell.style.backgroundColor = 'DarkSeaGreen';
+            tokenCell.innerHTML = arrayTransferenciasUpgradeTowers[j].token;
+            myRow.appendChild(tokenCell);
+
+            var nTowersUpgradeCell = baseCell.cloneNode(false);
+            nTowersUpgradeCell.innerHTML = money.format(arrayTransferenciasUpgradeTowers[j].nToken);
+            myRow.appendChild(nTowersUpgradeCell);
+
+            table2.appendChild(myRow);
+
+            totalUpgrades = totalUpgrades + arrayTransferenciasUpgradeTowers[j].nToken;
+
+        }
+
+        // Introducimos fila final con el total
+        var footRow = baseRow.cloneNode(false);
+        footRow.style.backgroundColor = 'silver';
+
+        var tokenFootCell = baseCell.cloneNode(false);
+        tokenFootCell.innerHTML = 'TOTAL';
+        footRow.appendChild(tokenFootCell);
+
+        var nTowersUpgradeFootCell = baseCell.cloneNode(false);
+        nTowersUpgradeFootCell.innerHTML = money.format(totalUpgrades);
+        footRow.appendChild(nTowersUpgradeFootCell);
+
+        table2.appendChild(footRow);
+
+        container.append(table2);
+        container.append(lineBreak.cloneNode(false));
+
+        btn.disabled = false;
+        //btn2.disabled = false;
+    }
+
+</script>
+<div class="text-center">
+    <input type="button" class="btn btn-secondary" id="btWaterTowers" name="btWaterTowers" value="Obtener" onclick="waterTowers()">
+</div>
+<div class="text-center" id="container">   
+</div>

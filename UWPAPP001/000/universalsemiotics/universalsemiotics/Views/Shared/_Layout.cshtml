@@ -1,0 +1,167 @@
+﻿@using Microsoft.AspNet.Identity
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - www.universalsemiotics.com</title>
+    <meta name="title" content="www.universalsemiotics.com" />
+    <meta name="description" content="@(@Resources.universalsemiotics.descripcion)" />
+    <meta name="distribution" content="global" />
+    <meta http-equiv='content-language' content='@(@Resources.universalsemiotics.controlador)'>
+    <meta name="robots" content="index,follow" />
+    <meta name="keywords" content="@(@Resources.universalsemiotics.palabras_clave)" />
+    <meta name="author" content="Pérez Sánchez, Pablo" />
+    <meta property="og:title" content="www.universalsemiotics.com" />
+    <meta property="og:url" content="https://www.universalsemiotics.com" />
+    <meta property="og:type" content="website" />
+    <meta property="og:description" content="@(@Resources.universalsemiotics.descripcion)" />
+    <meta property="og:image" content="https://www.universalsemiotics.com/imgs/bigintegerscalculator.png" />
+    <meta property="og:locale" content="@(@Resources.universalsemiotics.controlador)" />
+
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+</head>
+<body style="text-align:center;padding-top:0px;">
+
+    <div style="background-color:deepskyblue;">
+        <a style="color:black;margin:5px;" href="../@(@Resources.universalsemiotics.controlador)/Index"><img alt="universalsemiotics logo" src="~/imgs/universalsemiotics_logo.png" height="64" width="443" style="height:64px;width:443px;" /> @*<b>UNIVERSALSEMIOTICS</b>*@</a>
+        <br />
+
+        <a href="../es/Index"><img alt="Español" src="~/imgs/es-ES.png" height="25" width="25" style="height:25px;width:25px;" /></a>
+        <a href="../en/Index"><img alt="English" src="~/imgs/en-US.png" height="25" width="25" style="height:25px;width:25px;" /></a>
+
+        <br />
+
+        <nav>
+            <a style="color:silver;margin:5px;" href="../@(@Resources.universalsemiotics.controlador)/@(@Resources.universalsemiotics.contacto)">@(Resources.universalsemiotics.contacto_titulo)</a>
+        </nav>
+
+    </div>
+
+    @if (Request.IsAuthenticated)
+    {
+        <div class="float-left" style="margin:5px;">
+            <a href="../@(@Resources.universalsemiotics.controlador)/@(@Resources.universalsemiotics.texto_a_voz_pro)">@(Resources.universalsemiotics.texto_a_voz_pro_titulo)</a>
+            <br />
+            <a href="../@(@Resources.universalsemiotics.controlador)/@(@Resources.universalsemiotics.texto_a_voz)">@(Resources.universalsemiotics.texto_a_voz_titulo)</a>
+            <br />
+            <a href="../@(@Resources.universalsemiotics.controlador)/@(@Resources.universalsemiotics.descargas)">@(Resources.universalsemiotics.descargas_titulo)</a>
+        </div>
+    }
+    else
+    {
+        <a id="loginLink" style="float:left;margin:5px;" href="../Account/Login">@(@Resources.universalsemiotics.iniciar_sesion)</a>
+    }
+
+
+
+    @if (Request.IsAuthenticated)
+    {
+        using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm", @style = "float:right;margin:5px;" }))
+        {
+            @Html.AntiForgeryToken()
+            @Html.ActionLink(User.Identity.GetUserName(), "Index", "Manage", routeValues: null, htmlAttributes: new { title = "Manage" })
+            <br />
+            <a href="javascript:document.getElementById('logoutForm').submit()">@(@Resources.universalsemiotics.cerrar_sesion)</a>
+        }
+    }
+    else
+    {
+<a id="registerLink" style="float:right;margin:5px;" href="../Account/Register">@(@Resources.universalsemiotics.registrarse)</a>
+    }
+
+    <br />
+
+    <table width="100%" style="width:100%;">
+        <tr>
+            <td width="100px" style="width:100px;" valign="top">
+                <a href="../@(@Resources.universalsemiotics.controlador)/PublicidadI" style="color:silver;">@(@Resources.universalsemiotics.publicidad) +</a>
+                <br />
+                @if (ViewBag.publiI is List<universalsemiotics.Models.PublicidadModel>)
+                {
+                    List<universalsemiotics.Models.PublicidadModel> publiI = (List<universalsemiotics.Models.PublicidadModel>)ViewBag.publiI;
+                    foreach (universalsemiotics.Models.PublicidadModel p in publiI)
+                    {
+                        <br />
+                        <br />
+                        <a target="_blank" href="@p.UrlD"><img height="100" width="100" style="height:100px;width:100px;" src="@p.UrlImage" alt="@p.Titulo" /></a>
+                    }
+                }
+            </td>
+            <td valign="top">
+                <div style="text-align:center;">
+                    <div style="background-image: -webkit-linear-gradient(top, deepskyblue 0%, white 100%);">
+                        @RenderBody()
+                    </div>
+                    <br />
+                    <footer>
+                        <p>&copy; @DateTime.Now.Year - www.universalsemiotics.com <a style="color:silver;margin:5px;" href="../es/Aviso_Legal">Aviso Legal</a></p>
+                    </footer>
+                    <br />
+                    <div>
+                        <table align="center">
+                            <tr>
+                                <td colspan="3" style="padding:5px;">... @(@Resources.universalsemiotics.enlaces_patrocinados) ...</td>
+                            </tr>
+                            <tr>
+                                <td style="padding:15px;">
+                                    <a target="_blank" href="https://www.microsoft.com/es-es/p/big-integers-calculator/9nmqf74hfl2k">
+                                        <img src="~/imgs/bigintegerscalculator.png" alt="Big Integers Calculator" height="100" width="100" style="height:100px; width:100px;" />
+                                        <br />
+                                        Calculadora Números Enteros Grandes
+                                    </a>
+                                    <br />
+                                    <a target="_blank" href="https://www.microsoft.com/en-bs/p/big-integers-calculator/9nmqf74hfl2k">Big Integers Calculator</a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="padding:15px;">
+                                    <a target="_blank" href="https://xiropht.com/">
+                                        <img src="~/imgs/xiropht-logo.png" alt="Xiropht Logo" height="100" width="100" style="height:100px; width:100px;background-color:white;" />
+                                        <br />
+                                        Mina XIRO
+                                    </a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="padding:15px;">
+                                    <a target="_blank" href="https://www.amazon.es/Los-100000-primeros-N%C3%BAmeros-Primos/dp/B089TXGNSJ">
+                                        <img src="~/imgs/los100000PrimerosNumeroPrimos.jpg" alt="Los 100000 primeros Números Primos" height="100" width="100" style="height:100px; width:100px;" />
+                                        <br />
+                                        Los 100,000 primeros Números Primos
+                                    </a>
+                                    <br />
+                                    <a target="_blank" href="https://www.amazon.com/first-100000-Prime-Numbers/dp/B089M4336M">First 100,000 Prime Numbers</a>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </td>
+            <td width="100px" style="width:100px;" valign="top">
+                <a href="../@(@Resources.universalsemiotics.controlador)/PublicidadD" style="color:silver;">@(@Resources.universalsemiotics.publicidad) +</a>
+                <br />
+                @if (ViewBag.publiD is List<universalsemiotics.Models.PublicidadModel>)
+                {
+                    List<universalsemiotics.Models.PublicidadModel> publiD = (List<universalsemiotics.Models.PublicidadModel>)ViewBag.publiD;
+                    foreach (universalsemiotics.Models.PublicidadModel p in publiD)
+                    {
+                        <br />
+                        <br />
+                        <a target="_blank" href="@p.UrlD"><img height="100" width="100" style="height:100px;width:100px;" src="@p.UrlImage" alt="@p.Titulo" /></a>
+                    }
+                }
+            </td>
+        </tr>
+
+
+    </table>
+
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    @RenderSection("scripts", required: false)
+</body>
+</html>

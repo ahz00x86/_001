@@ -1,0 +1,18 @@
+﻿
+@{
+    ViewBag.Title = "=P";
+    _666way.Models.publicidadModel pI = (_666way.Models.publicidadModel)Model;
+}
+
+<h2>=P</h2>
+<br />
+<br />
+<img src="@pI.UrlImage" height="100" width="100" style="height:100px;width:100px;" />
+<br />
+<br />
+<form action="~/Home/xdc4cb595729d341d6c5d12943a5a3371e7612528I" method="post">
+    @Html.AntiForgeryToken()
+    <input name="pps" type="text" />
+    <input name="id" type="hidden" value="@pI.Id" />
+    <button type="submit" style="background-color:red;">=P</button>
+</form>

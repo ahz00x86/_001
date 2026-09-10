@@ -1,0 +1,179 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta name="msvalidate.01" content="86639AF56EB5FCEEE8D732F54A051D4B" />
+    <link rel="icon" type="image/x-icon" href="~/favicon.ico">
+    <link rel="icon" type="image/png" href="~/aG.png">
+    <link rel="apple-touch-icon" type="image/x-icon" href="~/aG.png">
+    <link rel="shortcut icon" type="image/x-icon" href="~/favicon.ico">
+    <meta name="msapplication-TileImage" content="~/aG.png">
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-ST9C4R7WV1"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+
+        gtag('config', 'G-ST9C4R7WV1');
+    </script>
+    <script>
+        (function (w, d, s, l, i) {
+            w[l] = w[l] || []; w[l].push({
+                'gtm.start':
+                    new Date().getTime(), event: 'gtm.js'
+            }); var f = d.getElementsByTagName(s)[0],
+                j = d.createElement(s), dl = l != 'dataLayer' ? '&l=' + l : ''; j.async = true; j.src =
+                    'https://www.googletagmanager.com/gtm.js?id=' + i + dl; f.parentNode.insertBefore(j, f);
+        })(window, document, 'script', 'dataLayer', 'GTM-MC5RKHD2');</script>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="description" content="apzyxGames es un estudio familiar inusual independiente formado a nivel ejecutivo por una sola persona (Pérez Sánchez, Pablo), nutrido y interdependientemente condicionado con sus circunstancias individuales y sociales, así como esta 'La Realidad' y la percepción subjetiva en la que todo esto se encuentra, para cualquier propuesta, acción, consulta teórico filosófica compleja, duda derivada interpretable, sugerencia constructiva y/o indicaciones y propuestas, ya sea concreta, relativa o existencial puede contactar a apzyx@yahoo.com" />
+    <title>@ViewBag.Title</title>
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2962941784163941"
+            crossorigin="anonymous"></script>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=AW-11398926296"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+
+        gtag('config', 'AW-11398926296');
+    </script>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <script type="text/javascript">
+        // Función para crear una figura geométrica con un color y un tamaño dados
+        function crearFigura(color, tamaño) {
+            // Crear un elemento div con el atributo id igual al nombre de la figura
+            var figura = document.createElement("div");
+            figura.id = color + "Figura";
+            // Establecer el estilo del elemento div con los atributos width, height, border y background-color
+            figura.style.width = tamaño + "px";
+            figura.style.height = tamaño + "px";
+            figura.style.border = "1px solid black";
+            figura.style.backgroundColor = color;
+            // Añadir el elemento div al cuerpo del documento
+            document.body.appendChild(figura);
+        }
+
+        // Función para crear una guirnalda navideña con varias figuras geométricas
+        function crearGuirnalda() {
+            // Crear una variable para almacenar la posición inicial de la guirnalda
+            var posicion = "top left";
+            // Crear una variable para almacenar el número de figuras a crear
+            var numeroFiguras = parseInt(Math.floor(Math.random() * (10)));
+
+            // Recorrer cada número de figuras desde uno hasta el número total
+            for (var i = 1; i <= numeroFiguras; i++) {
+                // Crear una variable para almacenar el color de la figura según su posición
+                var color;
+                switch (posicion) {
+                    case "top left":
+                        color = "red";
+                        break;
+                    case "top right":
+                        color = "green";
+                        break;
+                    case "bottom left":
+                        color = "blue";
+                        break;
+                    case "bottom right":
+                        color = "yellow";
+                        break;
+                }
+
+                // Crear una variable para almacenar el tamaño de la figura según su posición
+                var tamaño;
+                switch (posicion) {
+                    case "top left":
+                        tamaño = "50px";
+                        break;
+                    case "top right":
+                        tamaño = "100px";
+                        break;
+                    case "bottom left":
+                        tamaño = "150px";
+                        break;
+                    case "bottom right":
+                        tamaño = "200px";
+                        break;
+                }
+
+                // Llamar a la función crearFigura con los parámetros correspondientes al color y al tamaño
+                crearFigura(color, tamaño);
+
+                // Cambiar la posición de la guirnalda según su posición inicial
+                if (posicion == "top left") {
+                    posicion = "top right";
+                } else if (posicion == "top right") {
+                    posicion = "bottom left";
+                } else if (posicion == "bottom left") {
+                    posicion = "bottom right";
+                } else if (posicion == "bottom right") {
+                    posicion = "";
+                }
+
+            }
+        }
+
+
+        // Función para activar o desactivar la guirnalda navideña según las fechas dadas en formato dd/mm/yyyy
+        function activarDesactivarGuirnalda() {
+            // Obtener las fechas como un objeto Date usando el método split()
+
+            var fechaInicio = new Date(parseInt(Date.now.getFullYear()), 12, 24);
+            var fechaFin = new Date(parseInt(Date.now.getFullYear()) + 1, 1, 6);
+
+            // Comparar las fechas usando los métodos getFullYear(), getMonth() y getDate()
+            if (fechaInicio.getFullYear() > fechaFin.getFullYear()) {
+                alert("La fecha inicial es posterior a la fecha final");
+                return false;
+            }
+
+            if (fechaInicio.getFullYear() < fechaFin.getFullYear()) {
+                alert("La fecha inicial es anterior a la fecha final");
+                return false;
+            }
+
+            if (fechaInicio.getMonth() > fechaFin.getMonth()) {
+                alert("El mes inicial es posterior al mes final");
+                crearGuirnalda();
+            }
+        }
+
+    </script>
+</head>
+<body onload="">
+    @*<div class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                @Html.ActionLink("apzyxGames", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+            </div>
+            <div class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                    <li></li>
+                </ul>
+            </div>
+        </div>
+    </div>*@
+    <div class="container body-content">
+        @RenderBody()
+        <hr />
+        <footer>
+            <p>&copy; @DateTime.Now.Year - apzyxGames
+        </footer>        
+    </div>
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    @RenderSection("scripts", required: false)
+    
+</body>
+</html>

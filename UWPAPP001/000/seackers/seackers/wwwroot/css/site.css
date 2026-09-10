@@ -1,0 +1,91 @@
+html {
+  font-size: 14px;
+}
+
+@media (min-width: 768px) {
+  html {
+    font-size: 16px;
+  }
+}
+
+.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+}
+
+html {
+  position: relative;
+  min-height: 100%;
+}
+
+body {
+  margin-bottom: 60px;
+}
+
+#heart {
+    position: relative;
+    width: 50px;
+    height: 45px;
+    margin-top: 5px;
+}
+
+    #heart::before, #heart::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        width: 26px;
+        height: 40px;
+        border-radius: 25px 25px 0 0;
+        background: red;
+    }
+
+    #heart::before {
+        left: 25px;
+        transform: rotate(-45deg);
+        transform-origin: 0 100%;
+    }
+
+    #heart::after {
+        left: 0;
+        transform: rotate(45deg);
+        transform-origin: 100% 100%;
+    }
+
+#emptyHeart {
+    position: relative;    
+    width: 50px;
+    height: 45px;
+    margin-top: 5px;
+}
+
+    #emptyHeart::before, #emptyHeart::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        width: 26px;
+        height: 40px;
+        border-radius: 25px 25px 0 0;
+        border: solid;
+        border-width: 1px;
+        background: transparent;
+    }
+
+    #emptyHeart::before {
+        left: 25px;
+        transform: rotate(-45deg);
+        transform-origin: 0 100%;
+    }
+
+    #emptyHeart::after {
+        left: 0;        
+        transform: rotate(45deg);
+        transform-origin: 100% 100%;
+    }
+
+ul {
+    list-style-type: none;
+}
+
+ol {
+    list-style-type: none;
+}
+

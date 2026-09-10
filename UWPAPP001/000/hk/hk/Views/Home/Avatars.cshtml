@@ -1,0 +1,321 @@
+﻿@{
+    ViewData["Title"] = "hk - AVATARES";
+}
+
+<div class="text-center">
+    <h1 class="display-4">AVATARES</h1>    
+</div>
+
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sscjs@latest/dist/ssc.min.js"></script>
+
+<script>
+    const ssc = new SSC('https://api.hive-engine.com/rpc');        
+    const baseRow = document.createElement('tr');
+    const baseCell = document.createElement('td');
+    const baseTH = document.createElement('th');
+    const lineBreak = document.createElement('br');
+
+    async function avatars() {
+        var money = new Intl.NumberFormat('en-EN');
+        money.style = 'currency';
+        var btn = document.getElementById('btAvatars');
+        btn.disabled = true;
+        //var btn2 = document.getElementById('btActiveAvatars');
+        //btn2.disabled = true;
+        var container = document.getElementById('container');
+        container.innerHTML = "";
+        container.append("CARGANDO DATOS");
+        
+        $.ajaxSetup({ async: false });
+        var offsetV = BigInt(0);
+        var completarDatos = true;
+        
+        var usuariosUnicos = [];
+        var usuariosUnicos50k = [];
+        var usuariosUnicos100k = [];
+        var accounMoreAvatars = new Map();
+        var xp = 0;
+        var avatarXP = 'null';
+        var avatarsXP = [];
+        while (completarDatos) {
+                        
+            await $.ajax({
+                url: "https://engine.rishipanthee.com/contracts",
+                method: "POST",
+                contentType: "application/json",
+                async: false,
+                data: '{"jsonrpc":"2.0", "method":"find", "params":{"contract":"nft", "table":"HKFARMinstances","query":{"properties.TYPE": "avatar"},"offset":'+ offsetV + ', "limit":1000, "indexes":[]}, "id": 1}'
+                ,
+
+                success: function(response) {
+                    console.log(response.result);
+                    for (var i = 0; i < response.result.length; i++) {
+                                                
+                        var dataS = JSON.stringify(response.result[i])
+                        var dataJs = JSON.parse(dataS);
+
+                        var xpIn = dataJs.properties.XP;
+                        var account = dataJs.account;
+                        var ownedBy = dataJs.ownedBy;
+
+                        if (!usuariosUnicos.includes(account)) {
+                            usuariosUnicos.push(account);
+                        }
+
+                        if (xpIn >= 50000) {
+                            if (!usuariosUnicos50k.includes(account)) {
+                                usuariosUnicos50k.push(account);
+                            }
+                        }
+
+                        if (xpIn >= 100000) {
+                            if (!usuariosUnicos100k.includes(account)) {
+                                usuariosUnicos100k.push(account);
+                            }
+                        }
+
+                        if (!accounMoreAvatars.has(account)) {
+                            accounMoreAvatars.set(account, 1);
+                        }
+                        else {
+                            var n = accounMoreAvatars.get(account);
+                            accounMoreAvatars.set(account, n + 1)
+                        }
+
+                        //if (xpIn > xp) {
+                        //    xp = xpIn;
+                        //    avatarXP = account;
+                        //    var array = [];
+                        //    array.push(account);
+                        //    array.push(xp);
+                        //    avatarsXP.push(array);
+                        //}
+                        //else {
+
+                        var array = [];
+                        array.push(account);
+                        array.push(xpIn);
+                        avatarsXP.push(array);  
+
+                        //////var positionToAdd = -1;
+                        //////for (var j = 0; j < avatarsXP.length; j++) {
+
+                        //////    if (parseFloat(xpIn) > parseFloat(avatarsXP[j][1])) {
+                        //////        positionToAdd = j;                                                                
+                        //////        break;
+                        //////    }
+                        //////}
+
+                        //////if (positionToAdd == -1 || positionToAdd == avatarsXP.length - 1) {
+                        //////    avatarsXP.push(array);
+                        //////} else {                            
+                        //////    avatarsXP.splice(positionToAdd + 1, 0, array);
+                        //////}
+
+                        //}
+                    }
+
+                    if (response.result.length < 1000) {
+                        completarDatos = false;
+                    }
+                    
+                    offsetV = offsetV + BigInt(1000);
+                },
+                error: function(error) {
+                    console.log(error);
+                    alert("error");
+                    completarDatos = false;
+                }
+            });
+        }
+        
+        console.log(accounMoreAvatars);
+
+        // Preparamos la tabla que contendrá los datos
+        var table = document.createElement('table');
+        table.style.marginLeft = 'auto';
+        table.style.marginRight = 'auto';
+                
+        container.innerHTML = "";
+        container.append(lineBreak.cloneNode(false));
+        container.append(lineBreak.cloneNode(false));
+        
+        // ESTALBECEMOS LAS CABECERAS
+        var headRow = baseRow.cloneNode(false);
+        headRow.style.backgroundColor = 'DarkGreen';
+
+        var avatar1HeadCell = baseTH.cloneNode(false);
+        avatar1HeadCell.innerHTML = '<b>USUARIOS 1+ AVATAR</b>';
+        headRow.appendChild(avatar1HeadCell);
+
+        var avatar50kHeadCell = baseTH.cloneNode(false);
+        avatar50kHeadCell.innerHTML = '<b>USUARIOS AVATAR 50k+</b>';
+        headRow.appendChild(avatar50kHeadCell);
+
+        var avatar100kHeadCell = baseTH.cloneNode(false);
+        avatar100kHeadCell.innerHTML = '<b>USUARIOS AVATAR 100k+</b>';
+        headRow.appendChild(avatar100kHeadCell);
+
+        //////var masAvatarHeadCell = baseTH.cloneNode(false);
+        //////masAvatarHeadCell.innerHTML = '<b>+AVATARES</b>';
+        //////headRow.appendChild(masAvatarHeadCell);
+
+        //////var avatarXPHeadCell = baseTH.cloneNode(false);
+        //////avatarXPHeadCell.innerHTML = '<b>AVATAR + XP</b>';
+        //////headRow.appendChild(avatarXPHeadCell);
+
+        table.appendChild(headRow);
+                        
+        // FILA DE DATOS
+        var myRow = baseRow.cloneNode(false);
+
+        var avatar1Cell = baseCell.cloneNode(false);  
+        avatar1Cell.title = usuariosUnicos;
+        avatar1Cell.innerHTML = money.format(usuariosUnicos.length);
+        myRow.appendChild(avatar1Cell);
+                        
+        var avatar50kCell = baseCell.cloneNode(false);
+        avatar50kCell.title = usuariosUnicos50k;
+        avatar50kCell.innerHTML = money.format(usuariosUnicos50k.length);
+        myRow.appendChild(avatar50kCell);
+
+        var avatar100kCell = baseCell.cloneNode(false);
+        avatar100kCell.title = usuariosUnicos100k;
+        avatar100kCell.innerHTML = money.format(usuariosUnicos100k.length);
+        myRow.appendChild(avatar100kCell);
+
+        //////var mapSort1 = new Map([...accounMoreAvatars.entries()].sort((a, b) => b[1] - a[1]));
+        //////console.log(mapSort1);
+        
+        //////var acountMA = "null";
+        //////var nMA = -1;
+        //////var isFirst = true;
+        //////mapSort1.forEach(function(value, key) {
+        //////    if (isFirst) {
+        //////        acountMA = key;
+        //////        nMA = value;
+        //////    }
+        //////    isFirst = false;
+        //////});
+        //////var masAvatarCell = baseCell.cloneNode(false);
+        //////masAvatarCell.title = money.format(nMA);
+        //////masAvatarCell.innerHTML = acountMA;            
+        //////myRow.appendChild(masAvatarCell);
+
+        //////var avatarXPCell = baseCell.cloneNode(false);
+        //////avatarXPCell.title = money.format(xp);
+        //////avatarXPCell.innerHTML = avatarXP;            
+        //////myRow.appendChild(avatarXPCell);
+                        
+        table.appendChild(myRow);
+        
+        container.append(table);
+        container.append(lineBreak.cloneNode(false));
+        //container.append("*Tooltip al poner el cursor sobre cualquier elemento");
+
+        // Preparamos la tabla que contendrá los datos
+        var table2 = document.createElement('table');
+        table2.style.marginLeft = 'auto';
+        table2.style.marginRight = 'auto';
+                        
+        container.append(lineBreak.cloneNode(false));
+        container.append(lineBreak.cloneNode(false));
+        
+        // ESTALBECEMOS LAS CABECERAS
+        var headRow2 = baseRow.cloneNode(false);
+        headRow2.style.backgroundColor = 'DarkGreen';
+
+        var avatar1HeadCell = baseTH.cloneNode(false);
+        avatar1HeadCell.innerHTML = '<b>RANKING</b>';
+        headRow2.appendChild(avatar1HeadCell);
+
+        var masAvatarHeadCell = baseTH.cloneNode(false);
+        masAvatarHeadCell.innerHTML = '<b>+AVATARES</b>';
+        headRow2.appendChild(masAvatarHeadCell);
+
+        var avatarXPHeadCell = baseTH.cloneNode(false);
+        avatarXPHeadCell.innerHTML = '<b>AVATAR + XP</b>';
+        headRow2.appendChild(avatarXPHeadCell);
+
+        table2.appendChild(headRow2);
+        
+        var mapSort1 = new Map([...accounMoreAvatars.entries()].sort((a, b) => b[1] - a[1]));
+            console.log(mapSort1);
+
+        console.log(avatarsXP);
+        avatarsXP = avatarsXP.sort(function(a, b){return b[1] - a[1]});
+        console.log(avatarsXP);
+
+        for (var j = 1; j < 11; j++) {
+
+            // FILA DE DATOS
+            var myRow = baseRow.cloneNode(false);
+
+            var avatar1Cell = baseCell.cloneNode(false);            
+            avatar1Cell.innerHTML = j + 'º';
+            myRow.appendChild(avatar1Cell);
+
+            //var avatar50kCell = baseCell.cloneNode(false);
+            //avatar50kCell.title = usuariosUnicos50k;
+            //avatar50kCell.innerHTML = money.format(usuariosUnicos50k.length);
+            //myRow.appendChild(avatar50kCell);
+
+            //var avatar100kCell = baseCell.cloneNode(false);
+            //avatar100kCell.title = usuariosUnicos100k;
+            //avatar100kCell.innerHTML = money.format(usuariosUnicos100k.length);
+            //myRow.appendChild(avatar100kCell);
+
+            
+
+            var acountMA = "null";
+            var nMA = -1;
+            var k = 1;
+            var isFirst = true;
+            mapSort1.forEach(function(value, key) {
+                if (isFirst && k == j) {
+                    acountMA = key;
+                    nMA = value;
+                    isFirst = false;
+                }
+                k++;                
+            });
+            var masAvatarCell = baseCell.cloneNode(false);
+            masAvatarCell.title = money.format(nMA);
+            masAvatarCell.innerHTML = acountMA;
+            myRow.appendChild(masAvatarCell);
+            
+            var avaXP = "null";
+            var XP2 = -1;
+            for (var z = 0; z < 10; z++) {
+
+                if (z + 1 == j) {
+                    var array2 = avatarsXP[z];
+                    if (array2 != undefined) {                        
+                        avaXP = array2[0];
+                        XP2 = array2[1];
+                    }
+                }
+            }
+
+            var avatarXPCell = baseCell.cloneNode(false);
+            avatarXPCell.title = money.format(XP2);
+            avatarXPCell.innerHTML = avaXP;
+            myRow.appendChild(avatarXPCell);
+
+            table2.appendChild(myRow);
+        }
+        container.append(table2);
+        container.append(lineBreak.cloneNode(false));
+        container.append("*Tooltip al poner el cursor sobre cualquier elemento");
+
+        btn.disabled = false;
+        //btn2.disabled = false;
+    }
+
+</script>
+<div class="text-center">
+    <input type="button" class="btn btn-secondary" id="btAvatars" name="btAvatars" value="Obtener" onclick="avatars()">
+</div>
+<div class="text-center" id="container">   
+</div>

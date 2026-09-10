@@ -1,0 +1,22 @@
+﻿@{
+    ViewBag.Title = "Banner investment";
+    universalsemiotics.Models.PublicidadModel p = (universalsemiotics.Models.PublicidadModel)Model;
+}
+
+<h1>Banner investment</h1>
+<p>You can now make the investment in your banner @(p.Banner == "I" ? "(left side)" : "(right side)")</p>
+<p>This will look like your banner in the banner set @(p.Banner == "I" ? "left" : "right"):</p>
+<br />
+<br />
+<a target="_blank" href="@p.UrlD"><img src="@p.UrlImage" height="100" width="100" tag="@p.Titulo" style="height:100px;width:100px;" /></a>
+<br />
+<br />
+<p>Remember, the more investment higher the position in the banner list.</p>
+<form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
+    <input type="hidden" name="cmd" value="_s-xclick">
+    <input type="hidden" name="hosted_button_id" value="6YP28PDCGTBWU">
+    <input name="custom" value="@p.Id" type="hidden" />
+    <input name="notify_url" value="https://www.universalsemiotics.com/en/PayPal_IPN" type="hidden" />
+    <input type="image" src="https://www.paypalobjects.com/es_ES/ES/i/btn/btn_paynowCC_LG.gif" border="0" name="submit" alt="PayPal, the fast and secure way to pay online.">
+    <img alt="" border="0" src="https://www.paypalobjects.com/es_ES/i/scr/pixel.gif" width="1" height="1">
+</form>

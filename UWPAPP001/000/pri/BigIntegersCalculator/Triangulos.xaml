@@ -1,0 +1,57 @@
+﻿<Page
+    x:Class="BigIntegersCalculator.Triangulos"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:BigIntegersCalculator"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Loaded="Page_Loaded"
+    SizeChanged="Page_SizeChanged"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+    <Grid x:Name="gridP">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+        </Grid.RowDefinitions>
+        
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Grid.Row="0">
+            <Button Content="- Zoom" Click="menosZoom_Click" Margin="5"/>
+            <TextBlock Text="Triángulos / Triangles" VerticalAlignment="Center" Margin="5"/>
+            <Button Content="+ Zoom" Click="masZoom_Click" Margin="5"/>
+        </StackPanel>
+        <!-- CáLCULO CON 2 LADOS y 1 áNGULO -->
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Left"  Grid.Row="1">
+            <TextBlock Text="AC:"  Margin="5" ToolTipService.ToolTip="Lado AC / Side AC"/>
+            <TextBox x:Name="txtLLAL1" Margin="5" ToolTipService.ToolTip="Lado AC / Side AC" BeforeTextChanging="txt_BeforeTextChanging" TextChanging="txt_TextChanging"/>
+            <TextBlock Text="AB:"  Margin="5" ToolTipService.ToolTip="Lado AB / Side AB"/>
+            <TextBox x:Name="txtLLAL2" Margin="5" ToolTipService.ToolTip="Lado AB / Side AB" BeforeTextChanging="txt_BeforeTextChanging" TextChanging="txt_TextChanging"/>
+            <TextBlock Text="A^:"  Margin="5" ToolTipService.ToolTip="Ángulo A º / Angle A º"/>
+            <TextBox x:Name="txtLLAA" Margin="5" ToolTipService.ToolTip="Angulo A º / Angle A º" BeforeTextChanging="txt_BeforeTextChanging" TextChanging="txt_TextChanging"/>
+            <Button Content="Dibujar / Draw" Click="DibujarLLA_Click" Margin="5"/>
+        </StackPanel>
+        <!-- CáLCULO CON 1 LADO y 2 áNGULOS -->
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Left"  Grid.Row="2">
+            <TextBlock Text="AC:"  Margin="5" ToolTipService.ToolTip="Lado AC / Side AC"/>
+            <TextBox x:Name="txtLAAL" Margin="5" ToolTipService.ToolTip="Lado AC / Side AC" BeforeTextChanging="txt_BeforeTextChanging" TextChanging="txt_TextChanging"/>
+            <TextBlock Text="A^:"  Margin="5" ToolTipService.ToolTip="Ángulo A º / Angle A º"/>
+            <TextBox x:Name="txtLAAA1" Margin="5" ToolTipService.ToolTip="Ángulo A º / Angle A º" BeforeTextChanging="txt_BeforeTextChanging" TextChanging="txt_TextChanging"/>
+            <TextBlock Text="C^:"  Margin="5" ToolTipService.ToolTip="Ángulo C º / Angle C º"/>
+            <TextBox x:Name="txtLAAA2" Margin="5" ToolTipService.ToolTip="Angulo C º / Angle C º" BeforeTextChanging="txt_BeforeTextChanging" TextChanging="txt_TextChanging"/>
+            <Button Content="Dibujar / Draw" Click="Dibujar_LAA_Click" Margin="5"/>
+        </StackPanel>
+        
+        <Canvas x:Name="canvasTriangulo" Background="White" Width="auto" Height="auto"  Grid.Row="3"/>
+
+        <Button x:Name="borrarLienzo" Click="borrarLienzo_Click" Content="Limpiar / Clear" HorizontalAlignment="Center" Margin="5" Grid.Row="4"/>
+
+        <Border Background="White" Grid.Row="5">
+            <TextBlock x:Name="DatosTriangulo" Text="" HorizontalAlignment="Center" TextWrapping="Wrap" />
+        </Border>
+    </Grid>
+</Page>

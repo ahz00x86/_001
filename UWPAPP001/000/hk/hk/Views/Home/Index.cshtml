@@ -1,0 +1,197 @@
+﻿@{
+    ViewData["Title"] = "hk - BUDS STAKING";
+}
+
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sscjs@latest/dist/ssc.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', (e) => {
+        const ssc = new SSC('https://api.hive-engine.com/rpc');
+        const lineBreak = document.createElement('br');
+        var money = new Intl.NumberFormat('en-EN');
+        money.style = 'currency';
+
+        var SWAPHIVEinStk = parseFloat(0);
+        ssc.findOne(
+            'tokens',
+            'balances',
+            {
+                account: 'hk-staking',
+                symbol: "SWAP.HIVE"
+            }, (err, result) => {
+
+                //console.log(err, result);
+            
+                SWAPHIVEinStk = parseFloat(result.balance) / 100;
+
+                // El 1% del SWAP-HIVE en hk-staking
+                container.append('1% SWAP.HIVE hk-staking: ' + SWAPHIVEinStk.toString());
+                container.append(lineBreak.cloneNode(false));
+
+                // Obtemos los BUDs que tiene la cuenta de hk-staking....
+                var BUDSinStk = parseFloat(0);
+                ssc.findOne(
+                    'tokens',
+                    'balances',
+                    {
+                        account: 'hk-staking',
+                        symbol: "BUDS"
+                    }, (err, result) => {
+
+                        //console.log(err, result);
+            
+                        BUDSinStk = parseFloat(result.balance);
+
+                        // Obtnemos el precio del par BUDS.SWAP.HIVE
+                        var totalBUDSPriceSWAPHIVEStaking        
+                        ssc.findOne(
+                            'marketpools',
+                            'pools',
+                            {
+                                tokenPair: "BUDS:SWAP.HIVE"
+                            }, (err, result) => {
+
+                                //console.log(err, result);
+                                totalBUDSPriceSWAPHIVEStaking = SWAPHIVEinStk / parseFloat(result.basePrice);
+
+                                // Obtenemos los usuarios que tienen BUDSX
+                                // TODO: Realizar modificación para cuando haya más de 1000 usuarios haciendo staking tener en cuenta los diferentes paginaciones
+                                ssc.find(
+                                    'tokens',
+                                    'balances',
+                                    {            
+                                        symbol: "BUDSX",
+                                    }, 1000, 0, [], (err, result) => {
+
+                                    //console.log(err, result);
+        
+                                    // Ordenamos los resultados por el balance de mayor a menor
+                                    var data = result.sort(function(a, b){return b.balance - a.balance});
+        
+                                    // Preparamos la tabla que contendrá los datos
+                                    var table = document.createElement('table');
+                                        table.style.marginLeft = 'auto';
+                                        table.style.marginRight = 'auto';
+                                    var baseRow = document.createElement('tr');
+                                    var baseCell = document.createElement('td');
+                                    var baseTH = document.createElement('th');
+                                    var container = document.getElementById('container');
+
+
+                                    // CALCULAMOS EL TOTAL DE BUDSx obviando el usuario null que es la cuenta de quemado
+                                    var total = parseFloat(0);
+                                    for(var i = 0; i < data.length; i++){          
+          
+                                        if (data[i].account != 'null') {
+                                            total = total + parseFloat(data[i].balance);
+                                        }            
+                                    }
+
+                                    // Calculamos el ratio
+                                    var ratio = BUDSinStk / total;
+
+                                    // Mostramos el ratio
+                                    container.append('Ratio: ' + ratio.toString());
+                                    container.append(lineBreak.cloneNode(false));
+                                    container.append(lineBreak.cloneNode(false));
+
+                                    // ESTALBECEMOS LAS CABECERAS
+                                    var headRow = baseRow.cloneNode(false);
+                                    headRow.style.backgroundColor = 'DarkGreen';
+                                    
+                                    var accountHeadCell = baseTH.cloneNode(false);
+                                    accountHeadCell.innerHTML = '<b>USUARIO</b>';                    
+                                    headRow.appendChild(accountHeadCell);
+          
+                                    var balanceHeadCell = baseTH.cloneNode(false);
+                                    balanceHeadCell.innerHTML = '<b>BUDSX</b>';                    
+                                    headRow.appendChild(balanceHeadCell);
+
+                                    var BUDSHeadCell = baseTH.cloneNode(false);
+                                    BUDSHeadCell.innerHTML = '<b>BUDS - Stake</b>';                    
+                                    headRow.appendChild(BUDSHeadCell);
+
+                                    var RwardsHeadCell = baseTH.cloneNode(false);
+                                    RwardsHeadCell.innerHTML = '<b>Recompensas diaria (Estimado)</b>';
+                                    headRow.appendChild(RwardsHeadCell);
+
+                                    table.appendChild(headRow);
+
+                                        var cambioFila = true;
+
+                                    // RECORREMOS LOS DATOS Obviando la cuenta null
+                                    for(var i = 0; i < data.length; i++){          
+          
+                                        if (data[i].account != 'null') {
+                                            var myRow = baseRow.cloneNode(false);
+
+                                            if (cambioFila) {
+                                                myRow.style.backgroundColor = 'white';
+                                            } else {
+                                                myRow.style.backgroundColor = 'DarkSeaGreen';                                                
+                                            }
+
+                                            cambioFila = !cambioFila;
+
+                                            var accountCell = baseCell.cloneNode(false);
+                                            accountCell.innerHTML = data[i].account;
+                                            myRow.appendChild(accountCell);
+
+                                            var balanceCell = baseCell.cloneNode(false);
+                                            balanceCell.innerHTML = money.format(data[i].balance);
+                                            myRow.appendChild(balanceCell);
+                                
+                                            var BUDSCell = baseCell.cloneNode(false);
+                                            BUDSCell.innerHTML = money.format(parseFloat(data[i].balance) * ratio);
+                                            myRow.appendChild(BUDSCell);
+
+                                            var RewardsCell = baseCell.cloneNode(false);
+                                            RewardsCell.innerHTML = money.format(totalBUDSPriceSWAPHIVEStaking * parseFloat(data[i].balance) / total);
+                                            myRow.appendChild(RewardsCell);
+
+                                            table.appendChild(myRow);
+                                        }
+                                    }
+
+                                    // Introducimos fila final con el total
+                                    var footRow = baseRow.cloneNode(false);
+                                    footRow.style.backgroundColor = 'silver';
+
+                                    var accountFootCell = baseCell.cloneNode(false);
+                                    accountFootCell.innerHTML = 'TOTAL';                    
+                                    footRow.appendChild(accountFootCell);
+          
+                                    var balanceFootCell = baseCell.cloneNode(false);
+                                    balanceFootCell.innerHTML = money.format(total);                    
+                                    footRow.appendChild(balanceFootCell);
+
+                                    table.appendChild(footRow);
+
+                                    container.append(table);
+                                    container.append(lineBreak.cloneNode(false));
+                                });
+
+                            });
+
+                    });
+
+            });
+
+            //ssc.findOne(
+            //        'tokens',
+            //        'balances',
+            //        {
+            //            account: 'null',
+            //            symbol: "BUDS"
+            //        }, (err, result) => {
+
+            //    alert(result.balance);
+            //    console.log(err, result);
+            //});
+    });
+
+</script>
+
+<div class="text-center" id="container">
+    <h1 class="display-4">BUDS STAKING</h1>    
+</div>

@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.10.34928.147
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CWalletSearch", "CWalletSearch\CWalletSearch.csproj", "{07EAB8F3-5F47-44D8-9308-E8086A8DECFC}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{07EAB8F3-5F47-44D8-9308-E8086A8DECFC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{07EAB8F3-5F47-44D8-9308-E8086A8DECFC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{07EAB8F3-5F47-44D8-9308-E8086A8DECFC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{07EAB8F3-5F47-44D8-9308-E8086A8DECFC}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {79249C11-75CE-43AB-9D5A-B5346B140B93}
+	EndGlobalSection
+EndGlobal

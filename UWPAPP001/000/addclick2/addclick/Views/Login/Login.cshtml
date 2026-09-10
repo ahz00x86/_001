@@ -1,0 +1,54 @@
+﻿@{
+    ViewBag.Title = "Login";
+}
+@{ if (TempData["msgKO"] != null)
+    {
+        <b style="background-color:salmon;">@TempData["msgKO"]</b>
+    }
+    if (TempData["msgOK"] != null)
+    {
+        <b style="background-color:lightgreen;">@TempData["msgOK"]</b>
+    }
+}
+<section title="Login - textoamp3.com">
+    <article title="Login - textoamp3.com">
+        <form method="post" action="~/Login/Login">
+            @Html.AntiForgeryToken()
+            <div class="row">
+                <div class="col-md-12">
+                    <h3>E-Mail:</h3>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <input required style="width:250px;" name="email" type="email" value="@(Session["email"] != null ? Session["email"] : "")" />
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <h3>Contraseña:</h3>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <input required style="width:250px;" name="password" type="password" maxlength="30" />
+                    <p><a href="~/Login/ForgotPassword">Olvidó su contraseña</a></p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <button class="btn btn-default" type="submit">Acceder</button>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <br /><br /><p><a class="btn btn-default" href="~/Login/Registro">REGíSTRESE</a></p>
+                </div>
+            </div>
+        </form>
+    </article>
+</section>

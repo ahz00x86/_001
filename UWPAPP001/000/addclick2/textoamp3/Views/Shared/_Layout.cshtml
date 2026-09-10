@@ -1,0 +1,112 @@
+﻿@using Microsoft.AspNet.Identity
+@{
+    textoamp3.Models._LayoutModel MenuModel = ViewBag.LayoutModel;
+}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <!-- Bidvertiser2045473 -->
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="title" content="Conversor de texto/PDF/EPUB a voz/audio/MP3 online" />
+    <meta name="description" content="Convierte texto en mp3, pasa tus PDFs a voz y escúchalos, Web Online, sin descargas." />
+    <meta http-equiv="Content-Language" content="es" />
+    <meta name="distribution" content="global" />
+    <meta name="robots" content="index,follow" />
+    <meta name="keywords" content="texto a voz,texto a mp3,texto a audio" />
+    <meta name="author" content="Pérez Sánchez, Pablo" />
+    <link rel="icon" href="https://www.conversordetextoamp3.com/favicon.ico" type="image/x-icon" />
+    <link rel="shortcut icon" type="image/x-icon" href="https://www.conversordetextoamp3.com/favicon.ico">
+    <title>@(ViewBag.Title)Conversor de texto/PDF/EPUB a voz/audio/MP3 online</title>
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")    
+</head>
+<body>
+    <div id="fb-root"></div>
+    <script async defer crossorigin="anonymous" src="https://connect.facebook.net/es_ES/sdk.js#xfbml=1&version=v5.0"></script>
+    <nav class="navbar navbar-expand-md navbar-dark bg-dark">
+        <a class="navbar-brand" href="~/Home/Index">conversorDeTextoAmp3.com</a>
+        @*<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse"><span class="navbar-toggler-icon"></span></button>*@
+        @*<div class="collapse navbar-collapse" id="navbarCollapse">*@
+        <div>
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item"><a class="nav-link" href="~/Home/textoamp3">CONVERTIR</a></li>
+                @if (Request.IsAuthenticated)
+                {
+                    <li class="nav-item"><a class="nav-link" href="~/Home/DESCARGAS">DESCARGAS</a></li>
+                    <li class="nav-item"><a class="nav-link text-success" href="~/Paypal/PayPal">@(ViewBag.publi ? "quitar publicidad" : "SIN PUBLICIDAD - ACTIVO")</a></li>
+                }
+
+                <li><a class="nav-link" href="~/Home/Acerca">Acerca</a></li>
+                @if (Request.IsAuthenticated)
+                {
+                    <li class="nav-item"><a title="Manage" class="nav-link" href="/Manage/Index">Hola @User.Identity.GetUserName()!</a></li>
+                    using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm", @class = "navbar-right" }))
+                    {
+                        @Html.AntiForgeryToken()
+                        <li class="nav-item"><a class="nav-link" href="javascript:document.getElementById('logoutForm').submit()">Cerrar sesión</a></li>
+                    }
+                }
+                else
+                {
+                    <li class="nav-item"><a id="registerLink" class="nav-link" href="~/Account/Register">Registrarse</a></li>
+                    <li class="nav-item"><a id="loginLink" class="nav-link" href="~/Account/Login">Iniciar sesión</a></li>
+                }
+            </ul>
+
+            @*@Html.Partial("_LoginPartial")*@
+
+        </div>
+    </nav>
+
+    @*<div class="navbar navbar-inverse navbar-fixed-top">
+            <div class="container">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    @Html.ActionLink("textoamp3.com", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+                </div>
+                <div class="navbar-collapse collapse">
+                    <ul class="nav navbar-nav">
+
+                        @if (Request.IsAuthenticated)
+                        {
+                            if (MenuModel.IsConfirmed)
+                            {
+                                <li> @Html.ActionLink("CONVERTIR", "textoamp3", "Home") </li>
+                                <li> @Html.ActionLink("DESCARGAS", "DESCARGAS", "Home") </li>
+                            }
+                            else
+                            {
+                                <li> @Html.ActionLink("Email sin confirmar", "EmailNotConfirmed", "Account") </li>
+                            }
+                        }
+                        else
+                        {
+                            <li>@Html.ActionLink("DEMO", "textoamp3DEMO", "Home")</li>
+                        }
+                        <li>@Html.ActionLink("Acerca", "About", "Home")</li>
+                    </ul>
+                    @Html.Partial("_LoginPartial")
+                </div>
+            </div>
+        </div>*@
+<div class="container body-content" style="text-align:center;">
+    <div style="text-align:right;"><div class="fb-like" data-href="https://www.conversordetextoamp3.com" data-width="" data-layout="button_count" data-action="like" data-size="small" data-show-faces="true" data-share="true"></div></div>
+    <br />
+    @RenderBody()
+    <hr />
+    <footer>
+        <p>&copy; @DateTime.Now.Year - conversorDeTextoAmp3.com - <a style="color:silver;" href="~/Home/Aviso_Legal">Aviso Legal</a></p>
+    </footer>
+</div>
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    @RenderSection("scripts", required: false)    
+</body>
+</html>

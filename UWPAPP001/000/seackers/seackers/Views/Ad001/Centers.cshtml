@@ -1,0 +1,91 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@using seackers.Models.InApp
+@model CentrosViewModel
+
+<h2>@Localizer["CentersList"] <Button class="btn btn-lg btn-primary" onclick="toggleNewCenterS()"><b id="boldMm" style="font-size:x-large;">+</b></Button></h2>
+
+<script>
+    function toggleNewCenterS() {
+        $("#newCenterS").toggle();
+        
+        if ($("#boldMm").text() == "+") {
+            $("#boldMm").text("-");
+        }
+        else{
+            $("#boldMm").text("+");
+        }
+
+    }
+</script>
+
+<div id="newCenterS" class="row" style="display:none;">
+    <div class="col-md-4"></div>
+    <div class="col-md-4">
+        <h2>@Localizer["NewSeCenter"]</h2>
+        <form asp-controller="Ad001" asp-action="AddCenter" method="post">            
+            <div class="form-floating mb-3">
+                <input asp-for="NewCenterName" class="form-control" placeholder="@Localizer["NewCenterName"]" />
+                <label asp-for="NewCenterName" class="form-label">@Localizer["NewCenterName"]</label>
+            </div>
+            <div class="form-floating mb-3">
+                <input asp-for="NewCenterEmail" class="form-control" placeholder="@Localizer["NewCenterEmail"]" />
+                <label asp-for="NewCenterEmail" class="form-label">@Localizer["NewCenterEmail"]</label>
+            </div>
+            <div class="form-group">
+                <input class="form-check-input" asp-for="Notificar" type="checkbox" checked />
+                <label asp-for="Notificar">@Localizer["CenterNotify"]</label>
+            </div>
+            <button class="w-100 btn btn-lg btn-primary" type="submit">@Localizer["AddNewCenter"]</button>
+        </form>
+        <hr/>
+    </div>
+    <div class="col-md-4"></div>
+</div>
+
+<div class="table-responsive">
+    <table class="table table-bordered" align="center">
+        <thead>
+            <tr>
+                <th style="background-color:darkblue;color:white;">Logo</th>
+                <th style="background-color:darkblue;color:white;">Centro Se@cker</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+    
+    @foreach (var centro in Model.CentrosSeacker)
+    {
+        <tr>
+            @{
+                <td style="background-color:deepskyblue;color:white;"><img style="width:50px;height:50px;" src="@centro.UrlLogo" /></td>
+                        <td style="background-color:deepskyblue;color:white;">
+                        @(centro.Name ?? Localizer["NoName"].Value)<br />
+                        @centro.Email<br/>
+                        &#128222;@centro.Phone
+                            @{
+                                if (!String.IsNullOrEmpty(centro.Url))
+                                {
+                                    <br/><a href="@centro.Url" target="_blank">web</a>
+                                }
+                            }
+                        </td>
+                //<td style="background-color:deepskyblue;color:white;">@centro.Email</td>
+                //if (!String.IsNullOrEmpty(centro.Url))
+                //{
+                //    <td style="background-color:deepskyblue;color:white;">
+                //        <a href="@centro.Url" target="_blank">web</a>
+                //    </td>
+                //}
+                //else
+                //{
+                //    <td style="background-color:deepskyblue;color:white;">
+                //        <i>Nope</i>
+                //    </td>
+                //}
+                //<td style="background-color:deepskyblue;color:white;"><button class="w-100 btn btn-lg btn-primary">Actualizar</button></td>
+            }
+        </tr>
+    }
+</table>
+

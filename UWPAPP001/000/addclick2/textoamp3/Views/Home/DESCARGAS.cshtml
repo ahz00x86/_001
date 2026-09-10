@@ -1,0 +1,42 @@
+﻿@{
+    ViewBag.Title = "DESCARGAS - ";
+    textoamp3.Models.DESCARGASModel model = Model;
+}
+
+<div class="row">
+    <div class="col-md-12">
+        <h1>DESCARGAS</h1>
+        <p>(Los archivos se borrarán después de 15 días)</p>
+    </div>
+</div>
+
+@if (model.DESCARGAS == null || model.DESCARGAS.Count == 0)
+{
+    <div class="row">
+        <div class="col-md-12">
+            <p>(Aún no dipone de ninguna conversión)</p>
+        </div>
+    </div>
+}
+else
+{
+    foreach (textoamp3.Models.DESCARGA d in model.DESCARGAS)
+    {
+        if (d.IsConverting)
+        {
+            <div class="row">
+                <div class="col-md-12">
+                    <br /><p style="font-size:25px;"><b class='text-success'>@String.Format("{0:dd/MM/yyyy}", d.Fecha)</b> <label>convirtiendo @d.Titulo ...</label> <a class="btn btn-primary" href="javascript:window.location.reload()">Actualizar</a></p>
+                </div>
+            </div>
+        }
+        else
+        {
+            <div class="row">
+                <div class="col-md-12">
+                    <br /><p style="font-size:25px;">@Html.Raw(d.IsDemo ? "<b>con publicidad </b>" : String.Concat("<b class='text-success'>", String.Format("{0:dd/MM/yyyy}", d.Fecha), " </b>")) <a href="~/Home/Download?id=@(d.Id)" target="_blank" download="@(d.Titulo.Replace("\"","_")).mp3">@(d.Titulo).mp3</a></p>
+                </div>
+            </div>
+        }
+    }
+}

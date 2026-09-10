@@ -1,0 +1,48 @@
+﻿@model universalsemiotics.Models.RegisterViewModel
+@{
+    ViewBag.Title = Resources.universalsemiotics.registrarse;
+}
+
+<h1>@ViewBag.Title</h1>
+<script src='https://www.google.com/recaptcha/api.js'></script>
+@using (Html.BeginForm("Register", "Account", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+{
+    @Html.AntiForgeryToken()
+
+    @Html.ValidationSummary("", new { @class = "text-danger", @style = "display:initial;" })
+<div class="form-group">
+    @*@Html.LabelFor(m => m.Email, new { @class = "col-md-12 control-label" })*@
+    <label class="col-md-12 control-label" style="display:initial;">@(Resources.universalsemiotics.correo_electronico)</label>
+    <div class="col-md-12">
+        @Html.TextBoxFor(m => m.Email, new { @class = "form-control text-center", @style = "display:initial;" })
+    </div>
+</div>
+<div class="form-group">
+    @*@Html.LabelFor(m => m.Password, new { @class = "col-md-12 control-label" })*@
+    <label class="col-md-12 control-label" style="display:initial;">@(Resources.universalsemiotics.contrasenia)</label>
+    <div class="col-md-12">
+        @Html.PasswordFor(m => m.Password, new { @class = "form-control text-center", @style = "display:initial;" })
+    </div>
+</div>
+<div class="form-group">
+    @*@Html.LabelFor(m => m.ConfirmPassword, new { @class = "col-md-12 control-label" })*@
+    <label class="col-md-12 control-label" style="display:initial;">@(Resources.universalsemiotics.contrasenia_confirmar)</label>
+    <div class="col-md-12">
+        @Html.PasswordFor(m => m.ConfirmPassword, new { @class = "form-control text-center", @style = "display:initial;" })
+    </div>
+</div>
+    <div class="form-group">
+        <div class="col-md-12">
+            <div style="display:inline-block;" class="g-recaptcha" data-sitekey="6Le6LtMaAAAAAPVe_tGHrSO4wX0O1Xt4PNztZh46"></div>
+        </div>
+    </div>    
+    <div class="form-group">
+        <div class="col-md-12">
+            <input type="submit" class="btn btn-primary" value="@(Resources.universalsemiotics.registrarse)" />
+        </div>
+    </div>
+}
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

@@ -1,0 +1,5 @@
+# Regla 1
+User-agent: *
+Allow: /
+
+Sitemap: http://www.666way.com/sitemap.txt

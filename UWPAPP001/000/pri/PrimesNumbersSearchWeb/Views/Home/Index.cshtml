@@ -1,0 +1,159 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+@Html.AntiForgeryToken()
+<script src="~/lib/microsoft/signalr/dist/browser/signalr.js"></script>
+<script>
+    
+    var globalProgressBarId;
+    var Guid = uuidv4();
+
+    var connection = new signalR.HubConnectionBuilder().withUrl("/messagehub?username=" + Guid).build();
+    connection.start();
+    connection.on("ReceiveMessageHandler", function (message) {
+        //var msg = message.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+        
+        var msgJson = JSON.parse(message);
+        if (msgJson.IsProgressBar) {
+        var elem = document.getElementById("progressBar");
+            elem.value = msgJson.ProgressBar;
+        }
+        else{
+            var elem = document.getElementById("tiempoEstimado");
+            elem.innerHTML = msgJson.Tiempo;
+            
+        }
+        //alert(message);
+    });
+
+    function uuidv4() {
+        return ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, c =>
+            (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
+        );
+    }
+
+    window.onload = function () {
+        $('#validatingTransactionModal').modal({
+            backdrop: 'static', keyboard: false
+        });
+        $("#btnPrime").click(function () {
+            //$('#validatingTransactionModal').modal("show").on('hide', function () {
+            //    $('#validatingTransactionModal').modal('hide')
+            //});
+            isPrime();
+            //setTimeout(move(), 1000);
+        });
+
+        
+    }
+
+    function isPrime(){
+                
+        $('#validatingTransactionModal').modal('show');
+        
+        var Gprime = document.getElementById('txtPrime').value;
+        var antiforgery = document.getElementsByName('__RequestVerificationToken')[0].value;
+        
+        //connection.invoke("Process", user, message).catch(function (err) {
+        //    return console.error(err.toString());
+        //});
+        //return;
+        $.ajax({
+            type: "POST",
+            url: "/Home/Process",
+            data: { prime: Gprime, user: Guid, "__RequestVerificationToken": antiforgery },
+            success: function (response) {
+                if (response != null) {                    
+                    clearInterval(globalProgressBarId);
+                    document.getElementById('container').innerHTML = response;
+                    setTimeout(function(){$('#validatingTransactionModal').modal('hide')}, 1000);                                        
+                }
+                else {
+                    alert("OCURRIó UN ERROR 0x003");
+                }
+            },
+            failure: function (response) {
+                setTimeout(function () { $('#validatingTransactionModal').modal('hide') }, 1000);                
+                alert(response.responseText);
+            },
+            error: function (response) {
+                setTimeout(function(){$('#validatingTransactionModal').modal('hide')}, 1000);                
+                alert(response.responseText);
+            }
+        });
+    }
+
+    //function move() {
+    //    console.log('1');
+    //    var antiforgery = document.getElementsByName('__RequestVerificationToken')[0].value;
+    //    var elem = document.getElementById("progressBar");        
+    //    globalProgressBarId = setInterval(frame, 1000);
+    //    console.log('2');
+    //    function frame() {
+    //        $.ajax({
+    //            type: "POST",
+    //            url: "/Home/ProcessProgress",
+    //            data: { "__RequestVerificationToken": antiforgery },
+    //            success: function (response) {
+    //                if (response != null) {
+    //                    console.log('3');
+    //                    if (response >= 100) {                            
+    //                        clearInterval(globalProgressBarId);
+    //                    } else {
+    //                        elem.value = response;
+    //                    }
+    //                }
+    //                else {
+    //                    alert("OCURRIó UN ERROR 0x003");
+    //                }
+    //            },
+    //            failure: function (response) {
+    //                setTimeout(function () { $('#validatingTransactionModal').modal('hide') }, 1000);
+    //                alert(response.responseText);
+    //            },
+    //            error: function (response) {
+    //                setTimeout(function () { $('#validatingTransactionModal').modal('hide') }, 1000);
+    //                alert(response.responseText);
+    //            }
+    //        });
+    //    }
+    //}
+
+</script>
+
+<div class="text-center">
+    <h1 class="display-4">PRIME NUMBERS SEARCH</h1>
+    <textarea id="txtPrime" style="width:max-content;height:max-content;"></textarea>
+
+    <br/><input type="button" id="btnPrime" value="¿Es primo?"/>
+</div>
+<br />
+<br />
+<div id="container" class="text-center" style="word-wrap:break-word;">
+
+</div>
+<div class="modal fade" id="validatingTransactionModal" tabindex="-1" role="dialog" aria-labelledby="validatingTransactionModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header text-center">
+                <h5 class="modal-title text-center" id="validatingTransactionModalLabel">OBTENIENDO/CALCULANDO RAíZ CUADRADA</h5>
+                @*<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>*@
+            </div>
+            <div class="modal-body text-center ">
+                <p>Antes de pasar a la acción... debemos calcular la raíz cuadrada para saber el coste computacional que llevará resolver el número en el caso extremo de que sea primo</p>
+                <p>(Según el tamaño del número primo puede tardar bastante, pero no se preocupe, al final obtendrá la raiz cuadrada con redondeo hacia el número superior en caso de no ser exacta =)</p>
+                <img src="/imgs/R.gif" width="200" />
+                <br/>
+                <p id="tiempoEstimado"></p>
+                <progress id="progressBar" value="0" max="100"></progress>
+            </div>
+            <div class="modal-footer">
+                @*<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Save changes</button>*@
+            </div>
+        </div>
+    </div>
+</div>

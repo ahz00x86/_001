@@ -1,0 +1,18 @@
+﻿
+@{
+    ViewBag.Title = "=P";
+    universalsemiotics.Models.PublicidadModel p = (universalsemiotics.Models.PublicidadModel)Model;
+}
+
+<h2>=P</h2>
+<br />
+<br />
+<img src="@p.UrlImage" height="100" width="100" tag="@p.Titulo" style="height:100px;width:100px;" />
+<br />
+<br />
+<form action="~/es/xdc4cb595729d341d6c5d12943a5a3371e7612528" method="post">
+    @Html.AntiForgeryToken()
+    <input name="pps" type="password" />
+    <input name="id" type="hidden" value="@p.Id" />
+    <button type="submit" style="background-color:red;">=P</button>
+</form>

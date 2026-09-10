@@ -1,0 +1,10 @@
+﻿@{
+    ViewBag.Title = Resources.universalsemiotics.email_confirmado;
+}
+
+<h1>@ViewBag.Title</h1>
+<div>
+    <p>
+        @(Resources.universalsemiotics.email_confirmado_gracias) @Html.ActionLink(Resources.universalsemiotics.iniciar_sesion_click, "Login", "Account", routeValues: null, htmlAttributes: new { id = "loginLink" })
+    </p>
+</div>

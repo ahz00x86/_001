@@ -1,0 +1,42 @@
+﻿@page
+@model ResendEmailConfirmationModel
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
+@{
+    ViewData["Title"] = Localizer["ResendEmailConfirmation"];
+}
+<script>
+    function onSubmit(token) {
+        document.getElementById("resend").submit();
+    }
+</script>
+
+<h1>@ViewData["Title"]</h1>
+<h2>@Localizer["EnterEmail"]</h2>
+<hr />
+<div class="row">
+    <div class="col-md-4"></div>
+    <div class="col-md-4">
+        <form id="resend" method="post">
+            <div asp-validation-summary="All" class="text-danger" role="alert"></div>
+            <div class="form-floating mb-3">
+                <input asp-for="Input.Email" class="form-control" aria-required="true" placeholder="@Localizer["emailExample"]" />
+                <label asp-for="Input.Email" class="form-label">@Localizer["Email"]</label>
+                <span asp-validation-for="Input.Email" class="text-danger"></span>
+            </div>
+            @*<button type="submit" class="w-100 btn btn-lg btn-primary">Resend</button>*@
+            <button class="g-recaptcha w-100 btn btn-lg btn-primary"
+                    data-sitekey="6LeynK4lAAAAAHX_UKIIB9bI8ALUrCv1NHdP637m"
+                    data-callback='onSubmit'
+                    data-action='submit'>
+                @Localizer["Resend"]
+            </button>
+        </form>
+    </div>
+    <div class="col-md-4"></div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

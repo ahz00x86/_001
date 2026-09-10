@@ -1,0 +1,17 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace FarmsWar.Classes
+{
+    public class StateError
+    {
+        public Int16 GoToState { get; set; }
+
+        public Boolean IsError { get; set; }
+
+        public String Message { get; set; }
+    }
+}

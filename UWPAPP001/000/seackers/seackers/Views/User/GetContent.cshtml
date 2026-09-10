@@ -1,0 +1,353 @@
+﻿@using seackers.Models.InApp
+@model ContenidosViewModel
+
+
+<div class="row">
+    <div style="text-align:left;" class="col-md-2">
+        @*<div class="list-group">
+            <a href="#item1" class="list-group-item list-group-item-action active">Item 1</a>
+            <div id="item1" class="list-group-item-content">
+                <a href="#subitem1" class="list-group-item list-group-item-action">Subitem 1</a>
+                <div id="subitem1" class="list-group-item-content">
+                    <p>Contenido del subitem 1</p>
+                </div>
+                <a href="#subitem2" class="list-group-item list-group-item-action">Subitem 2</a>
+                <div id="subitem2" class="list-group-item-content">
+                    <p>Contenido del subitem 2</p>
+                </div>
+            </div>
+            <a href="#item2" class="list-group-item list-group-item-action">Item 2</a>
+            <div id="item2" class="list-group-item-content">
+                <a href="#subitem3" class="list-group-item list-group-item-action">Subitem 3</a>
+                <div id="subitem3" class="list-group-item-content">
+                    <p>Contenido del subitem 3</p>
+                </div>
+            </div>
+        </div>*@
+
+        @if (Model != null)
+        {
+
+            <ul id="mainList">
+                @*<tr><td><button onclick="addTemaS(null, null, null)">+</button></td></tr>*@            
+                @{
+                    Stack<seackers.Models.InApp.Contenido> pila = new Stack<seackers.Models.InApp.Contenido>();
+                    Model.ContenidosUsuario.Reverse();
+                    foreach (seackers.Models.InApp.Contenido t in Model.ContenidosUsuario)
+                    {
+                        t.Nivel = 0;
+                        pila.Push(t);
+
+                    }
+
+                    while (pila.Count > 0)
+                    {
+                        // Obtener el siguiente elemento de la pila
+                        var elemento = pila.Pop();
+
+
+                        if (elemento.Nivel == 2)
+                        {
+                            @Html.Raw("<ul>")
+                        }
+
+                        if (elemento.Nivel == 0)
+                        {
+                            <li style="font-size:small;" onclick="">
+                                <button style="background-color:transparent;color:white;border:none;font-size:small;" onclick="getContent('@elemento.Id')">@elemento.Title</button>
+                            </li>
+                        }
+
+                        if (elemento.Nivel == 1)
+                        {
+                            @Html.Raw("</ul>")
+                        }
+
+                        // Añadir las secciones a la pila
+                        @if (elemento.Secciones != null && elemento.Secciones.Count > 0)
+                        {
+                            pila.Push(new seackers.Models.InApp.Contenido() { Nivel = 1 });
+                            elemento.Secciones.Reverse();
+                            foreach (var seccion in elemento.Secciones)
+                            {
+                                seccion.Nivel = 0;
+                                pila.Push(seccion);
+                            }
+                            pila.Push(new seackers.Models.InApp.Contenido() { Nivel = 2 });
+                        }
+                    }
+                }
+            </ul>
+        }
+    </div>    
+    <div class="col-md-10">                        
+        <div class="text-wrap" id="taResult">@(Model != null ? Html.Raw(Model.MainContent) : "")</div>
+        <br />
+        <br />
+        
+        <button class="btn btn-lg btn-primary" style="visibility:@(Model != null && Model.HaveResponse ? "visible" : "hidden");" id="viewEVBTN" onclick="viewEV()">VER RESULTADOS</button>
+        <br/>
+        <button class="btn btn-lg btn-primary" style="visibility:@(Model != null && Model.HaveQuest && !Model.HaveResponse ? "visible" : "hidden");" id="startEVBTN" onclick="startEV()">REALIZAR EVALUACIóN</button>
+        
+    </div>
+</div>
+<!-- Modal -->
+<div class="modal fade" id="AddTemS">
+    <div class="modal-dialog" style='width:100%;height:100%;'>
+        <div class="modal-content" style="width:100%;height:100%;background-color:transparent;border:none;">
+            <div class="modal-header">
+                <button onclick="$('#AddTemS').modal('hide');" type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Añadir Tema/Sección</h4>
+            </div>
+            <div id="modalBody" style='background-color:darkblue;width:100%;height:100%;' class="modal-body">
+                <form id="myFormTemS" method="post">
+                    <div>
+                        <label style="color:white;" for="title">Título</label>
+                        <input type="text" id="title" name="title">
+                    </div>
+                    <div>
+                        <button type="button" id="submitAddTemS">Enviar</button>
+                    </div>
+                    @Html.AntiForgeryToken()                    
+                    <input type="hidden" id="ThemeId" name="ThemeId">
+                </form>
+
+            </div>
+            <div class="modal-footer">
+                @*<button type="button" class="btn btn-default" data-dismiss="modal">Close</button> *@
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="EvalModal">
+    <div class="modal-dialog">
+        <div class="modal-content" style="background-color:transparent;border:none;">
+            <div class="modal-header">
+                @*<button onclick="$('#EvalModal').modal('hide');" type="button" class="close" data-dismiss="modal">&times;</button>*@
+                <h4 class="modal-title">Evaluación</h4>
+            </div>
+            <div id="modalBody" style='background-color:darkblue;' class="modal-body">
+                <form id="myFormEval" method="post">
+                    <div>
+                        <div style="color:white;" id="questions"></div>
+                        </div>
+                    <div>
+                        <button class="btn btn-lg btn-primary" type="button" id="submitEval">Responder</button>
+                    </div>
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" id="wayQuest" name="wayQuest">
+                    <input type="hidden" id="ThemeIdQ" name="ThemeIdQ">
+                    <input type="hidden" id="IdResponse" name="IdResponse">
+                    <input type="hidden" id="IdQuest" name="IdQuest">
+                </form>
+
+            </div>
+            <div class="modal-footer">
+                @*<button type="button" class="btn btn-default" data-dismiss="modal">Close</button> *@
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="ViewEvalModal">
+    <div class="modal-dialog">
+        <div class="modal-content" style="background-color:transparent;border:none;">
+            <div class="modal-header">
+                @*<button onclick="$('#EvalModal').modal('hide');" type="button" class="close" data-dismiss="modal">&times;</button>*@
+                <h4 class="modal-title">Resultados</h4>
+            </div>
+            <div id="modalBody" style='background-color:darkblue;' class="modal-body">
+                <form id="myFormViewEval" method="post">
+                    <div>
+                        <div style="color:white;" id="resultados"></div>
+                    </div>
+                </form>
+
+            </div>
+            <div class="modal-footer">
+                @*<button type="button" class="btn btn-default" data-dismiss="modal">Close</button> *@
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function getContent(idContent) {        
+        document.getElementById("ThemeId").value = idContent;
+        var formData = new FormData($("#myFormTemS")[0]);
+
+        $.ajax({
+            type: "POST",
+            url: "/User/GetTheme",
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function (response) {
+                // Aquí puedes hacer algo con la respuesta del controlador
+                //alert("Archivo subido correctamente");
+                var objD = JSON.parse(response);
+
+                document.getElementById('taResult').innerHTML = objD.Content;
+                // obtener el elemento del DOM por su id
+                var element = document.getElementById("startEVBTN");
+                var elementViewEVAL = document.getElementById("viewEVBTN");
+
+                if (objD.HasResponse)
+                {
+                    elementViewEVAL.style.visibility = "visible";
+                }
+                else
+                {
+                    elementViewEVAL.style.visibility = "hidden";
+                    if (objD.IsEval)
+                    {
+                        // cambiar la propiedad de estilo para hacerla visible
+                        element.style.visibility = "visible";
+                    }
+                    else{
+                        // cambiar la propiedad de estilo para hacerla visible
+                        element.style.visibility = "hidden";
+                    }
+                }
+            },
+            error: function (xhr, status, error) {
+                // Aquí puedes manejar los errores de la llamada AJAX
+                //alert("Error al subir el archivo");
+            }
+        });
+    }
+
+    function startEV(){        
+        var formData = new FormData($("#myFormTemS")[0]);
+
+        $.ajax({
+            type: "POST",
+            url: "/User/StartEV",
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function (response) {
+                ShowQuestion(response);
+                $('#EvalModal').modal('show');
+                //END
+                   
+            },
+            error: function (xhr, status, error) {
+                
+            }
+        });
+    }
+
+    function viewEV() {
+        var formData = new FormData($("#myFormTemS")[0]);
+
+        $.ajax({
+            type: "POST",
+            url: "/User/ViewEV",
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function (response) {
+                //ShowQuestion(response);
+
+                var objD = JSON.parse(response);
+                var mainL = document.getElementById('resultados');
+                mainL.innerHTML = '';
+
+                var content = '<h1><b>' + objD.Result10 + '</b></h1><br/>';
+                content += 'Bien: ' + objD.Bien + '<br/>';
+                content += 'Mal: ' + objD.Mal + '<br/>';
+                content += '<i>Perfect: ' + objD.TotalBien + '</i><br/>';
+                mainL.innerHTML = content;
+
+                $('#ViewEvalModal').modal('show');
+                //END
+
+            },
+            error: function (xhr, status, error) {
+
+            }
+        });
+    }
+
+
+    function isRespon(idQuest, IdResponse, input) {
+
+        if (input.checked) {
+            document.getElementById('IdResponse').value += IdResponse;
+        }
+        else {
+            var sValue = new String(document.getElementById('IdResponse').value);            
+            sValue = sValue.replace(IdResponse, '');
+            document.getElementById('IdResponse').value = sValue;
+        }
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+
+        $("#submitEval").click(function (event) {
+            event.preventDefault(); // Prevenimos el comportamiento por defecto del botón
+
+            var formData = new FormData($("#myFormEval")[0]); // Creamos el objeto FormData con los datos del formulario
+            $.ajax({
+                type: "POST",
+                url: "/User/AddResponse",
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function (response) {
+                    ShowQuestion(response);
+
+                    //END
+                },
+                error: function (xhr, status, error) {
+                    // Aquí puedes manejar los errores de la llamada AJAX
+                    //alert("Error al subir el archivo");
+                }
+            });
+        });
+
+    });
+
+    function ShowQuestion(response){
+        var objD = JSON.parse(response);
+        document.getElementById('IdResponse').value = '';
+        var mainL = document.getElementById('questions');
+        mainL.innerHTML = '';
+
+        if (!objD.IsEnd)
+        {
+            document.getElementById('IdQuest').value = objD.ActualQuest.Id;
+            document.getElementById('wayQuest').value = objD.QuestWay;
+            document.getElementById('ThemeIdQ').value = objD.ThemeIdQ;
+
+
+            var tempAdd = "";
+
+            tempAdd += "<li style='list-style-type: none;'>" + "<h2>" + objD.ActualQuest.Text + "</h2>" + "</li>";
+            tempAdd += "<ul>";
+            objD.ActualQuest.Responses.forEach(function (responseQ) {
+                tempAdd += "<li style='list-style-type: none;'>" +
+                    "<h3><input type='checkbox' onchange=\"isRespon('" + objD.ActualQuest.Id + "','" + responseQ.Id + ",', this)\" >" + responseQ.Text + "</h3>" +
+                    "</li>";
+
+            });
+            tempAdd += "</ul>";
+
+
+            document.getElementById("questions").innerHTML = tempAdd;
+
+            mainL.innerHTML = tempAdd;
+        }
+        else{
+            var element = document.getElementById("startEVBTN");
+            var elementViewEVAL = document.getElementById("viewEVBTN");
+            elementViewEVAL.style.visibility = "visible";            
+            element.style.visibility = "hidden";
+                
+            
+            $('#EvalModal').modal('hide');
+        }
+    }
+
+</script>
