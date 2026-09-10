@@ -1,5 +1,5 @@
 
-appy always the time function, maybe is not the thing that you want,
+apply always the time function, maybe is not the thing that you want,
 but in the limits and randoms things appends in it, the universe,
 is good found some type of luck in some thing of don`t understanding in the case where the true, is only in defense for yours not understanding, and you are not the problem inside all things about need for understand.
 factors & time = f(importantFirst, urgenteAreInminent, but we need the true about.
