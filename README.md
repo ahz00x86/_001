@@ -2,7 +2,7 @@
 apply always the time function, maybe is not the thing that you want,
 but in the limits and randoms things appends in it, the universe,
 is good found some type of luck in some thing of don`t understanding in the case where the true, is only in defense for yours not understanding, and you are not the problem inside all things about need for understand.
-factors & time = f(importantFirst, urgenteAreInminent, but we need the true about.
+factors & time = f(importantFirst, urgentAreInminent, but we need the true about.
 
 <img width="1536" height="1024" alt="Copilot_20260907_165629" src="https://github.com/user-attachments/assets/6ae23cbc-1bb3-4acb-a45b-f37ed4710605" />
 <img width="1024" height="420" alt="rZHZnptpEWQYcN73jBcm9OiYTRxZoiSBXUNfraey" src="https://github.com/user-attachments/assets/b323462f-e7b9-4cbd-84fa-1de08527e0a6" />
