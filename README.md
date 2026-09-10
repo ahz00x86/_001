@@ -5,7 +5,7 @@ is good found some type of luck in some thing of don`t understanding in the case
 
 factors & time = f(importantFirst youToo, urgentAreInminent, but we need the true about.
 <br />but not, if the true is not only one part of the true.
-<br />yes, yout identity, your family, your friends, your groups, or maybe is yout business,
+<br />yes, your identity, your family, your friends, your groups, or maybe is yout business,
 <br />ok, is correcltly or normal, for the people understanded in this time, but you could have do more, remember this, you could have do more, not forget..
 
 the time never stop, you have time in this moment, you can change it,
