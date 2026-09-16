@@ -3,12 +3,132 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:UWPAPP_001"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d"
-    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    Background="Black"
+    Loaded="Page_Loaded">
+    
+    <Grid x:Name="gMain">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="auto" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="auto" />
+            <ColumnDefinition x:Name="c1" Width="*"/>
+            <ColumnDefinition Width="auto"/>
+        </Grid.ColumnDefinitions>
+        
+        
+        <!-- 11111111111111111111 -->
+        
+        
+        <Image Source="/resources/imgs/_logo.png" Stretch="Fill" Grid.Row="0" Grid.Column="0"
+               Width="{Binding Mode=OneWay, ElementName=svMenu, Path=ActualWidth}"
+               HorizontalAlignment="Center" VerticalAlignment="Center" />
 
-    <Grid>
+        <TextBlock Text="www...com" Foreground="White"
+                   HorizontalAlignment="Center" VerticalAlignment="Center"                   
+                   Padding="3" Grid.Row="0" Grid.Column="0" />
 
+        <ScrollViewer x:Name="svMenu" Grid.Column="0" Grid.Row="1"
+                      ScrollViewer.VerticalScrollMode="Auto" ScrollViewer.VerticalScrollBarVisibility="Auto"
+                      ScrollViewer.HorizontalScrollMode="Disabled" ScrollViewer.HorizontalScrollBarVisibility="Hidden">
+            <StackPanel x:Name="spMenu" Orientation="Vertical" Visibility="Visible"                    
+                        HorizontalAlignment="Center" VerticalAlignment="Center"
+                        Margin="3">
+                <StackPanel.Children>
+                    <Button x:Name="btnMenuOption001" Margin="0,2,0,2"
+                            HorizontalAlignment="Center" VerticalAlignment="Center"
+                            Click="btnMenuOption001_Click">
+                        <Button.Content>
+                            <TextBlock Text="WIN NFT #1" Foreground="White"
+                                       HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Button.Content>
+                    </Button>
+                    <Button x:Name="btnMenuOption002" Margin="0,2,0,2"
+                            HorizontalAlignment="Center" VerticalAlignment="Center"
+                            Click="btnMenuOption002_Click">
+                        <Button.Content>
+                            <TextBlock Text="WIN NFT #2" Foreground="White"
+                                       HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Button.Content>
+                    </Button>
+                    <Button x:Name="btnMenuOption003" Margin="0,2,0,2"
+                            HorizontalAlignment="Center" VerticalAlignment="Center"
+                            Click="btnMenuOption003_Click">
+                        <Button.Content>
+                            <TextBlock Text="WIN NFT #3" Foreground="White"
+                                       HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Button.Content>
+                    </Button>
+                    <Button x:Name="btnMenuOption004" Margin="0,2,0,2"
+                            HorizontalAlignment="Center" VerticalAlignment="Center"
+                            Click="btnMenuOption004_Click">
+                        <Button.Content>
+                            <TextBlock Text="WIN NFT #4" Foreground="White"
+                                       HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Button.Content>
+                    </Button>
+                    <Button x:Name="btnMenuOption005" Margin="0,2,0,2"
+                            HorizontalAlignment="Center" VerticalAlignment="Center"
+                            Click="btnMenuOption005_Click">
+                        <Button.Content>
+                            <TextBlock Text="WIN NFT #5" Foreground="White"
+                                       HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Button.Content>
+                    </Button>
+                    <Button x:Name="btnMenuOption006" Margin="0,2,0,2"
+                            HorizontalAlignment="Center" VerticalAlignment="Center"
+                            Click="btnMenuOption006_Click">
+                        <Button.Content>
+                            <TextBlock Text="WIN NFT #6" Foreground="White"
+                                       HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Button.Content>
+                    </Button>
+                    <Button x:Name="btnMenuOption007" Margin="0,2,0,2"
+                            HorizontalAlignment="Center" VerticalAlignment="Center"
+                            Click="btnMenuOption007_Click">
+                        <Button.Content>
+                            <TextBlock Text="WIN NFT #7" Foreground="White"
+                                       HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Button.Content>
+                    </Button>
+                </StackPanel.Children>
+            </StackPanel>
+        </ScrollViewer>
+
+        <!-- 22222222222222222222 -->        
+
+        <Image x:Name="iMain" Source="/resources/imgs/_iMain.png" Stretch="Fill"
+               Grid.Row="1" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" />
+
+        <Page x:Name="pMain" Grid.Row="1" Grid.Column="1"
+              HorizontalAlignment="Center" VerticalAlignment="Center"/>
+
+        <!-- 33333333333333333333 -->
+
+        <!--<Grid Grid.Row="2" Grid.Column="1">
+            <Grid.RowDefinitions>
+        MinWidth="{Binding Mode=OneWay, ElementName=pC0, Path=ActualWidth}"
+        HorizontalAlignment="Center" VerticalAlignment="Center"
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition x:Name="pC0" Width="*"/>
+            </Grid.ColumnDefinitions>-->
+            <ProgressBar x:Name="pbState" FlowDirection="LeftToRight" IsIndeterminate="False"
+                         Grid.Row="2" Grid.Column="1" Margin="32"
+                         Height="23" BorderBrush="White" BorderThickness="1"
+                         Foreground="YellowGreen" Minimum="0" Maximum="100" Value="75" />
+        <!--</Grid>-->
+
+        <Image Source="/resources/imgs/_corner.png" Stretch="Fill" Grid.Row="2" Grid.Column="2"
+               Width="{Binding Mode=OneWay, ElementName=svMenu, Path=ActualWidth}"
+               HorizontalAlignment="Center" VerticalAlignment="Center" />
+
+        <TextBlock x:Uid="tbCOM2" Text="www...com" Foreground="White"
+                   HorizontalAlignment="Center" VerticalAlignment="Center"
+                   Padding="3" Grid.Row="2" Grid.Column="2" />
+        
     </Grid>
 </Page>

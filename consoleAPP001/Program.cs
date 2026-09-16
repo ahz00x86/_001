@@ -1,4 +1,5 @@
 ﻿using Microsoft.VisualBasic.FileIO;
+using System.Buffers;
 using System.IO;
 using System.Net;
 
@@ -98,11 +99,48 @@ namespace consoleAPP001
         static string[] getLinks(string html)
         {
             //
+            try
+            {
+                List<string> sLinks = new List<string>();
+                sLinks.AddRange(html.Split(new string[10] { "'", "\"", " ", "(", ")", "[", "]", "\t", "\n", "\r" }, StringSplitOptions.RemoveEmptyEntries));
+
+                sLinks.RemoveAll(x => !x.Contains('.'));
+
+                List<string> links = new List<string>();
+                foreach (string sLink in sLinks)
+                {
+                    if (sLink.ToLower().Contains("http") || sLink.ToLower().Contains("www"))
+                    {
+                        links.Add(sLink);
+                        continue;
+                    }
+
+                    string[] lParts = sLink.Split(new string[1] { "." }, StringSplitOptions.RemoveEmptyEntries);
+
+                    for (Int32 i = 1; i < lParts.Length; i++)
+                    {
+                        if (lParts[i].Length == 2 || lParts[i].Length == 3 || lParts[i].Length == 4)
+                        {
+                            links.Add(sLink);
+                            break;
+                        }
+                    }
+
+
+                }
+
+
+                return links.ToArray();
+            }
+            catch(Exception ex)
+            {
+
+            }
+
 
             return new string[1] { "https://nft.io/profile/ahz00x86/listed" };
 
         }
-
 
     }
 }

@@ -2,7 +2,7 @@
   "profiles": {
     "consoleAPP001": {
       "commandName": "Project",
-      "commandLineArgs": "AA https://nft.io/profile/ahz00x86/listed"
+      "commandLineArgs": "A2 https://nft.io/profile/ahz00x86/listed"
     }
   }
 }
