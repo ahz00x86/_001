@@ -99,7 +99,7 @@
 
         <!-- 22222222222222222222 -->        
 
-        <Image x:Name="iMain" Source="/resources/imgs/_iMain.png" Stretch="Fill"
+        <Image x:Name="iMain" Source="/resources/imgs/EFIfam.png" Stretch="Fill"
                Grid.Row="1" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" />
 
         <Page x:Name="pMain" Grid.Row="1" Grid.Column="1"
