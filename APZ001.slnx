@@ -33,4 +33,5 @@
   </Project>
   <Project Path="webAPP001/webAPP001.csproj" Id="c8594015-ea9d-4eb0-a76d-3761d7187e6f" />
   <Project Path="WINAPP001/WINAPP001.csproj" Id="07b392d8-a39b-4642-bb9a-99f7e7098ea8" />
+  <Project Path="_website/_website.csproj" Id="dc929eac-dcfb-4f9b-96ee-d0094076c3af" />
 </Solution>

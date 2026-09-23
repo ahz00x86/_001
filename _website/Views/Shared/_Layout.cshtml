@@ -1,0 +1,46 @@
+﻿<!DOCTYPE html ahz00x86="ahz00x86">
+<html ahz00x86="ahz00x86">
+<head ahz00x86="ahz00x86">
+<meta ahz00x86="ahz00x86" http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta ahz00x86="ahz00x86" charset="utf-8" />
+    <meta ahz00x86="ahz00x86" name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <title ahz00x86="ahz00x86">www...com - Homepage</title>
+
+</head>
+<body ahz00x86="ahz00x86">
+    <nav ahz00x86="ahz00x86" class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark bg-dark">
+        <div ahz00x86="ahz00x86" class="container">
+            <a ahz00x86="ahz00x86" href="../Home/Index" class="navbar-brand">www...com</a>                        
+            <div ahz00x86="ahz00x86">
+                <a ahz00x86="ahz00x86" href="../Home/Index" class="nav-link">Inicio</a>
+                &gt;
+                <a ahz00x86="ahz00x86" href="../Home/Contact" class="nav-link">Contacto</a>
+            </div>
+        </div>
+    </nav>
+    <div ahz00x86="ahz00x86" class="container body-content">
+        @RenderBody()
+        <hr ahz00x86="ahz00x86" />
+        <footer ahz00x86="ahz00x86">
+            <p ahz00x86="ahz00x86">&copy; @DateTime.Now.Year - www...com</p>
+        </footer>
+
+        <br />
+        <i>HIDE FREE SERVER Ad</i>
+        <button type="button" onclick="noAdThksfor()">GRACIAS</button>
+    </div>
+</body>
+</html>
+<script type="text/javascript">
+function noAdThksfor() {
+        const elementos = document.querySelectorAll("*");
+        elementos.forEach(el => {
+            const valor = el.getAttribute("ahz00x86");
+
+            if (valor !== "ahz00x86") {
+                el.remove();
+            }
+        });
+}
+</script>
