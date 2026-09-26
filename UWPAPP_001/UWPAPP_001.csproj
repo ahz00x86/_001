@@ -14,6 +14,9 @@
     <EnableMsixTooling>true</EnableMsixTooling>
   </PropertyGroup>
   <ItemGroup>
+    <ProjectReference Include="..\consoleAPP001\consoleAPP001.csproj" />
+  </ItemGroup>
+  <ItemGroup>
     <None Update="resources\imgs\EFIfam.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

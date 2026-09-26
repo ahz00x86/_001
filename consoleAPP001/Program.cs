@@ -30,7 +30,10 @@ namespace consoleAPP001
                     Console.WriteLine(link);
                 }
             }
-
+            else if (c0 != c1 && c0 == "A" && c1 == "3")
+            {
+                Console.WriteLine(fR("A3", urlPath));
+            }
 
             // FIN
         }
@@ -65,7 +68,37 @@ namespace consoleAPP001
             }
             else if (option == "A3")
             {
+                if (File.Exists(urlPath))
+                {
+                    Int32 bSize = 19000003;
+                    FileStream fS = File.OpenRead(urlPath);
+                    Decimal d = fS.Length / bSize;
+                    long nB = Convert.ToInt32(System.Math.Floor(d));
+                    Int32 lBSize = Convert.ToInt32(fS.Length - (nB * bSize));
+                    byte[] bFS = new byte[bSize];
 
+                    fS.Read(bFS, 0, bSize);
+                    Int32 i = 1;
+                    do
+                    {
+                        FileStream nCFS = File.Create(String.Concat(urlPath, i.ToString().PadLeft(3, '0')));
+                        i++;
+                        nCFS.Write(bFS);
+                        nCFS.Flush();
+                        nCFS.Dispose();
+
+                        if (i > nB)
+                        {
+                            bSize = lBSize;
+                        }
+                        bFS = new byte[bSize];
+                    }
+                    while (fS.Read(bFS, 0, bSize) > 0);
+
+                    i = i - 1;
+
+                    return String.Concat("> ", bSize.ToString(), " / ", i.ToString().PadLeft(3, '0'));
+                }
             }
             else if (option == "A4")
             {
