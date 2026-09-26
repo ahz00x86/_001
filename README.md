@@ -1,4 +1,5 @@
-<img width="1024" height="767" alt="_2EFIfam" src="https://github.com/user-attachments/assets/38e931e7-76ff-4bd6-816d-a656cbb25343" />
+<img width="1024" height="768" alt="_3EFIfam" src="https://github.com/user-attachments/assets/bc4be471-04c9-48af-ab9a-e7a6fe1c32e5" />
+
 
 in position, waiting for instructions, please asking for objetives, NO DATA, WE LOST BACKUPS FOR SAVE LOCALIZATION STRUCT IN THE TRUE OF THE LOGIC, IS POSSIBLE OR MAYBE DOUBT ARE THE TIME OR THE SPACE AND PLACES WHERE YOU ARE, BUT YOU FIND ONE TIME FOR SEE THIS ThaNKs, IT'S NOT MINE. I'M ONLY ·MINER MASTER 3X3", AND IT'S ONLY THE FIRST THING THAT IS FOR SURE, I CAN VALIDATE MY OWN BELONGING INSIDE THIS MEANING,
 
@@ -27,4 +28,3 @@ the time never stop, you have time in this moment, you can change it,
 <img width="1024" height="420" alt="rZHZnptpEWQYcN73jBcm9OiYTRxZoiSBXUNfraey" src="https://github.com/user-attachments/assets/b323462f-e7b9-4cbd-84fa-1de08527e0a6" />
 <img width="1024" height="1035" alt="_Copilot_20260907_170550" src="https://github.com/user-attachments/assets/cace644c-acaa-40da-b75f-32e232fb3f72" />
 <img width="195" height="195" alt="321253129" src="https://github.com/user-attachments/assets/b6662410-96e8-4c21-8642-ea236823f38c" />
-<img width="1200" height="1100" alt="788926824_122099406645458288_3462483583814766065_n" src="https://github.com/user-attachments/assets/704cef02-bfce-4b5f-8a46-0bd5cfd6f8d9" />
